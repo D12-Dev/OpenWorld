@@ -16,4 +16,4 @@ x64: https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-deskto
 - The server files include a readme explaining how to setup the server.
 
 **Found a bug?**
-- Please submit it! By doing so you are helping not only me but also every other user of this program. It helps out a ton!
+- First check you are using the latest version, then, please, submit it! By doing so you are helping not only me but also every other user of this program. It helps out a ton!
