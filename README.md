@@ -1,4 +1,4 @@
-# Open World
+# Open World - Server Files
 ## A Free Multiplayer Mod For Rimworld.
 
 Open world is a work in progress mod that aims to achieve a fun and natural multiplayer experience in rimworld. With it, you can experience all your normal and casual adventures that you would in a singleplayer, but now connected with a bunch of other players living the same as you do.
