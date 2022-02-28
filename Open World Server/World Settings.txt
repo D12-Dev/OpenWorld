@@ -1,0 +1,6 @@
+- World Settings -
+Globe Coverage (0.3, 0.5, 1.0): 0.3
+Seed: Seed
+Overall Rainfall (0-6): 3
+Overall Temperature (0-6): 3
+Overall Population (0-6): 3

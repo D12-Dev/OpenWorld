@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Defs>
+  <TraderKindDef>
+    <defName>Base_Online</defName>
+    <stockGenerators>
+    </stockGenerators>
+  </TraderKindDef>
+</Defs>

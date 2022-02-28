@@ -1,0 +1,9 @@
+- Server Settings -
+Server Name: My Server Name
+Server Description: My Server Description
+Server Local IP: 127.0.0.1
+Server Port: 25555
+Use Mods: True
+Whitelisted Mods (Separate With '|'):
+Use Royalty: False
+Use Ideology: False
