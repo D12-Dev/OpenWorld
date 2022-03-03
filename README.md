@@ -1,7 +1,7 @@
 # Open World - Server Files
 ## A Free Multiplayer Mod For Rimworld.
 
-Attention! This is a work in progress mod! Things are prone to breaking! 
+Attention! This is a work in progress mod! Things are prone to breaking! If you find something broken please post it!
 
 Attention! Needs .Net 6.0 or newer to work!
 x32: https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-desktop-6.0.2-windows-x86-installer
