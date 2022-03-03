@@ -13,7 +13,7 @@ x64: https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-deskto
 
 **Things to know before using?**
 - To host a private server you will need to forward a dedicated port for your server to comunicate using TCP protocol! I can't guide everyone on how to do this as it varies per internet provider / router. So you might need to follow a tutorial to achieve it.
-- The server files include a readme explaining how to setup the server.
+- There is a tutorial file in this page to setup the server. Look it up!
 - Check the releases tab to download the server files! At the right of the Github page!
 
 **Found a bug?**
