@@ -15,7 +15,7 @@ All the player files are stored in the "Players" folder, this files contain all 
 Please DO NOT manually create player files. Doing so will cause the server to crash on load.
 
 Server Settings:
-This file contains all the server configuration parameters that you can adjust as a server owner. The list of options will grow as time comes. In this file, you MUST NOT forget to change the configuration of the IP and Port used to your liking or the server might not start at all. You must write your LOCAL IP in the IP setting.
+This file contains all the server configuration parameters that you can adjust as a server owner. The list of options will grow as time comes. In this file, you MUST NOT forget to change the configuration of the IP and Port used to your liking or the server might not start at all. You must write the LOCAL IP of the system hosting the server in the IP setting.
 
 World Settings:
 This file contains all the world configurables. It comes with default parameters, so you might adjust them to your liking, changing this file requires all players, new and old, to create a new game to prevent map mismatching, although you should not need to change this file again after doing it at first world creation.
