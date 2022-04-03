@@ -10,7 +10,7 @@ x64: https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-deskto
 **Things to know before using?**
 - To host a private server you will need to forward a dedicated port for your server to comunicate using TCP protocol! I can't guide everyone on how to do this as it varies per internet provider / router. So you might need to follow a tutorial to achieve it.
 - Check the releases tab to download the server files! At the right of the Github page!
-- Want to put DLCs as whitelisted? Download this files and put them in the "Whitelisted Mods" folder: https://cdn.discordapp.com/attachments/951176474063413328/952959788168409098/DLCs.7z
+- Want to put DLCs as whitelisted? Download these files and put them in the "Whitelisted Mods" folder: https://cdn.discordapp.com/attachments/951176474063413328/952959788168409098/DLCs.7z
 
 ## Server Setup
 The server distributes the files in 4 different parts.
