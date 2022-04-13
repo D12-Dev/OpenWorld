@@ -2,6 +2,14 @@
 //This file contains the details of the global servers listed in the mod.
 
 │
+- Name: 
+- Description: 
+- IP: 
+- Port: 
+- Discord: 
+- Modlist: 
+- Whitelisted Modlist: 
+│
 - Name: My Test Server
 - Description: Description
 - IP: IP
@@ -17,3 +25,11 @@
 - Discord: https://discord.gg/eCTsZTDS4X
 - Modlist: https://steamcommunity.com/sharedfiles/filedetails/?id=2781278962
 - Whitelisted Modlist: https://steamcommunity.com/sharedfiles/filedetails/?id=2781279082
+│
+- Name: Vanilla Rimworld Multiplayer
+- Description: Stays up 24/7, will reboot for maintenance as needed! Report issues in the Discord server.
+- IP: vanillarimworld.com
+- Port: 25555
+- Discord: https://discord.gg/e5WMnR5r6a
+- Modlist: https://steamcommunity.com/sharedfiles/filedetails/?id=2778026966
+- Whitelisted Modlist: 
