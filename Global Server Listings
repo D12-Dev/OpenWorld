@@ -2,20 +2,12 @@
 //This file contains the details of the global servers listed in the mod.
 
 │
-- Name: Sample
-- Description: 
-- IP: 
-- Port: 
-- Discord: 
-- Modlist: 
-- Whitelisted Modlist: 
-│
 - Name: Pringis
 - Description: Looking for some new rimworld experiences? Welcome to pringis, the perfect mix of fun and suffering. Featuring a fully vanilla server as well as a lightly modded one, you're sure to have a blast playing with our highly active community. Be sure to join our discord for connection info, we can't wait to have you join us.
-- IP: 
-- Port: 
+- IP: pringis.ca
+- Port: 26262
 - Discord: https://discord.gg/azntjYrchE
-- Modlist: 
+- Modlist: https://steamcommunity.com/workshop/filedetails/?id=2772321476
 - Whitelisted Modlist: 
 │
 - Name: AA's Rimworld Server
