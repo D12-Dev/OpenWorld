@@ -10,8 +10,16 @@
 - Modlist: Null
 - Whitelisted Modlist: Null
 │
-- Name: Pringis
-- Description: Looking for some new rimworld experiences? Welcome to pringis, the perfect mix of fun and suffering. Featuring a fully vanilla server as well as a lightly modded one, you're sure to have a blast playing with our highly active community. Be sure to join our discord for connection info, we can't wait to have you join us.
+- Name: Pringis Vanilla
+- Description: Looking for some new rimworld experiences? Welcome to pringis, the perfect mix of fun and suffering.
+- IP: pringis.ca
+- Port: 25556
+- Discord: https://discord.gg/azntjYrchE
+- Modlist: Null
+- Whitelisted Modlist: Null
+│
+- Name: Pringis Modded
+- Description: Looking for some new rimworld experiences? Welcome to pringis, the perfect mix of fun and suffering.
 - IP: pringis.ca
 - Port: 26262
 - Discord: https://discord.gg/azntjYrchE
