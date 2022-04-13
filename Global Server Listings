@@ -2,6 +2,14 @@
 //This file contains the details of the global servers listed in the mod.
 
 │
+- Name: Local Host
+- Description: Your local host server
+- IP: 127.0.0.1
+- Port: 25555
+- Discord: https://discord.gg/h3gPyvkUEF
+- Modlist: 
+- Whitelisted Modlist: 
+│
 - Name: Pringis
 - Description: Looking for some new rimworld experiences? Welcome to pringis, the perfect mix of fun and suffering. Featuring a fully vanilla server as well as a lightly modded one, you're sure to have a blast playing with our highly active community. Be sure to join our discord for connection info, we can't wait to have you join us.
 - IP: pringis.ca
