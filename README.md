@@ -10,7 +10,7 @@ x64: https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-deskto
 **Things to know before using?**
 - To host a private server you will need to forward a dedicated port for your server to comunicate using TCP protocol! I can't guide everyone on how to do this as it varies per internet provider / router. So you might need to follow a tutorial to achieve it.
 - Check the releases tab to download the server files! At the right of the Github page!
-- Want to set DLCs as whitelisted? Download these files and put them in the "Whitelisted Mods" folder: https://github.com/TastyLollipop/OpenWorld/raw/main/DLCs.zip
+- Want to set DLCs as whitelisted? Download these files and put them in the "Whitelisted Mods" folder: https://github.com/TastyLollipop/OpenWorld/raw/main/Core%20%26%20DLCs.zip
 
 ## Server Setup
 The server distributes the files in 4 different parts.
