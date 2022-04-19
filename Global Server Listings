@@ -35,11 +35,11 @@
 - Whitelisted Modlist: https://steamcommunity.com/sharedfiles/filedetails/?id=2781279082
 │
 - Name: Vanilla Rimworld Multiplayer
-- Description: Stays up 24/7, will reboot for maintenance as needed! Report issues in the Discord server.
-- IP: vanillarimworld.com
+- Description: Hosted 24/7. Restarts only for updates!.
+- IP: 123.243.146.103
 - Port: 25555
 - Discord: https://discord.gg/e5WMnR5r6a
-- Modlist: https://steamcommunity.com/sharedfiles/filedetails/?id=2778026966
+- Modlist: Null
 - Whitelisted Modlist: Null
 │
 - Name: Official Noobtopia Rimworld
@@ -121,3 +121,11 @@
 - Discord: https://discord.gg/y3jADdnnVM
 - Modlist: https://steamcommunity.com/sharedfiles/filedetails/?id=2796017369
 - Whitelisted Modlist: Null
+│
+- Name: Caramel's Rimworld Experience
+- Description: CRE is a vanilla enhanced server running mostly vanilla enhanced mods + quality of life mods. With a few extras like trader ships and alpha biomes tossed in.
+- IP: caramelgaming.dynamic-dns.net
+- Port: 25555
+- Discord: https://discord.gg/GM5sX7Cdwc
+- Modlist: https://steamcommunity.com/sharedfiles/filedetails/?id=2795926123
+- Whitelisted Modlist: https://steamcommunity.com/sharedfiles/filedetails/?id=2796840286
