@@ -22,7 +22,7 @@ The server distributes the files in 4 different parts.
 
 If you want to play with mods, copy your essential mods, the ones you will be forcing your players to use, in the "Mods" folder. Restart your server if your mods folder is missing.
 
-You can also place whitelisted mods in the "Whitelisted Mods" folder. This are mods that are allowed, but not essential to play in the server. This mods may include graphic or sound mods.
+You can also place whitelisted mods in the "Whitelisted Mods" folder. These are mods that are allowed, but not essential to play in the server. This mods may include graphic or sound mods.
 
 **Players:**
 
