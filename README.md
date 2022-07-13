@@ -10,6 +10,7 @@ x64: https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-deskto
 **Things to know before using?**
 - To host a private server you will need to forward a dedicated port for your server to comunicate using TCP protocol! I can't guide everyone on how to do this as it varies per internet provider / router. So you might need to follow a tutorial to achieve it.
 - To enable "Core" or any of the two DLCs, download this file or extract the contents from your "Extras" folder inside the server as if they were mods: https://github.com/TastyLollipop/OpenWorld/raw/main/Core%20%26%20DLCs.zip
+- Need help with any topic? Visit our fandom! https://openworldhelp.fandom.com/wiki/Open_World_Wiki
 
 ## Server Setup
 The server distributes the files in 4 different parts.
