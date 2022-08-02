@@ -5,9 +5,7 @@ Attention! This is a work in progress mod! Things are prone to breaking! If you 
 
 ATTENTION! From v1.4.0 onwards the server starts depending on .NET Core 3.1. Download below!
 
-x32: https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/sdk-3.1.421-windows-x86-installer
-
-x64: https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/sdk-3.1.421-windows-x64-installer
+https://dotnet.microsoft.com/en-us/download/dotnet/3.1
 
 **Things to know before using**
 - To host a private server, you will need to forward a dedicated port for your server to comunicate using TCP protocol! I can't guide everyone on how to do this as it varies per internet provider / router. So you might need to follow a tutorial to achieve it.
