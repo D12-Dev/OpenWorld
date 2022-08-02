@@ -3,9 +3,9 @@
 
 Attention! This is a work in progress mod! Things are prone to breaking! If you find something broken, please report it!
 
-Attention! Requires .Net 6.0 or newer to work!
-x32: https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-desktop-6.0.2-windows-x86-installer
-x64: https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-desktop-6.0.2-windows-x64-installer
+ATTENTION! FROM 1.4.0 ONWARDS THE SERVER STARTS DEPENDING ON .NET Core 3.1. DOWNLOAD BELOW TO KEEP USING THE SERVER!
+x32: https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/sdk-3.1.421-windows-x86-installer
+x64: https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/sdk-3.1.421-windows-x64-installer
 
 **Things to know before using**
 - To host a private server, you will need to forward a dedicated port for your server to comunicate using TCP protocol! I can't guide everyone on how to do this as it varies per internet provider / router. So you might need to follow a tutorial to achieve it.
