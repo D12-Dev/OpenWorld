@@ -3,7 +3,7 @@
 
 Attention! This is a work in progress mod! Things are prone to breaking! If you find something broken, please report it!
 
-ATTENTION! FROM 1.4.0 ONWARDS THE SERVER STARTS DEPENDING ON .NET Core 3.1. DOWNLOAD BELOW TO KEEP USING THE SERVER!
+ATTENTION! From 1.4.0 onwards the server starts depending on .NET Core 3.1. Download below!
 
 x32: https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/sdk-3.1.421-windows-x86-installer
 
