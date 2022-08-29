@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+	<RuntimeIdentifiers>linux-arm64</RuntimeIdentifiers>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <RootNamespace>Open_World_Server</RootNamespace>
+    <Platforms>AnyCPU;ARM32;ARM64</Platforms>
+  </PropertyGroup>
+
+</Project>
