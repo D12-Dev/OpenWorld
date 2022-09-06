@@ -23,33 +23,9 @@ namespace OpenWorld
 
 			Main._MPGame.DisableDevOptions();
 
-			OverallRainfall overalRainfall = OverallRainfall.AlmostNone;
-			OverallTemperature overallTemperature = OverallTemperature.VeryCold;
-			OverallPopulation overallPopulation = OverallPopulation.AlmostNone;
-
-			if (rainfall == 0) overalRainfall = OverallRainfall.AlmostNone;
-			else if (rainfall == 1) overalRainfall = OverallRainfall.Little;
-			else if (rainfall == 2) overalRainfall = OverallRainfall.LittleBitLess;
-			else if (rainfall == 3) overalRainfall = OverallRainfall.Normal;
-			else if (rainfall == 4) overalRainfall = OverallRainfall.LittleBitMore;
-			else if (rainfall == 5) overalRainfall = OverallRainfall.High;
-			else if (rainfall == 6) overalRainfall = OverallRainfall.VeryHigh;
-
-			if (temperature == 0) overallTemperature = OverallTemperature.VeryCold;
-			else if (temperature == 1) overallTemperature = OverallTemperature.Cold;
-			else if (temperature == 2) overallTemperature = OverallTemperature.LittleBitColder;
-			else if (temperature == 3) overallTemperature = OverallTemperature.Normal;
-			else if (temperature == 4) overallTemperature = OverallTemperature.LittleBitWarmer;
-			else if (temperature == 5) overallTemperature = OverallTemperature.Hot;
-			else if (temperature == 6) overallTemperature = OverallTemperature.VeryHot;
-
-			if (population == 0) overallPopulation = OverallPopulation.AlmostNone;
-			else if (population == 1) overallPopulation = OverallPopulation.Little;
-			else if (population == 2) overallPopulation = OverallPopulation.LittleBitLess;
-			else if (population == 3) overallPopulation = OverallPopulation.Normal;
-			else if (population == 4) overallPopulation = OverallPopulation.LittleBitMore;
-			else if (population == 5) overallPopulation = OverallPopulation.High;
-			else if (population == 6) overallPopulation = OverallPopulation.VeryHigh;
+			OverallRainfall overalRainfall = (OverallRainfall)rainfall;
+			OverallTemperature overallTemperature = (OverallTemperature)temperature;
+			OverallPopulation overallPopulation = (OverallPopulation)population;
 
 			LongEventHandler.QueueLongEvent(delegate
 			{

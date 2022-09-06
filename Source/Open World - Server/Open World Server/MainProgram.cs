@@ -871,7 +871,7 @@ namespace Open_World_Server
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
-                    Console.WriteLine("[{0}] | Usage: GiveItem [username] [itemID] [itemQuantity] [itemQuality]", DateTime.Now);
+                    Console.WriteLine("[{0}] | Usage: Giveitem [username] [itemID] [itemQuantity] [itemQuality]", DateTime.Now);
                     Console.ForegroundColor = ConsoleColor.White;
                     Console.WriteLine(Environment.NewLine);
                     ListenForCommands();
