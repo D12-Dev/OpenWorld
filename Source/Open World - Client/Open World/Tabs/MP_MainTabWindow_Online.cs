@@ -47,7 +47,8 @@ namespace OpenWorld
             if (AcceptsInput && inputAreaText.Length <= maxFieldCharacters) Main._MPChat.cacheInputText = inputAreaText;
 
             Rect sendButtonRect = new Rect(new Vector2(rect.xMax - sendButtonX, rect.yMax - sendButtonY), new Vector2(sendButtonX, sendButtonY));
-            if (Widgets.ButtonText(sendButtonRect, "Send"))
+            bool keyPressed = (inputAreaText.Length > 0) && (Event.current.keyCode == KeyCode.Return || Event.current.keyCode == KeyCode.KeypadEnter);
+            if (Widgets.ButtonText(sendButtonRect, "Send") || keyPressed)
             {
                 if (Main._MPChat.cacheInputText.Contains("│")) Main._MPChat.cacheInputText = Main._MPChat.cacheInputText.Replace("│", "");
                 if (Main._MPChat.cacheInputText.Contains("»")) Main._MPChat.cacheInputText = Main._MPChat.cacheInputText.Replace("»", "");
