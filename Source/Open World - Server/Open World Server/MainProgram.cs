@@ -146,9 +146,7 @@ namespace Open_World_Server
             try { message = command.Remove(0, 4); }
             catch
             {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
-                Console.ForegroundColor = ConsoleColor.White;
+                WriteColoredLog("Missing Parameters", ConsoleColor.Yellow);
                 Console.WriteLine(Environment.NewLine);
                 ListenForCommands();
             }
@@ -181,18 +179,14 @@ namespace Open_World_Server
 
                 if (string.IsNullOrWhiteSpace(text))
                 {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
-                    Console.ForegroundColor = ConsoleColor.White;
+                    WriteColoredLog("Missing Parameters", ConsoleColor.Yellow);
                     Console.WriteLine(Environment.NewLine);
                     ListenForCommands();
                 }
             }
             catch
             {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
-                Console.ForegroundColor = ConsoleColor.White;
+                WriteColoredLog("Missing Parameters", ConsoleColor.Yellow);
                 Console.WriteLine(Environment.NewLine);
                 ListenForCommands();
             }
@@ -223,18 +217,14 @@ namespace Open_World_Server
 
                 if (string.IsNullOrWhiteSpace(text))
                 {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
-                    Console.ForegroundColor = ConsoleColor.White;
+                    WriteColoredLog("Missing Parameters", ConsoleColor.Yellow);
                     Console.WriteLine(Environment.NewLine);
                     ListenForCommands();
                 }
             }
             catch
             {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
-                Console.ForegroundColor = ConsoleColor.White;
+                WriteColoredLog("Missing Parameters", ConsoleColor.Yellow);
                 Console.WriteLine(Environment.NewLine);
                 ListenForCommands();
             }
@@ -411,9 +401,7 @@ namespace Open_World_Server
             }
             catch
             {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
-                Console.ForegroundColor = ConsoleColor.White;
+                WriteColoredLog("Missing Parameters", ConsoleColor.Yellow);
                 Console.WriteLine(Environment.NewLine);
                 ListenForCommands();
             }
@@ -452,9 +440,7 @@ namespace Open_World_Server
             try { eventID = command.Split(' ')[1]; }
             catch
             {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
-                Console.ForegroundColor = ConsoleColor.White;
+                WriteColoredLog("Missing Parameters", ConsoleColor.Yellow);
                 Console.WriteLine(Environment.NewLine);
                 ListenForCommands();
             }
@@ -550,9 +536,7 @@ namespace Open_World_Server
             try { clientID = command.Split(' ')[1]; }
             catch
             {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
-                Console.ForegroundColor = ConsoleColor.White;
+                WriteColoredLog("Missing Parameters", ConsoleColor.Yellow);
                 Console.WriteLine(Environment.NewLine);
                 ListenForCommands();
             }
@@ -638,9 +622,7 @@ namespace Open_World_Server
             try { clientID = command.Split(' ')[1]; }
             catch
             {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
-                Console.ForegroundColor = ConsoleColor.White;
+                WriteColoredLog("Missing Parameters", ConsoleColor.Yellow);
                 Console.WriteLine(Environment.NewLine);
                 ListenForCommands();
             }
@@ -672,9 +654,7 @@ namespace Open_World_Server
             try { clientID = command.Split(' ')[1]; }
             catch
             {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
-                Console.ForegroundColor = ConsoleColor.White;
+                WriteColoredLog("Missing Parameters", ConsoleColor.Yellow);
                 Console.WriteLine(Environment.NewLine);
                 ListenForCommands();
             }
@@ -707,9 +687,7 @@ namespace Open_World_Server
             try { clientUsername = command.Split(' ')[1]; }
             catch
             {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
-                Console.ForegroundColor = ConsoleColor.White;
+                WriteColoredLog("Missing Parameters", ConsoleColor.Yellow);
                 Console.WriteLine(Environment.NewLine);
                 ListenForCommands();
             }
@@ -741,9 +719,7 @@ namespace Open_World_Server
             try { clientID = command.Split(' ')[1]; }
             catch
             {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
-                Console.ForegroundColor = ConsoleColor.White;
+                WriteColoredLog("Missing Parameters", ConsoleColor.Yellow);
                 Console.WriteLine(Environment.NewLine);
                 ListenForCommands();
             }
@@ -791,9 +767,7 @@ namespace Open_World_Server
             try { clientID = command.Split(' ')[1]; }
             catch
             {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
-                Console.ForegroundColor = ConsoleColor.White;
+                WriteColoredLog("Missing Parameters", ConsoleColor.Yellow);
                 Console.WriteLine(Environment.NewLine);
                 ListenForCommands();
             }
@@ -963,9 +937,7 @@ namespace Open_World_Server
             try { clientID = command.Split(' ')[1]; }
             catch
             {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
-                Console.ForegroundColor = ConsoleColor.White;
+                WriteColoredLog("Missing Parameters", ConsoleColor.Yellow);
                 Console.WriteLine(Environment.NewLine);
                 ListenForCommands();
             }
@@ -997,9 +969,7 @@ namespace Open_World_Server
             try { clientID = command.Split(' ')[1]; }
             catch
             {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
-                Console.ForegroundColor = ConsoleColor.White;
+                WriteColoredLog("Missing Parameters", ConsoleColor.Yellow);
                 Console.WriteLine(Environment.NewLine);
                 ListenForCommands();
             }
@@ -1031,9 +1001,7 @@ namespace Open_World_Server
             try { clientID = command.Split(' ')[1]; }
             catch
             {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
-                Console.ForegroundColor = ConsoleColor.White;
+                WriteColoredLog("Missing Parameters", ConsoleColor.Yellow);
                 Console.WriteLine(Environment.NewLine);
                 ListenForCommands();
             }
@@ -1066,9 +1034,7 @@ namespace Open_World_Server
             try { clientID = command.Split(' ')[1]; }
             catch
             {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
-                Console.ForegroundColor = ConsoleColor.White;
+                WriteColoredLog("Missing Parameters", ConsoleColor.Yellow);
                 Console.WriteLine(Environment.NewLine);
                 ListenForCommands();
             }
