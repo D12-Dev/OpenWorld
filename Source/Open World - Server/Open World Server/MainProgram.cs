@@ -372,8 +372,7 @@ namespace Open_World_Server
             }
             catch
             {
-                WriteColoredLog("Missing Parameters", ConsoleColor.Yellow);
-                Console.WriteLine(Environment.NewLine);
+                WriteColoredLog("Missing Parameters\n", ConsoleColor.Yellow);
                 ListenForCommands();
             }
 
@@ -388,17 +387,13 @@ namespace Open_World_Server
 
             if (target == null)
             {
-                WriteColoredLog($"Player {clientID} Not Found", ConsoleColor.Yellow);
-                Console.WriteLine(Environment.NewLine);
+                WriteColoredLog($"Player {clientID} Not Found\n", ConsoleColor.Yellow);
                 ListenForCommands();
             }
 
             _Networking.SendData(target, "ForcedEvent│" + eventID);
 
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("[{0}] | Sent Event [{1}] to [{2}]", DateTime.Now, eventID, clientID);
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine(Environment.NewLine);
+            WriteColoredLog($"Sent Event [{eventID}] to [{clientID}]\n", ConsoleColor.Green);
         }
         private void Plague(string command)
         {
@@ -419,17 +414,13 @@ namespace Open_World_Server
                 _Networking.SendData(client, "ForcedEvent│" + eventID);
             }
 
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("[{0}] | Sent Event [{1}] To Every Player", DateTime.Now, eventID);
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine(Environment.NewLine);
+            WriteColoredLog($"Sent Event [{eventID}] to Every Player\n", ConsoleColor.Green);
         }
         private void EventList()
         {
             Console.Clear();
             WriteColoredLog("List Of Available Events:", ConsoleColor.Green);
-            WriteColoredLog("Raid\nInfestation\nMechCluster\nToxicFallout\nManhunter\nFarmAnimals\nShipChunk\nGiveQuest\nTraderCaravan");
-            Console.WriteLine(Environment.NewLine);
+            WriteColoredLog("Raid\nInfestation\nMechCluster\nToxicFallout\nManhunter\nFarmAnimals\nShipChunk\nGiveQuest\nTraderCaravan\n");
         }
         private void Chat()
         {
