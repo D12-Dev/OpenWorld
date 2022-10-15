@@ -440,9 +440,7 @@ namespace Open_World_Server
         private void List()
         {
             Console.Clear();
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("[{0}] | Connected Players: [{1}]", DateTime.Now, _Networking.connectedClients.Count);
-            Console.ForegroundColor = ConsoleColor.White;
+            WriteColoredLog($"Connected Players: [{_Networking.connectedClients.Count}]", messageColor);
 
             if (_Networking.connectedClients.Count() == 0) Console.WriteLine("[{0}] | No Players Connected", DateTime.Now);
             else foreach (ServerClient client in _Networking.connectedClients)
@@ -450,17 +448,11 @@ namespace Open_World_Server
                     try { Console.WriteLine("[{0}] | " + client.username, DateTime.Now); }
                     catch
                     {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("[{0}] | Error Processing Player With IP [{1}]", DateTime.Now, ((IPEndPoint)client.tcp.Client.RemoteEndPoint).Address.ToString());
-                        Console.ForegroundColor = ConsoleColor.White;
+                        WriteColoredLog($"Error Processing Player With IP [{((IPEndPoint)client.tcp.Client.RemoteEndPoint).Address}]", errorColor);
                     }
                 }
 
-            Console.WriteLine(Environment.NewLine);
-
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("[{0}] | Saved Players: [{1}]", DateTime.Now, _MainProgram.savedClients.Count);
-            Console.ForegroundColor = ConsoleColor.White;
+            WriteColoredLog($"\nSaved Players: [{_MainProgram.savedClients.Count}]", messageColor);
 
             if (_MainProgram.savedClients.Count() == 0) Console.WriteLine("[{0}] | No Players Saved", DateTime.Now);
             else foreach (ServerClient savedClient in _MainProgram.savedClients)
@@ -468,9 +460,9 @@ namespace Open_World_Server
                     try { Console.WriteLine("[{0}] | " + savedClient.username, DateTime.Now); }
                     catch
                     {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("[{0}] | Error Processing Player With IP [{1}]", DateTime.Now, ((IPEndPoint)savedClient.tcp.Client.RemoteEndPoint).Address.ToString());
-                        Console.ForegroundColor = ConsoleColor.White;
+
+                        WriteColoredLog($"Error Processing Player With IP [{((IPEndPoint)savedClient.tcp.Client.RemoteEndPoint).Address}]", errorColor);
+
                     }
                 }
 
