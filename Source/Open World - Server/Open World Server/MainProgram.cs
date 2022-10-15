@@ -10,7 +10,7 @@ using System.Threading;
 namespace Open_World_Server
 {
     [Serializable]
-    public class MainProgram
+    public class OWServer
     {
         // -- Declarations --
         // Static Instances
@@ -62,10 +62,10 @@ namespace Open_World_Server
         public static int overallRainfall, overallTemperature, overallPopulation;
 
         // Console Colours
-        public const ConsoleColor defaultColor = ConsoleColor.White,
-          warnColor = ConsoleColor.Yellow,
-          errorColor = ConsoleColor.Red,
-          messageColor = ConsoleColor.Green;
+        public const ConsoleColor DEFAULT_COLOR = ConsoleColor.White,
+          WARN_COLOR = ConsoleColor.Yellow,
+          ERROR_COLOR = ConsoleColor.Red,
+          MESSAGE_COLOR = ConsoleColor.Green;
 
 
         // -- End Declarations --
@@ -82,8 +82,8 @@ namespace Open_World_Server
             mainFolderPath = AppDomain.CurrentDomain.BaseDirectory;
             logFolderPath = mainFolderPath + Path.DirectorySeparatorChar + "Logs";
 
-            Console.ForegroundColor = messageColor;
-            _ServerUtils.WriteServerLog("--------------\nServer Startup\n--------------\nWelcome to Open World - Multiplayer for RimWorld", messageColor);
+            Console.ForegroundColor = MESSAGE_COLOR;
+            _ServerUtils.WriteServerLog("--------------\nServer Startup\n--------------\nWelcome to Open World - Multiplayer for RimWorld", MESSAGE_COLOR);
             _ServerUtils.WriteServerLog($"Using Culture Info: '{CultureInfo.CurrentCulture}'");
 
             _ServerUtils.SetupPaths();
@@ -96,7 +96,7 @@ namespace Open_World_Server
         private static void ListenForCommands()
         {
             // Trim the leading and trailing white space off the commmand, if any, then pull the command word off to use in the switch.
-            Console.ForegroundColor = ConsoleColor.White;
+            Console.ForegroundColor = DEFAULT_COLOR;
             Console.Write("Enter Command> ");
             string command = Console.ReadLine().Trim(), commandWord = command.Split(" ")[0].ToLower();
             Dictionary<string, Action> simpleCommands = new Dictionary<string, Action>()
@@ -139,7 +139,7 @@ namespace Open_World_Server
             Console.Clear();
             if (simpleCommands.ContainsKey(commandWord)) simpleCommands[commandWord]();
             else if (complexCommands.ContainsKey(commandWord)) complexCommands[commandWord](command);
-            else _ServerUtils.WriteServerLog($"Command \"{command}\" Not Found\n", warnColor);
+            else _ServerUtils.WriteServerLog($"Command \"{command}\" Not Found\n", WARN_COLOR);
         }
     }
 }

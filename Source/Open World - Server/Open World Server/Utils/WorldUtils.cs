@@ -14,7 +14,7 @@ namespace Open_World_Server
             {
                 client.homeTileID = dataSplit[0];
 
-                foreach(ServerClient sc in MainProgram.savedClients)
+                foreach(ServerClient sc in OWServer.savedClients)
                 {
                     if (sc.username == client.username)
                     {
@@ -28,19 +28,19 @@ namespace Open_World_Server
 
             string dataString = "AddSettlement│" + dataSplit[0] + "│" + dataSplit[1];
 
-            foreach (ServerClient sc in MainProgram._Networking.connectedClients)
+            foreach (ServerClient sc in OWServer._Networking.connectedClients)
             {
                 if (client != null)
                 {
                     if (sc.username == client.username) continue;
                 }
 
-                MainProgram._Networking.SendData(sc, dataString);
+                OWServer._Networking.SendData(sc, dataString);
             }
 
-            MainProgram.savedSettlements.Add(client.homeTileID, new List<string> { client.username });
+            OWServer.savedSettlements.Add(client.homeTileID, new List<string> { client.username });
 
-            MainProgram._ServerUtils.WriteServerLog("Settlement With ID [" + dataSplit[0] + "] And Owner [" + dataSplit[1] + "] Has Been Added");
+            OWServer._ServerUtils.WriteServerLog("Settlement With ID [" + dataSplit[0] + "] And Owner [" + dataSplit[1] + "] Has Been Added");
         }
 
         public void RemoveSettlement(ServerClient? client, string tile)
@@ -49,7 +49,7 @@ namespace Open_World_Server
             {
                 client.homeTileID = null;
 
-                foreach (ServerClient sc in MainProgram.savedClients)
+                foreach (ServerClient sc in OWServer.savedClients)
                 {
                     if (sc.username == client.username)
                     {
@@ -65,25 +65,25 @@ namespace Open_World_Server
             {
                 string dataString = "RemoveSettlement│" + tile;
 
-                foreach (ServerClient sc in MainProgram._Networking.connectedClients)
+                foreach (ServerClient sc in OWServer._Networking.connectedClients)
                 {
                     if (client != null)
                     {
                         if (sc.username == client.username) continue;
                     }
 
-                    MainProgram._Networking.SendData(sc, dataString);
+                    OWServer._Networking.SendData(sc, dataString);
                 }
 
-                MainProgram.savedSettlements.Remove(tile);
+                OWServer.savedSettlements.Remove(tile);
 
-                MainProgram._ServerUtils.WriteServerLog("Settlement With ID [" + tile + "] Has Been Deleted");
+                OWServer._ServerUtils.WriteServerLog("Settlement With ID [" + tile + "] Has Been Deleted");
             }
         }
 
         public void CheckForTileDisponibility(ServerClient client, string tileID)
         {
-            foreach (ServerClient savedClient in MainProgram.savedClients)
+            foreach (ServerClient savedClient in OWServer.savedClients)
             {
                 if (savedClient.username == client.username)
                 {
@@ -91,7 +91,7 @@ namespace Open_World_Server
 
                     else
                     {
-                        foreach (KeyValuePair<string, List<string>> pair in MainProgram.savedSettlements)
+                        foreach (KeyValuePair<string, List<string>> pair in OWServer.savedSettlements)
                         {
                             if (pair.Value[0] == client.username)
                             {
@@ -109,10 +109,10 @@ namespace Open_World_Server
                 {
                     if (savedClient.homeTileID == tileID)
                     {
-                        MainProgram._Networking.SendData(client, "Disconnect│Corrupted");
+                        OWServer._Networking.SendData(client, "Disconnect│Corrupted");
 
                         Console.ForegroundColor = ConsoleColor.Red;
-                        MainProgram._ServerUtils.WriteServerLog("Player [" + client.username + "] Tried To Claim Used Tile! [" + tileID + "]");
+                        OWServer._ServerUtils.WriteServerLog("Player [" + client.username + "] Tried To Claim Used Tile! [" + tileID + "]");
                         Console.ForegroundColor = ConsoleColor.White;
                         return;
                     }

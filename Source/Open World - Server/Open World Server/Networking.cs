@@ -22,12 +22,12 @@ namespace Open_World_Server
             server = new TcpListener(localAddress, serverPort);
             server.Start();
 
-            MainProgram._ServerUtils.UpdateTitle();
+            OWServer._ServerUtils.UpdateTitle();
 
-            MainProgram._ServerUtils.WriteServerLog("Server Started");
-            MainProgram._ServerUtils.WriteServerLog("Type 'Help' To See Available Commands");
+            OWServer._ServerUtils.WriteServerLog("Server Started");
+            OWServer._ServerUtils.WriteServerLog("Type 'Help' To See Available Commands");
 
-            MainProgram._Threading.GenerateThreads(1);
+            OWServer._Threading.GenerateThreads(1);
 
             ListenForIncomingUsers();
         }
@@ -45,7 +45,7 @@ namespace Open_World_Server
 
             connectedClients.Add(newServerClient);
 
-            MainProgram._Threading.GenerateClientThread(newServerClient);
+            OWServer._Threading.GenerateClientThread(newServerClient);
 
             ListenForIncomingUsers();
         }
@@ -71,62 +71,62 @@ namespace Open_World_Server
                     else if (!client.disconnectFlag && s.DataAvailable)
                     {
                         string encryptedData = sr.ReadLine();
-                        string data = MainProgram._Encryption.DecryptString(encryptedData);
+                        string data = OWServer._Encryption.DecryptString(encryptedData);
                         Debug.WriteLine(data);
                         
                         if (encryptedData != null)
                         {
-                            if (encryptedData.StartsWith(MainProgram._Encryption.EncryptString("Connect│")))
+                            if (encryptedData.StartsWith(OWServer._Encryption.EncryptString("Connect│")))
                             {
-                                MainProgram._ServerUtils.LoginProcedures(client, data);
+                                OWServer._ServerUtils.LoginProcedures(client, data);
                             }
 
-                            else if (encryptedData.StartsWith(MainProgram._Encryption.EncryptString("ChatMessage│")))
+                            else if (encryptedData.StartsWith(OWServer._Encryption.EncryptString("ChatMessage│")))
                             {
-                                MainProgram._ServerUtils.SendChatMessage(client, data);
+                                OWServer._ServerUtils.SendChatMessage(client, data);
                                 continue;
                             }
 
-                            else if (encryptedData.StartsWith(MainProgram._Encryption.EncryptString("NewSettlementID│")))
+                            else if (encryptedData.StartsWith(OWServer._Encryption.EncryptString("NewSettlementID│")))
                             {
                                 try
                                 {
                                     client.wealth = float.Parse(data.Split('│')[2]);
                                     client.pawnCount = int.Parse(data.Split('│')[3]);
 
-                                    MainProgram._PlayerUtils.CheckForPlayerWealth(client);
+                                    OWServer._PlayerUtils.CheckForPlayerWealth(client);
                                 }
                                 catch { }
 
-                                MainProgram._WorldUtils.CheckForTileDisponibility(client, data.Split('│')[1]);
+                                OWServer._WorldUtils.CheckForTileDisponibility(client, data.Split('│')[1]);
                                 continue;
                             }
 
-                            else if (encryptedData.StartsWith(MainProgram._Encryption.EncryptString("AbandonSettlementID│")))
+                            else if (encryptedData.StartsWith(OWServer._Encryption.EncryptString("AbandonSettlementID│")))
                             {
                                 if (client.homeTileID != data.Split('│')[1] || string.IsNullOrWhiteSpace(client.homeTileID)) continue;
-                                else MainProgram._WorldUtils.RemoveSettlement(client, data.Split('│')[1]);
+                                else OWServer._WorldUtils.RemoveSettlement(client, data.Split('│')[1]);
                                 continue;
                             }
 
-                            else if (encryptedData == MainProgram._Encryption.EncryptString("│NoSettlementInLoad│"))
+                            else if (encryptedData == OWServer._Encryption.EncryptString("│NoSettlementInLoad│"))
                             {
                                 if (string.IsNullOrWhiteSpace(client.homeTileID)) continue;
-                                else MainProgram._WorldUtils.RemoveSettlement(client, client.homeTileID);
+                                else OWServer._WorldUtils.RemoveSettlement(client, client.homeTileID);
                                 continue;
                             }
 
-                            else if (encryptedData.StartsWith(MainProgram._Encryption.EncryptString("ForceEvent│")))
+                            else if (encryptedData.StartsWith(OWServer._Encryption.EncryptString("ForceEvent│")))
                             {
                                 string dataToSend = "";
 
-                                if (MainProgram._PlayerUtils.CheckForConnectedPlayers(data.Split('│')[2]))
+                                if (OWServer._PlayerUtils.CheckForConnectedPlayers(data.Split('│')[2]))
                                 {
-                                    if (MainProgram._PlayerUtils.CheckForPlayerShield(data.Split('│')[2]))
+                                    if (OWServer._PlayerUtils.CheckForPlayerShield(data.Split('│')[2]))
                                     {
                                         dataToSend = "│SentEvent│Confirm│";
 
-                                        MainProgram._PlayerUtils.SendEventToPlayer(client, data);
+                                        OWServer._PlayerUtils.SendEventToPlayer(client, data);
                                     }
 
                                     else dataToSend = "│SentEvent│Deny│";
@@ -138,21 +138,21 @@ namespace Open_World_Server
                                 continue;
                             }
 
-                            else if (encryptedData.StartsWith(MainProgram._Encryption.EncryptString("SendGiftTo│")))
+                            else if (encryptedData.StartsWith(OWServer._Encryption.EncryptString("SendGiftTo│")))
                             {
-                                MainProgram._PlayerUtils.SendGiftToPlayer(client, data);
+                                OWServer._PlayerUtils.SendGiftToPlayer(client, data);
                                 continue;
                             }
 
-                            else if (encryptedData.StartsWith(MainProgram._Encryption.EncryptString("SendTradeTo│")))
+                            else if (encryptedData.StartsWith(OWServer._Encryption.EncryptString("SendTradeTo│")))
                             {
                                 string dataToSend = "";
 
-                                if (MainProgram._PlayerUtils.CheckForConnectedPlayers(data.Split('│')[1]))
+                                if (OWServer._PlayerUtils.CheckForConnectedPlayers(data.Split('│')[1]))
                                 {
                                     dataToSend = "│SentTrade│Confirm│";
 
-                                    MainProgram._PlayerUtils.SendTradeRequestToPlayer(client, data);
+                                    OWServer._PlayerUtils.SendTradeRequestToPlayer(client, data);
                                 }
                                 else dataToSend = "│SentTrade│Deny│";
 
@@ -161,15 +161,15 @@ namespace Open_World_Server
                                 continue;
                             }
 
-                            else if (encryptedData.StartsWith(MainProgram._Encryption.EncryptString("SendBarterTo│")))
+                            else if (encryptedData.StartsWith(OWServer._Encryption.EncryptString("SendBarterTo│")))
                             {
                                 string dataToSend = "";
 
-                                if (MainProgram._PlayerUtils.CheckForConnectedPlayers(data.Split('│')[1]))
+                                if (OWServer._PlayerUtils.CheckForConnectedPlayers(data.Split('│')[1]))
                                 {
                                     dataToSend = "│SentBarter│Confirm│";
 
-                                    MainProgram._PlayerUtils.SendBarterRequestToPlayer(client, data);
+                                    OWServer._PlayerUtils.SendBarterRequestToPlayer(client, data);
                                 }
                                 else dataToSend = "│SentBarter│Deny│";
 
@@ -178,7 +178,7 @@ namespace Open_World_Server
                                 continue;
                             }
 
-                            else if (encryptedData.StartsWith(MainProgram._Encryption.EncryptString("TradeStatus│")))
+                            else if (encryptedData.StartsWith(OWServer._Encryption.EncryptString("TradeStatus│")))
                             {
                                 string username = data.Split('│')[2];
                                 ServerClient target = null;
@@ -194,14 +194,14 @@ namespace Open_World_Server
 
                                 if (target == null) return;
                                 
-                                if (encryptedData.StartsWith(MainProgram._Encryption.EncryptString("TradeStatus│Deal│")))
+                                if (encryptedData.StartsWith(OWServer._Encryption.EncryptString("TradeStatus│Deal│")))
                                 {
                                     SendData(target, "│SentTrade│Deal│");
 
-                                    MainProgram._ServerUtils.WriteServerLog("Trade Done Between [" + target.username + "] And [" + client.username + "]");
+                                    OWServer._ServerUtils.WriteServerLog("Trade Done Between [" + target.username + "] And [" + client.username + "]");
                                 }
 
-                                else if (encryptedData.StartsWith(MainProgram._Encryption.EncryptString("TradeStatus│Reject│")))
+                                else if (encryptedData.StartsWith(OWServer._Encryption.EncryptString("TradeStatus│Reject│")))
                                 {
                                     SendData(target, "│SentTrade│Reject│");
                                 }
@@ -209,7 +209,7 @@ namespace Open_World_Server
                                 continue;
                             }
 
-                            else if (encryptedData.StartsWith(MainProgram._Encryption.EncryptString("BarterStatus│")))
+                            else if (encryptedData.StartsWith(OWServer._Encryption.EncryptString("BarterStatus│")))
                             {
                                 string username = data.Split('│')[2];
                                 ServerClient target = null;
@@ -230,19 +230,19 @@ namespace Open_World_Server
 
                                 if (target == null) return;
 
-                                if (encryptedData.StartsWith(MainProgram._Encryption.EncryptString("BarterStatus│Deal│")))
+                                if (encryptedData.StartsWith(OWServer._Encryption.EncryptString("BarterStatus│Deal│")))
                                 {
                                     SendData(target, "│SentBarter│Deal│");
 
-                                    MainProgram._ServerUtils.WriteServerLog("Barter Done Between [" + target.username + "] And [" + client.username + "]");
+                                    OWServer._ServerUtils.WriteServerLog("Barter Done Between [" + target.username + "] And [" + client.username + "]");
                                 }
 
-                                else if (encryptedData.StartsWith(MainProgram._Encryption.EncryptString("BarterStatus│Reject│")))
+                                else if (encryptedData.StartsWith(OWServer._Encryption.EncryptString("BarterStatus│Reject│")))
                                 {
                                     SendData(target, "│SentBarter│Reject│");
                                 }
 
-                                else if (encryptedData.StartsWith(MainProgram._Encryption.EncryptString("BarterStatus│Rebarter│")))
+                                else if (encryptedData.StartsWith(OWServer._Encryption.EncryptString("BarterStatus│Rebarter│")))
                                 {
                                     SendData(target, "│SentBarter│Rebarter│" + client.username + "│" + data.Split('│')[3]);
                                 }
@@ -250,13 +250,13 @@ namespace Open_World_Server
                                 continue;
                             }
 
-                            else if (encryptedData.StartsWith(MainProgram._Encryption.EncryptString("GetSpyInfo│")))
+                            else if (encryptedData.StartsWith(OWServer._Encryption.EncryptString("GetSpyInfo│")))
                             {
                                 string dataToSend = "";
 
-                                if (MainProgram._PlayerUtils.CheckForConnectedPlayers(data.Split('│')[1]))
+                                if (OWServer._PlayerUtils.CheckForConnectedPlayers(data.Split('│')[1]))
                                 {
-                                    dataToSend = "│SentSpy│Confirm│" + MainProgram._PlayerUtils.GetSpyData(data.Split('│')[1], client);
+                                    dataToSend = "│SentSpy│Confirm│" + OWServer._PlayerUtils.GetSpyData(data.Split('│')[1], client);
                                 }
                                 else dataToSend = "│SentSpy│Deny│";
 
@@ -265,14 +265,14 @@ namespace Open_World_Server
                                 continue;
                             }
 
-                            else if (encryptedData.StartsWith(MainProgram._Encryption.EncryptString("Raid│")))
+                            else if (encryptedData.StartsWith(OWServer._Encryption.EncryptString("Raid│")))
                             {
                                 if (data.StartsWith("Raid│TryRaid│"))
                                 {
                                     string tileID = data.Split('│')[2];
                                     string enemyPawnsData = data.Split('│')[3];
 
-                                    if (MainProgram._PlayerUtils.CheckForConnectedPlayers(tileID) && MainProgram._PlayerUtils.CheckForPlayerShield(tileID) && MainProgram._PlayerUtils.CheckForPvpAvailability(tileID))
+                                    if (OWServer._PlayerUtils.CheckForConnectedPlayers(tileID) && OWServer._PlayerUtils.CheckForPlayerShield(tileID) && OWServer._PlayerUtils.CheckForPvpAvailability(tileID))
                                     {
                                         SendData(client, "SentRaid│Accept│" + connectedClients.Find(fetch => fetch.homeTileID == tileID).pawnCount);
                                         client.inRTSE = true;
@@ -303,7 +303,7 @@ namespace Open_World_Server
                                 continue;
                             }
 
-                            else if (encryptedData.StartsWith(MainProgram._Encryption.EncryptString("RTSBuffer│")))
+                            else if (encryptedData.StartsWith(OWServer._Encryption.EncryptString("RTSBuffer│")))
                             {
                                 SendData(client.inRtsActionWith, data);
                             }
@@ -326,7 +326,7 @@ namespace Open_World_Server
                 NetworkStream s = client.tcp.GetStream();
                 StreamWriter sw = new StreamWriter(s);
 
-                sw.WriteLine(MainProgram._Encryption.EncryptString(data));
+                sw.WriteLine(OWServer._Encryption.EncryptString(data));
                 sw.Flush();
             }
 
@@ -341,19 +341,19 @@ namespace Open_World_Server
             try { connectedClients.Remove(client); }
             catch { }
 
-            if (kickMode == "Normal") MainProgram._ServerUtils.WriteServerLog("Player [" + client.username + "] Has Disconnected");
+            if (kickMode == "Normal") OWServer._ServerUtils.WriteServerLog("Player [" + client.username + "] Has Disconnected");
             else if (kickMode == "Silent") { }
             else { }
 
-            MainProgram._ServerUtils.RefreshClientCount(null);
+            OWServer._ServerUtils.RefreshClientCount(null);
 
-            MainProgram._ServerUtils.UpdateTitle();
+            OWServer._ServerUtils.UpdateTitle();
         }
 
         public void CheckClientsConnection()
         {
-            MainProgram._ServerUtils.WriteServerLog("Network Line Started");
-            MainProgram._ServerUtils.WriteServerLog(Environment.NewLine);
+            OWServer._ServerUtils.WriteServerLog("Network Line Started");
+            OWServer._ServerUtils.WriteServerLog(Environment.NewLine);
 
             while (true)
             {
