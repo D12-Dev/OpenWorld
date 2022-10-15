@@ -121,11 +121,15 @@ namespace Open_World_Server
                 {"clear", Console.Clear},
                 {"exit", _CommandHandler.Exit}
             };
-            Dictionary<string, Action<string[]>> complexCommands = new Dictionary<string, Action<string[]>>()
+            Dictionary<string, Action<string[]>> rewrittenCommands = new Dictionary<string, Action<string[]>>()
             {
                 {"say", _CommandHandler.Say},
                 {"notifyall", _CommandHandler.NotifyAll},
                 {"notify", _CommandHandler.Notify},
+                
+            };
+            Dictionary<string, Action<string>> complexCommands = new Dictionary<string, Action<string>>()
+            {
                 {"invoke", _CommandHandler.Invoke},
                 {"plague", _CommandHandler.Plague},
                 {"investigate", _CommandHandler.Investigate},
@@ -142,7 +146,8 @@ namespace Open_World_Server
                 {"deimmunize", _CommandHandler.Deimmunize}
             };
             if (simpleCommands.ContainsKey(commandWord)) simpleCommands[commandWord]();
-            else if (complexCommands.ContainsKey(commandWord)) complexCommands[commandWord](commandArgs);
+            else if (complexCommands.ContainsKey(commandWord)) complexCommands[commandWord](String.Join(' ', commandParts));
+            else if (rewrittenCommands.ContainsKey(commandWord)) rewrittenCommands[commandWord](commandArgs);
             else ServerUtils.WriteServerLog($"Command \"{commandWord}\" Not Found\n", WARN_COLOR);
         }
     }
