@@ -974,38 +974,20 @@ namespace Open_World_Server
                 if (client.isAdmin) adminList.Add(client.username);
             }
 
-            Console.Clear();
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("[{0}] | Server Administrators: [{1}]", DateTime.Now, adminList.Count);
-            Console.ForegroundColor = ConsoleColor.White;
-
-            if (adminList.Count() == 0) Console.WriteLine("[{0}] | No Administrators Found", DateTime.Now);
-            else foreach (string str in adminList) Console.WriteLine("[{0}] | {1}", DateTime.Now, str);
-
-            Console.WriteLine(Environment.NewLine);
+            WriteColoredLog($"Server Administrators: [{adminList.Count}]", messageColor);
+            WriteColoredLog(adminList.Count == 0? "No Administrators Found\n" : string.Join("\n", adminList.ToArray())+"\n");
         }
         private void WhiteList()
         {
-            Console.Clear();
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("[{0}] | Whitelisted Players: [{1}]", DateTime.Now, whitelistedUsernames.Count);
-            Console.ForegroundColor = ConsoleColor.White;
-
-            if (whitelistedUsernames.Count() == 0) Console.WriteLine("[{0}] | No Whitelisted Players Found", DateTime.Now);
-            else foreach (string str in whitelistedUsernames) Console.WriteLine("[{0}] | {1}", DateTime.Now, str);
-
-            Console.WriteLine(Environment.NewLine);
+            WriteColoredLog($"Whitelisted Players: [{whitelistedUsernames.Count}]", messageColor);
+            WriteColoredLog(whitelistedUsernames.Count == 0 ? "No Whitelisted Players Found\n" : string.Join("\n", whitelistedUsernames.ToArray()) + "\n");
         }
         private void Wipe()
         {
             Console.Clear();
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("[{0}] | WARNING! THIS ACTION WILL DELETE ALL PLAYER DATA. DO YOU WANT TO PROCEED? (Y/N)", DateTime.Now, whitelistedUsernames.Count);
-            Console.ForegroundColor = ConsoleColor.White;
+            WriteColoredLog("WARNING! THIS ACTION WILL IRRECOVERABLY DELETE ALL PLAYER DATA. DO YOU WANT TO PROCEED? (Y/N)", errorColor);
 
-            string response = Console.ReadLine();
-
-            if (response == "Y")
+            if (Console.ReadLine().Trim().ToUpper() == "Y")
             {
                 foreach (ServerClient client in _Networking.connectedClients)
                 {
@@ -1022,9 +1004,7 @@ namespace Open_World_Server
                 }
 
                 Console.Clear();
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("[{0}] | All Player Files Have Been Set To Wipe", DateTime.Now, whitelistedUsernames.Count);
-                Console.ForegroundColor = ConsoleColor.White;
+                WriteColoredLog("All Player Files Have Been Set To Wipe", errorColor);
             }
             else
             {
