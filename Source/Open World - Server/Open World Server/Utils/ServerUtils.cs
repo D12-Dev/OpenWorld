@@ -900,14 +900,18 @@ namespace Open_World_Server
         }
         public static void WriteServerLog(string output, ConsoleColor color = OWServer.DEFAULT_COLOR)
         {
+            // Reset to the left margin to overwrite our "Enter Command>" prompt.
             Console.SetCursorPosition(0, Console.CursorTop);
-            
+            // Set the color to use for the entry (defaults to DEFAULT_COLOR if not passed in as an arg).
             Console.ForegroundColor = color;
-            // TODO: Build string then write
+
+            // Declare an empty string to build on based on our output.
+            string toWrite = "";
             foreach (string line in output.Split("\n"))
             {
-                string parsedLine = (string.IsNullOrWhiteSpace(line) ? "" : $"[{DateTime.Now.ToString("HH:mm:ss")}] | {line}");
-                Console.WriteLine(parsedLine);
+                // Console writes take a relatively large amount of time. Better to build a multi-line write and write once.
+                toWrite += (string.IsNullOrWhiteSpace(line) ? "" : $"[{DateTime.Now.ToString("HH:mm:ss")}] | {line}")+"\n";
+                Console.WriteLine(toWrite);
 
                 if (line.StartsWith("Chat - [")) OWServer._ServerUtils.WriteToLog(line, "Chat");
                 else if (line.StartsWith("Gift Done Between")) OWServer._ServerUtils.WriteToLog(line, "Gift");
@@ -918,6 +922,7 @@ namespace Open_World_Server
                 else if (line.StartsWith("Visit Done Between")) OWServer._ServerUtils.WriteToLog(line, "Visit");
                 else OWServer._ServerUtils.WriteToLog(line, "Normal");
             }
+            // Re-write our "Enter Command>" prompt.
             Console.ForegroundColor = OWServer.DEFAULT_COLOR;
             Console.Write("Enter Command> ");
         }
