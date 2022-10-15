@@ -883,16 +883,13 @@ namespace Open_World_Server
 
         public bool TryJoin(ServerClient client)
         {
-            if (client.isAdmin) return true;
-
-            if (OWServer._Networking.connectedClients.Count() >= OWServer.maxPlayers + 1)
+            if (!client.isAdmin && OWServer._Networking.connectedClients.Count() >= OWServer.maxPlayers + 1)
             {
                 OWServer._Networking.SendData(client, "Disconnect│ServerFull");
                 client.disconnectFlag = true;
                 return false;
             }
-
-            return true;
+            else return true;
         }
 
         public bool ParseClientUsername(ServerClient client)
