@@ -18,8 +18,9 @@ namespace Open_World_Server
             ServerUtils.WriteServerLog("Base Directory At: [" + OWServer.mainFolderPath + "]");
             Console.ForegroundColor = ConsoleColor.White;
 
-            OWServer.serverSettingsPath = OWServer.mainFolderPath + Path.DirectorySeparatorChar + "Server Settings.txt";
-            OWServer.worldSettingsPath = OWServer.mainFolderPath + Path.DirectorySeparatorChar + "World Settings.txt";
+            OWServer.serverSettingsPath = OWServer.mainFolderPath + Path.DirectorySeparatorChar + "Server Settings.cfg";
+            OWServer.worldSettingsPath = OWServer.mainFolderPath + Path.DirectorySeparatorChar + "World Settings.cfg";
+
             OWServer.playersFolderPath = OWServer.mainFolderPath + Path.DirectorySeparatorChar + "Players";
             OWServer.modsFolderPath = OWServer.mainFolderPath + Path.DirectorySeparatorChar + "Mods";
             OWServer.whitelistedModsFolderPath = OWServer.mainFolderPath + Path.DirectorySeparatorChar + "Whitelisted Mods";
