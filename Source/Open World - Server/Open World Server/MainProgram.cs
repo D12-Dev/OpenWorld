@@ -69,6 +69,9 @@ namespace Open_World_Server
         public int overallPopulation;
 
         private const ConsoleColor defaultColor = ConsoleColor.White;
+        private const ConsoleColor warnColor = ConsoleColor.Yellow;
+        private const ConsoleColor errorColor = ConsoleColor.Red;
+        private const ConsoleColor messageColor = ConsoleColor.Green;
         private void WriteColoredLog(string output, ConsoleColor color = defaultColor)
         {
             Console.ForegroundColor = color;
@@ -84,7 +87,7 @@ namespace Open_World_Server
             _MainProgram.mainFolderPath = AppDomain.CurrentDomain.BaseDirectory;
             _MainProgram.logFolderPath = _MainProgram.mainFolderPath + Path.DirectorySeparatorChar + "Logs";
 
-            Console.ForegroundColor = ConsoleColor.Green;
+            Console.ForegroundColor = messageColor;
             _ServerUtils.LogToConsole("Server Startup:");
             _ServerUtils.LogToConsole("Using Culture Info: [" + CultureInfo.CurrentCulture + "]");
 
@@ -233,9 +236,7 @@ namespace Open_World_Server
 
             if (targetClient == null)
             {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("[{0}] | Player [{1}] not found", DateTime.Now, target);
-                Console.ForegroundColor = ConsoleColor.White;
+                WriteColoredLog($"Player {target} Not Found", ConsoleColor.Yellow);
                 Console.WriteLine(Environment.NewLine);
                 ListenForCommands();
             }
@@ -405,9 +406,7 @@ namespace Open_World_Server
 
             if (target == null)
             {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("[{0}] | Player [{1}] Not Found", DateTime.Now, clientID);
-                Console.ForegroundColor = ConsoleColor.White;
+                WriteColoredLog($"Player {clientID} Not Found", ConsoleColor.Yellow);
                 Console.WriteLine(Environment.NewLine);
                 ListenForCommands();
             }
@@ -554,9 +553,7 @@ namespace Open_World_Server
                 }
             }
 
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("[{0}] | Player [{1}] Not Found", DateTime.Now, clientID);
-            Console.ForegroundColor = ConsoleColor.White;
+            WriteColoredLog($"Player {clientID} Not Found", ConsoleColor.Yellow);
             Console.WriteLine(Environment.NewLine);
         }
         private void Settlements()
@@ -616,9 +613,7 @@ namespace Open_World_Server
                 }
             }
 
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("[{0}] | Player [{1}] Not Found", DateTime.Now, clientID);
-            Console.ForegroundColor = ConsoleColor.White;
+            WriteColoredLog($"Player {clientID} Not Found", ConsoleColor.Yellow);
             Console.WriteLine(Environment.NewLine);
         }
         private void Ban(string command)
@@ -650,9 +645,7 @@ namespace Open_World_Server
                 }
             }
 
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("[{0}] | Player [{1}] Not Found", DateTime.Now, clientID);
-            Console.ForegroundColor = ConsoleColor.White;
+            WriteColoredLog($"Player {clientID} Not Found", ConsoleColor.Yellow);
             Console.WriteLine(Environment.NewLine);
         }
         private void Pardon(string command)
@@ -682,9 +675,7 @@ namespace Open_World_Server
                 }
             }
 
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("[{0}] | Player [{1}] Not Found", DateTime.Now, clientUsername);
-            Console.ForegroundColor = ConsoleColor.White;
+            WriteColoredLog($"Player {clientUsername} Not Found", ConsoleColor.Yellow);
             Console.WriteLine(Environment.NewLine);
         }
         private void Promote(string command)
@@ -730,9 +721,7 @@ namespace Open_World_Server
                 }
             }
 
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("[{0}] | Player [{1}] Not Found", DateTime.Now, clientID);
-            Console.ForegroundColor = ConsoleColor.White;
+            WriteColoredLog($"Player {clientID} Not Found", ConsoleColor.Yellow);
             Console.WriteLine(Environment.NewLine);
         }
         private void Demote(string command)
@@ -778,9 +767,7 @@ namespace Open_World_Server
                 }
             }
 
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("[{0}] | Player [{1}] Not Found", DateTime.Now, clientID);
-            Console.ForegroundColor = ConsoleColor.White;
+            WriteColoredLog($"Player {clientID} Not Found", ConsoleColor.Yellow);
             Console.WriteLine(Environment.NewLine);
         }
         private void GiveItem(string command)
@@ -849,9 +836,7 @@ namespace Open_World_Server
                 }
             }
 
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("[{0}] | Player [{1}] Not Found", DateTime.Now, clientID);
-            Console.ForegroundColor = ConsoleColor.White;
+            WriteColoredLog($"Player {clientID} Not Found", ConsoleColor.Yellow);
             Console.WriteLine(Environment.NewLine);
         }
         private void GiveItemAll(string command)
@@ -932,9 +917,7 @@ namespace Open_World_Server
                 }
             }
 
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("[{0}] | Player [{1}] Not Found", DateTime.Now, clientID);
-            Console.ForegroundColor = ConsoleColor.White;
+            WriteColoredLog($"Player {clientID} Not Found", ConsoleColor.Yellow);
             Console.WriteLine(Environment.NewLine);
         }
         private void Deprotect(string command)
@@ -964,9 +947,7 @@ namespace Open_World_Server
                 }
             }
 
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("[{0}] | Player [{1}] Not Found", DateTime.Now, clientID);
-            Console.ForegroundColor = ConsoleColor.White;
+            WriteColoredLog($"Player {clientID} Not Found", ConsoleColor.Yellow);
             Console.WriteLine(Environment.NewLine);
         }
         private void Immunize(string command)
@@ -997,9 +978,7 @@ namespace Open_World_Server
                 }
             }
 
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("[{0}] | Player [{1}] Not Found", DateTime.Now, clientID);
-            Console.ForegroundColor = ConsoleColor.White;
+            WriteColoredLog($"Player {clientID} Not Found", ConsoleColor.Yellow);
             Console.WriteLine(Environment.NewLine);
         }
         private void Deimmunize(string command)
@@ -1030,9 +1009,7 @@ namespace Open_World_Server
                 }
             }
 
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("[{0}] | Player [{1}] Not Found", DateTime.Now, clientID);
-            Console.ForegroundColor = ConsoleColor.White;
+            WriteColoredLog($"Player {clientID} Not Found", ConsoleColor.Yellow);
             Console.WriteLine(Environment.NewLine);
         }
         private void AdminList()
