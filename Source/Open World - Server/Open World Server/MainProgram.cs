@@ -599,6 +599,584 @@ namespace Open_World_Server
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine(Environment.NewLine);
         }
+        private void Settlements()
+        {
+            Console.Clear();
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("[{0}] | Server Settlements: [{1}]", DateTime.Now, savedSettlements.Count);
+            Console.ForegroundColor = ConsoleColor.White;
+
+            if (savedSettlements.Count == 0) Console.WriteLine("[{0}] | No Active Settlements", DateTime.Now);
+            else foreach (KeyValuePair<string, List<string>> pair in savedSettlements)
+                {
+                    Console.WriteLine("[{0}] | {1} - {2} ", DateTime.Now, pair.Key, pair.Value[0]);
+                }
+
+            Console.WriteLine(Environment.NewLine);
+        }
+        private void BanList()
+        {
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("[{0}] | Banned players: [{1}]", DateTime.Now, bannedIPs.Count());
+            Console.ForegroundColor = ConsoleColor.White;
+
+            if (bannedIPs.Count == 0) Console.WriteLine("[{0}] | No Banned Players", DateTime.Now);
+            else foreach (KeyValuePair<string, string> pair in bannedIPs)
+                {
+                    Console.WriteLine("[{0}] | [{1}] - [{2}]", DateTime.Now, pair.Value, pair.Key);
+                }
+
+            Console.WriteLine(Environment.NewLine);
+        }
+        private void Kick(string command)
+        {
+            Console.Clear();
+
+            string clientID = "";
+            try { clientID = command.Split(' ')[1]; }
+            catch
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine(Environment.NewLine);
+                ListenForCommands();
+            }
+
+            foreach (ServerClient client in _Networking.connectedClients)
+            {
+                if (client.username == clientID)
+                {
+                    client.disconnectFlag = true;
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("[{0}] | Player [{1}] Has Been Kicked", DateTime.Now, clientID);
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.WriteLine(Environment.NewLine);
+                    ListenForCommands();
+                }
+            }
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("[{0}] | Player [{1}] Not Found", DateTime.Now, clientID);
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine(Environment.NewLine);
+        }
+        private void Ban(string command)
+        {
+
+            Console.Clear();
+
+            string clientID = "";
+            try { clientID = command.Split(' ')[1]; }
+            catch
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine(Environment.NewLine);
+                ListenForCommands();
+            }
+
+            foreach (ServerClient client in _Networking.connectedClients)
+            {
+                if (client.username == clientID)
+                {
+                    bannedIPs.Add(((IPEndPoint)client.tcp.Client.RemoteEndPoint).Address.ToString(), client.username);
+                    client.disconnectFlag = true;
+                    SaveSystem.SaveBannedIPs(bannedIPs);
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    _ServerUtils.LogToConsole("Player [" + client.username + "] Has Been Banned");
+                    Console.ForegroundColor = ConsoleColor.White;
+                    _ServerUtils.LogToConsole(Environment.NewLine);
+                    ListenForCommands();
+                }
+            }
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("[{0}] | Player [{1}] Not Found", DateTime.Now, clientID);
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine(Environment.NewLine);
+        }
+        private void Pardon(string command)
+        {
+            Console.Clear();
+
+            string clientUsername = "";
+            try { clientUsername = command.Split(' ')[1]; }
+            catch
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine(Environment.NewLine);
+                ListenForCommands();
+            }
+
+            foreach (KeyValuePair<string, string> pair in bannedIPs)
+            {
+                if (pair.Value == clientUsername)
+                {
+                    bannedIPs.Remove(pair.Key);
+                    SaveSystem.SaveBannedIPs(bannedIPs);
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    _ServerUtils.LogToConsole("Player [" + clientUsername + "] Has Been Unbanned");
+                    Console.ForegroundColor = ConsoleColor.White;
+                    _ServerUtils.LogToConsole(Environment.NewLine);
+                    ListenForCommands();
+                }
+            }
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("[{0}] | Player [{1}] Not Found", DateTime.Now, clientUsername);
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine(Environment.NewLine);
+        }
+        private void Promote(string command)
+        {
+            Console.Clear();
+
+            string clientID = "";
+            try { clientID = command.Split(' ')[1]; }
+            catch
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine(Environment.NewLine);
+                ListenForCommands();
+            }
+
+            foreach (ServerClient client in _Networking.connectedClients)
+            {
+                if (client.username == clientID)
+                {
+                    if (client.isAdmin == true)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        _ServerUtils.LogToConsole("Player [" + client.username + "] Was Already An Administrator");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        _ServerUtils.LogToConsole(Environment.NewLine);
+                    }
+
+                    else
+                    {
+                        client.isAdmin = true;
+                        _MainProgram.savedClients.Find(fetch => fetch.username == client.username).isAdmin = true;
+                        SaveSystem.SaveUserData(client);
+
+                        _Networking.SendData(client, "│Promote│");
+
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        _ServerUtils.LogToConsole("Player [" + client.username + "] Has Been Promoted");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        _ServerUtils.LogToConsole(Environment.NewLine);
+                    }
+
+                    ListenForCommands();
+                }
+            }
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("[{0}] | Player [{1}] Not Found", DateTime.Now, clientID);
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine(Environment.NewLine);
+        }
+        private void Demote(string command)
+        {
+            Console.Clear();
+
+            string clientID = "";
+            try { clientID = command.Split(' ')[1]; }
+            catch
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine(Environment.NewLine);
+                ListenForCommands();
+            }
+
+            foreach (ServerClient client in _Networking.connectedClients)
+            {
+                if (client.username == clientID)
+                {
+                    if (!client.isAdmin)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        _ServerUtils.LogToConsole("Player [" + client.username + "] Is Not An Administrator");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        _ServerUtils.LogToConsole(Environment.NewLine);
+                    }
+
+                    else
+                    {
+                        client.isAdmin = false;
+                        _MainProgram.savedClients.Find(fetch => fetch.username == client.username).isAdmin = false;
+                        SaveSystem.SaveUserData(client);
+
+                        _Networking.SendData(client, "│Demote│");
+
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        _ServerUtils.LogToConsole("Player [" + client.username + "] Has Been Demoted");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        _ServerUtils.LogToConsole(Environment.NewLine);
+                    }
+
+                    ListenForCommands();
+                }
+            }
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("[{0}] | Player [{1}] Not Found", DateTime.Now, clientID);
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine(Environment.NewLine);
+        }
+        private void GiveItem(string command)
+        {
+            Console.Clear();
+
+            string clientID = "";
+            try { clientID = command.Split(' ')[1]; }
+            catch
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
+                Console.WriteLine("[{0}] | Usage: Giveitem [username] [itemID] [itemQuantity] [itemQuality]", DateTime.Now);
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine(Environment.NewLine);
+                ListenForCommands();
+            }
+
+            string itemID = "";
+            try { itemID = command.Split(' ')[2]; }
+            catch
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
+                Console.WriteLine("[{0}] | Usage: GiveItem [username] [itemID] [itemQuantity] [itemQuality]", DateTime.Now);
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine(Environment.NewLine);
+                ListenForCommands();
+            }
+
+            string itemQuantity = "";
+            try { itemQuantity = command.Split(' ')[3]; }
+            catch
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
+                Console.WriteLine("[{0}] | Usage: GiveItem [username] [itemID] [itemQuantity] [itemQuality]", DateTime.Now);
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine(Environment.NewLine);
+                ListenForCommands();
+            }
+
+            string itemQuality = "";
+            try { itemQuality = command.Split(' ')[4]; }
+            catch
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
+                Console.WriteLine("[{0}] | Usage: GiveItem [username] [itemID] [itemQuantity] [itemQuality]", DateTime.Now);
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine(Environment.NewLine);
+                ListenForCommands();
+            }
+
+            foreach (ServerClient client in _Networking.connectedClients)
+            {
+                if (client.username == clientID)
+                {
+                    _Networking.SendData(client, "GiftedItems│" + itemID + "┼" + itemQuantity + "┼" + itemQuality + "┼");
+
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("[{0}] | Item Has Neen Gifted To Player [{1}]", DateTime.Now, client.username);
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.WriteLine(Environment.NewLine);
+                    ListenForCommands();
+                }
+            }
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("[{0}] | Player [{1}] Not Found", DateTime.Now, clientID);
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine(Environment.NewLine);
+        }
+        private void GiveItemAll(string command)
+        {
+            Console.Clear();
+
+            string itemID = "";
+            try { itemID = command.Split(' ')[1]; }
+            catch
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
+                Console.WriteLine("[{0}] | Usage: Giveitemall [itemID] [itemQuantity] [itemQuality]", DateTime.Now);
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine(Environment.NewLine);
+                ListenForCommands();
+            }
+
+            string itemQuantity = "";
+            try { itemQuantity = command.Split(' ')[2]; }
+            catch
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
+                Console.WriteLine("[{0}] | Usage: Giveitemall [itemID] [itemQuantity] [itemQuality]", DateTime.Now);
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine(Environment.NewLine);
+                ListenForCommands();
+            }
+
+            string itemQuality = "";
+            try { itemQuality = command.Split(' ')[3]; }
+            catch
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
+                Console.WriteLine("[{0}] | Usage: Giveitemall [itemID] [itemQuantity] [itemQuality]", DateTime.Now);
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine(Environment.NewLine);
+                ListenForCommands();
+            }
+
+            foreach (ServerClient client in _Networking.connectedClients)
+            {
+                _Networking.SendData(client, "GiftedItems│" + itemID + "┼" + itemQuantity + "┼" + itemQuality + "┼");
+
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("[{0}] | Item Has Neen Gifted To All Players", DateTime.Now);
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine(Environment.NewLine);
+                ListenForCommands();
+            }
+        }
+        private void Protect(string command)
+        {
+            Console.Clear();
+
+            string clientID = "";
+            try { clientID = command.Split(' ')[1]; }
+            catch
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine(Environment.NewLine);
+                ListenForCommands();
+            }
+
+            foreach (ServerClient client in _Networking.connectedClients)
+            {
+                if (client.username == clientID)
+                {
+                    client.eventShielded = true;
+                    _MainProgram.savedClients.Find(fetch => fetch.username == client.username).eventShielded = true;
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("[{0}] | Player [{1}] Has Been Protected", DateTime.Now, client.username);
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.WriteLine(Environment.NewLine);
+                    ListenForCommands();
+                }
+            }
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("[{0}] | Player [{1}] Not Found", DateTime.Now, clientID);
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine(Environment.NewLine);
+        }
+        private void Deprotect(string command)
+        {
+            Console.Clear();
+
+            string clientID = "";
+            try { clientID = command.Split(' ')[1]; }
+            catch
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine(Environment.NewLine);
+                ListenForCommands();
+            }
+
+            foreach (ServerClient client in _Networking.connectedClients)
+            {
+                if (client.username == clientID)
+                {
+                    client.eventShielded = false;
+                    _MainProgram.savedClients.Find(fetch => fetch.username == client.username).eventShielded = false;
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("[{0}] | Player [{1}] Has Been Deprotected", DateTime.Now, client.username);
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.WriteLine(Environment.NewLine);
+                    ListenForCommands();
+                }
+            }
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("[{0}] | Player [{1}] Not Found", DateTime.Now, clientID);
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine(Environment.NewLine);
+        }
+        private void Immunize(string command)
+        {
+            Console.Clear();
+
+            string clientID = "";
+            try { clientID = command.Split(' ')[1]; }
+            catch
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine(Environment.NewLine);
+                ListenForCommands();
+            }
+
+            foreach (ServerClient client in _Networking.connectedClients)
+            {
+                if (client.username == clientID)
+                {
+                    client.isImmunized = true;
+                    _MainProgram.savedClients.Find(fetch => fetch.username == client.username).isImmunized = true;
+                    SaveSystem.SaveUserData(client);
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("[{0}] | Player [{1}] Has Been Inmmunized", DateTime.Now, client.username);
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.WriteLine(Environment.NewLine);
+                    ListenForCommands();
+                }
+            }
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("[{0}] | Player [{1}] Not Found", DateTime.Now, clientID);
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine(Environment.NewLine);
+        }
+        private void Deimmunize(string command)
+        {
+            Console.Clear();
+
+            string clientID = "";
+            try { clientID = command.Split(' ')[1]; }
+            catch
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine(Environment.NewLine);
+                ListenForCommands();
+            }
+
+            foreach (ServerClient client in _Networking.connectedClients)
+            {
+                if (client.username == clientID)
+                {
+                    client.isImmunized = false;
+                    _MainProgram.savedClients.Find(fetch => fetch.username == client.username).isImmunized = false;
+                    SaveSystem.SaveUserData(client);
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("[{0}] | Player [{1}] Has Been Deinmmunized", DateTime.Now, client.username);
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.WriteLine(Environment.NewLine);
+                    ListenForCommands();
+                }
+            }
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("[{0}] | Player [{1}] Not Found", DateTime.Now, clientID);
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine(Environment.NewLine);
+        }
+        private void AdminList()
+        {
+            adminList.Clear();
+
+            foreach (ServerClient client in savedClients)
+            {
+                if (client.isAdmin) adminList.Add(client.username);
+            }
+
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("[{0}] | Server Administrators: [{1}]", DateTime.Now, adminList.Count);
+            Console.ForegroundColor = ConsoleColor.White;
+
+            if (adminList.Count() == 0) Console.WriteLine("[{0}] | No Administrators Found", DateTime.Now);
+            else foreach (string str in adminList) Console.WriteLine("[{0}] | {1}", DateTime.Now, str);
+
+            Console.WriteLine(Environment.NewLine);
+        }
+        private void WhiteList()
+        {
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("[{0}] | Whitelisted Players: [{1}]", DateTime.Now, whitelistedUsernames.Count);
+            Console.ForegroundColor = ConsoleColor.White;
+
+            if (whitelistedUsernames.Count() == 0) Console.WriteLine("[{0}] | No Whitelisted Players Found", DateTime.Now);
+            else foreach (string str in whitelistedUsernames) Console.WriteLine("[{0}] | {1}", DateTime.Now, str);
+
+            Console.WriteLine(Environment.NewLine);
+        }
+        private void Wipe()
+        {
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("[{0}] | WARNING! THIS ACTION WILL DELETE ALL PLAYER DATA. DO YOU WANT TO PROCEED? (Y/N)", DateTime.Now, whitelistedUsernames.Count);
+            Console.ForegroundColor = ConsoleColor.White;
+
+            string response = Console.ReadLine();
+
+            if (response == "Y")
+            {
+                foreach (ServerClient client in _Networking.connectedClients)
+                {
+                    client.disconnectFlag = true;
+                }
+
+                Thread.Sleep(1000);
+
+                foreach (ServerClient client in _MainProgram.savedClients)
+                {
+                    client.wealth = 0;
+                    client.pawnCount = 0;
+                    SaveSystem.SaveUserData(client);
+                }
+
+                Console.Clear();
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("[{0}] | All Player Files Have Been Set To Wipe", DateTime.Now, whitelistedUsernames.Count);
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+            else
+            {
+                Console.Clear();
+                ListenForCommands();
+            }
+        }
+        private void Exit()
+        {
+            List<ServerClient> clientsToKick = new List<ServerClient>();
+
+            foreach (ServerClient sc in _Networking.connectedClients)
+            {
+                clientsToKick.Add(sc);
+            }
+
+            foreach (ServerClient sc in clientsToKick)
+            {
+                _Networking.SendData(sc, "Disconnect│Closing");
+                sc.disconnectFlag = true;
+            }
+
+            Environment.Exit(0);
+        }
         private void ListenForCommands()
         {
             Console.ForegroundColor = ConsoleColor.White;
@@ -619,613 +1197,28 @@ namespace Open_World_Server
             else if (commandWord == "chat") Chat();
             else if (commandWord == "list") List();
             else if (commandWord == "investigate") Investigate(command);
-
-
-
-
-            else if (command == "Settlements" || command == "settlements")
-            {
-                Console.Clear();
-
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("[{0}] | Server Settlements: [{1}]", DateTime.Now, savedSettlements.Count);
-                Console.ForegroundColor = ConsoleColor.White;
-
-                if (savedSettlements.Count == 0) Console.WriteLine("[{0}] | No Active Settlements", DateTime.Now);
-                else foreach (KeyValuePair<string, List<string>> pair in savedSettlements)
-                    {
-                        Console.WriteLine("[{0}] | {1} - {2} ", DateTime.Now, pair.Key, pair.Value[0]);
-                    }
-
-                Console.WriteLine(Environment.NewLine);
-            }
-
-            else if (command == "Banlist" || command == "banlist")
-            {
-                Console.Clear();
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("[{0}] | Banned players: [{1}]", DateTime.Now, bannedIPs.Count());
-                Console.ForegroundColor = ConsoleColor.White;
-
-                if (bannedIPs.Count == 0) Console.WriteLine("[{0}] | No Banned Players", DateTime.Now);
-                else foreach (KeyValuePair<string, string> pair in bannedIPs)
-                    {
-                        Console.WriteLine("[{0}] | [{1}] - [{2}]", DateTime.Now, pair.Value, pair.Key);
-                    }
-
-                Console.WriteLine(Environment.NewLine);
-            }
-
-            else if (command.StartsWith("Kick ") || command.StartsWith("kick "))
-            {
-                Console.Clear();
-
-                string clientID = "";
-                try { clientID = command.Split(' ')[1]; }
-                catch
-                {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.WriteLine(Environment.NewLine);
-                    ListenForCommands();
-                }
-
-                foreach (ServerClient client in _Networking.connectedClients)
-                {
-                    if (client.username == clientID)
-                    {
-                        client.disconnectFlag = true;
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine("[{0}] | Player [{1}] Has Been Kicked", DateTime.Now, clientID);
-                        Console.ForegroundColor = ConsoleColor.White;
-                        Console.WriteLine(Environment.NewLine);
-                        ListenForCommands();
-                    }
-                }
-
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("[{0}] | Player [{1}] Not Found", DateTime.Now, clientID);
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine(Environment.NewLine);
-            }
-
-            else if (command.StartsWith("Ban ") || command.StartsWith("ban "))
-            {
-                Console.Clear();
-
-                string clientID = "";
-                try { clientID = command.Split(' ')[1]; }
-                catch
-                {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.WriteLine(Environment.NewLine);
-                    ListenForCommands();
-                }
-
-                foreach (ServerClient client in _Networking.connectedClients)
-                {
-                    if (client.username == clientID)
-                    {
-                        bannedIPs.Add(((IPEndPoint)client.tcp.Client.RemoteEndPoint).Address.ToString(), client.username);
-                        client.disconnectFlag = true;
-                        SaveSystem.SaveBannedIPs(bannedIPs);
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        _ServerUtils.LogToConsole("Player [" + client.username + "] Has Been Banned");
-                        Console.ForegroundColor = ConsoleColor.White;
-                        _ServerUtils.LogToConsole(Environment.NewLine);
-                        ListenForCommands();
-                    }
-                }
-
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("[{0}] | Player [{1}] Not Found", DateTime.Now, clientID);
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine(Environment.NewLine);
-            }
-
-            else if (command.StartsWith("Pardon ") || command.StartsWith("pardon "))
-            {
-                Console.Clear();
-
-                string clientUsername = "";
-                try { clientUsername = command.Split(' ')[1]; }
-                catch
-                {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.WriteLine(Environment.NewLine);
-                    ListenForCommands();
-                }
-
-                foreach (KeyValuePair<string, string> pair in bannedIPs)
-                {
-                    if (pair.Value == clientUsername)
-                    {
-                        bannedIPs.Remove(pair.Key);
-                        SaveSystem.SaveBannedIPs(bannedIPs);
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        _ServerUtils.LogToConsole("Player [" + clientUsername + "] Has Been Unbanned");
-                        Console.ForegroundColor = ConsoleColor.White;
-                        _ServerUtils.LogToConsole(Environment.NewLine);
-                        ListenForCommands();
-                    }
-                }
-
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("[{0}] | Player [{1}] Not Found", DateTime.Now, clientUsername);
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine(Environment.NewLine);
-            }
-
-            else if (command.StartsWith("Promote ") || command.StartsWith("promote "))
-            {
-                Console.Clear();
-
-                string clientID = "";
-                try { clientID = command.Split(' ')[1]; }
-                catch
-                {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.WriteLine(Environment.NewLine);
-                    ListenForCommands();
-                }
-
-                foreach (ServerClient client in _Networking.connectedClients)
-                {
-                    if (client.username == clientID)
-                    {
-                        if (client.isAdmin == true)
-                        {
-                            Console.ForegroundColor = ConsoleColor.Green;
-                            _ServerUtils.LogToConsole("Player [" + client.username + "] Was Already An Administrator");
-                            Console.ForegroundColor = ConsoleColor.White;
-                            _ServerUtils.LogToConsole(Environment.NewLine);
-                        }
-
-                        else
-                        {
-                            client.isAdmin = true;
-                            _MainProgram.savedClients.Find(fetch => fetch.username == client.username).isAdmin = true;
-                            SaveSystem.SaveUserData(client);
-
-                            _Networking.SendData(client, "│Promote│");
-
-                            Console.ForegroundColor = ConsoleColor.Green;
-                            _ServerUtils.LogToConsole("Player [" + client.username + "] Has Been Promoted");
-                            Console.ForegroundColor = ConsoleColor.White;
-                            _ServerUtils.LogToConsole(Environment.NewLine);
-                        }
-
-                        ListenForCommands();
-                    }
-                }
-
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("[{0}] | Player [{1}] Not Found", DateTime.Now, clientID);
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine(Environment.NewLine);
-            }
-
-            else if (command.StartsWith("Demote ") || command.StartsWith("demote "))
-            {
-                Console.Clear();
-
-                string clientID = "";
-                try { clientID = command.Split(' ')[1]; }
-                catch
-                {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.WriteLine(Environment.NewLine);
-                    ListenForCommands();
-                }
-
-                foreach (ServerClient client in _Networking.connectedClients)
-                {
-                    if (client.username == clientID)
-                    {
-                        if (!client.isAdmin)
-                        {
-                            Console.ForegroundColor = ConsoleColor.Green;
-                            _ServerUtils.LogToConsole("Player [" + client.username + "] Is Not An Administrator");
-                            Console.ForegroundColor = ConsoleColor.White;
-                            _ServerUtils.LogToConsole(Environment.NewLine);
-                        }
-
-                        else
-                        {
-                            client.isAdmin = false;
-                            _MainProgram.savedClients.Find(fetch => fetch.username == client.username).isAdmin = false;
-                            SaveSystem.SaveUserData(client);
-
-                            _Networking.SendData(client, "│Demote│");
-
-                            Console.ForegroundColor = ConsoleColor.Green;
-                            _ServerUtils.LogToConsole("Player [" + client.username + "] Has Been Demoted");
-                            Console.ForegroundColor = ConsoleColor.White;
-                            _ServerUtils.LogToConsole(Environment.NewLine);
-                        }
-
-                        ListenForCommands();
-                    }
-                }
-
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("[{0}] | Player [{1}] Not Found", DateTime.Now, clientID);
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine(Environment.NewLine);
-            }
-
-            else if (command.StartsWith("Giveitem ") || command.StartsWith("giveitem "))
-            {
-                Console.Clear();
-
-                string clientID = "";
-                try { clientID = command.Split(' ')[1]; }
-                catch
-                {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
-                    Console.WriteLine("[{0}] | Usage: Giveitem [username] [itemID] [itemQuantity] [itemQuality]", DateTime.Now);
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.WriteLine(Environment.NewLine);
-                    ListenForCommands();
-                }
-
-                string itemID = "";
-                try { itemID = command.Split(' ')[2]; }
-                catch
-                {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
-                    Console.WriteLine("[{0}] | Usage: GiveItem [username] [itemID] [itemQuantity] [itemQuality]", DateTime.Now);
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.WriteLine(Environment.NewLine);
-                    ListenForCommands();
-                }
-
-                string itemQuantity = "";
-                try { itemQuantity = command.Split(' ')[3]; }
-                catch
-                {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
-                    Console.WriteLine("[{0}] | Usage: GiveItem [username] [itemID] [itemQuantity] [itemQuality]", DateTime.Now);
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.WriteLine(Environment.NewLine);
-                    ListenForCommands();
-                }
-
-                string itemQuality = "";
-                try { itemQuality = command.Split(' ')[4]; }
-                catch
-                {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
-                    Console.WriteLine("[{0}] | Usage: GiveItem [username] [itemID] [itemQuantity] [itemQuality]", DateTime.Now);
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.WriteLine(Environment.NewLine);
-                    ListenForCommands();
-                }
-
-                foreach (ServerClient client in _Networking.connectedClients)
-                {
-                    if (client.username == clientID)
-                    {
-                        _Networking.SendData(client, "GiftedItems│" + itemID + "┼" + itemQuantity + "┼" + itemQuality + "┼");
-
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine("[{0}] | Item Has Neen Gifted To Player [{1}]", DateTime.Now, client.username);
-                        Console.ForegroundColor = ConsoleColor.White;
-                        Console.WriteLine(Environment.NewLine);
-                        ListenForCommands();
-                    }
-                }
-
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("[{0}] | Player [{1}] Not Found", DateTime.Now, clientID);
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine(Environment.NewLine);
-            }
-
-            else if (command.StartsWith("Giveitemall ") || command.StartsWith("giveitemall "))
-            {
-                Console.Clear();
-
-                string itemID = "";
-                try { itemID = command.Split(' ')[1]; }
-                catch
-                {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
-                    Console.WriteLine("[{0}] | Usage: Giveitemall [itemID] [itemQuantity] [itemQuality]", DateTime.Now);
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.WriteLine(Environment.NewLine);
-                    ListenForCommands();
-                }
-
-                string itemQuantity = "";
-                try { itemQuantity = command.Split(' ')[2]; }
-                catch
-                {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
-                    Console.WriteLine("[{0}] | Usage: Giveitemall [itemID] [itemQuantity] [itemQuality]", DateTime.Now);
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.WriteLine(Environment.NewLine);
-                    ListenForCommands();
-                }
-
-                string itemQuality = "";
-                try { itemQuality = command.Split(' ')[3]; }
-                catch
-                {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
-                    Console.WriteLine("[{0}] | Usage: Giveitemall [itemID] [itemQuantity] [itemQuality]", DateTime.Now);
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.WriteLine(Environment.NewLine);
-                    ListenForCommands();
-                }
-
-                foreach (ServerClient client in _Networking.connectedClients)
-                {
-                    _Networking.SendData(client, "GiftedItems│" + itemID + "┼" + itemQuantity + "┼" + itemQuality + "┼");
-
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("[{0}] | Item Has Neen Gifted To All Players", DateTime.Now);
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.WriteLine(Environment.NewLine);
-                    ListenForCommands();
-                }
-            }
-
-            else if (command.StartsWith("Protect ") || command.StartsWith("protect "))
-            {
-                Console.Clear();
-
-                string clientID = "";
-                try { clientID = command.Split(' ')[1]; }
-                catch
-                {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.WriteLine(Environment.NewLine);
-                    ListenForCommands();
-                }
-
-                foreach (ServerClient client in _Networking.connectedClients)
-                {
-                    if (client.username == clientID)
-                    {
-                        client.eventShielded = true;
-                        _MainProgram.savedClients.Find(fetch => fetch.username == client.username).eventShielded = true;
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine("[{0}] | Player [{1}] Has Been Protected", DateTime.Now, client.username);
-                        Console.ForegroundColor = ConsoleColor.White;
-                        Console.WriteLine(Environment.NewLine);
-                        ListenForCommands();
-                    }
-                }
-
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("[{0}] | Player [{1}] Not Found", DateTime.Now, clientID);
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine(Environment.NewLine);
-            }
-
-            else if (command.StartsWith("Deprotect ") || command.StartsWith("deprotect "))
-            {
-                Console.Clear();
-
-                string clientID = "";
-                try { clientID = command.Split(' ')[1]; }
-                catch
-                {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.WriteLine(Environment.NewLine);
-                    ListenForCommands();
-                }
-
-                foreach (ServerClient client in _Networking.connectedClients)
-                {
-                    if (client.username == clientID)
-                    {
-                        client.eventShielded = false;
-                        _MainProgram.savedClients.Find(fetch => fetch.username == client.username).eventShielded = false;
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine("[{0}] | Player [{1}] Has Been Deprotected", DateTime.Now, client.username);
-                        Console.ForegroundColor = ConsoleColor.White;
-                        Console.WriteLine(Environment.NewLine);
-                        ListenForCommands();
-                    }
-                }
-
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("[{0}] | Player [{1}] Not Found", DateTime.Now, clientID);
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine(Environment.NewLine);
-            }
-
-            else if (command.StartsWith("Immunize ") || command.StartsWith("immunize "))
-            {
-                Console.Clear();
-
-                string clientID = "";
-                try { clientID = command.Split(' ')[1]; }
-                catch
-                {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.WriteLine(Environment.NewLine);
-                    ListenForCommands();
-                }
-
-                foreach (ServerClient client in _Networking.connectedClients)
-                {
-                    if (client.username == clientID)
-                    {
-                        client.isImmunized = true;
-                        _MainProgram.savedClients.Find(fetch => fetch.username == client.username).isImmunized = true;
-                        SaveSystem.SaveUserData(client);
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine("[{0}] | Player [{1}] Has Been Inmmunized", DateTime.Now, client.username);
-                        Console.ForegroundColor = ConsoleColor.White;
-                        Console.WriteLine(Environment.NewLine);
-                        ListenForCommands();
-                    }
-                }
-
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("[{0}] | Player [{1}] Not Found", DateTime.Now, clientID);
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine(Environment.NewLine);
-            }
-
-            else if (command.StartsWith("Deimmunize ") || command.StartsWith("deimmunize "))
-            {
-                Console.Clear();
-
-                string clientID = "";
-                try { clientID = command.Split(' ')[1]; }
-                catch
-                {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.WriteLine(Environment.NewLine);
-                    ListenForCommands();
-                }
-
-                foreach (ServerClient client in _Networking.connectedClients)
-                {
-                    if (client.username == clientID)
-                    {
-                        client.isImmunized = false;
-                        _MainProgram.savedClients.Find(fetch => fetch.username == client.username).isImmunized = false;
-                        SaveSystem.SaveUserData(client);
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine("[{0}] | Player [{1}] Has Been Deinmmunized", DateTime.Now, client.username);
-                        Console.ForegroundColor = ConsoleColor.White;
-                        Console.WriteLine(Environment.NewLine);
-                        ListenForCommands();
-                    }
-                }
-
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("[{0}] | Player [{1}] Not Found", DateTime.Now, clientID);
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine(Environment.NewLine);
-            }
-
-            else if (command == "Adminlist" || command == "adminlist")
-            {
-                adminList.Clear();
-
-                foreach (ServerClient client in savedClients)
-                {
-                    if (client.isAdmin) adminList.Add(client.username);
-                }
-
-                Console.Clear();
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("[{0}] | Server Administrators: [{1}]", DateTime.Now, adminList.Count);
-                Console.ForegroundColor = ConsoleColor.White;
-
-                if (adminList.Count() == 0) Console.WriteLine("[{0}] | No Administrators Found", DateTime.Now);
-                else foreach (string str in adminList) Console.WriteLine("[{0}] | {1}", DateTime.Now, str);
-
-                Console.WriteLine(Environment.NewLine);
-            }
-
-            else if (command == "Whitelist" || command == "whitelist")
-            {
-                Console.Clear();
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("[{0}] | Whitelisted Players: [{1}]", DateTime.Now, whitelistedUsernames.Count);
-                Console.ForegroundColor = ConsoleColor.White;
-
-                if (whitelistedUsernames.Count() == 0) Console.WriteLine("[{0}] | No Whitelisted Players Found", DateTime.Now);
-                else foreach (string str in whitelistedUsernames) Console.WriteLine("[{0}] | {1}", DateTime.Now, str);
-
-                Console.WriteLine(Environment.NewLine);
-            }
-
-            else if (command == "Wipe" || command == "wipe")
-            {
-                Console.Clear();
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("[{0}] | WARNING! THIS ACTION WILL DELETE ALL PLAYER DATA. DO YOU WANT TO PROCEED? (Y/N)", DateTime.Now, whitelistedUsernames.Count);
-                Console.ForegroundColor = ConsoleColor.White;
-
-                string response = Console.ReadLine();
-
-                if (response == "Y")
-                {
-                    foreach (ServerClient client in _Networking.connectedClients)
-                    {
-                        client.disconnectFlag = true;
-                    }
-
-                    Thread.Sleep(1000);
-
-                    foreach (ServerClient client in _MainProgram.savedClients)
-                    {
-                        client.wealth = 0;
-                        client.pawnCount = 0;
-                        SaveSystem.SaveUserData(client);
-                    }
-
-                    Console.Clear();
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("[{0}] | All Player Files Have Been Set To Wipe", DateTime.Now, whitelistedUsernames.Count);
-                    Console.ForegroundColor = ConsoleColor.White;
-                }
-                else
-                {
-                    Console.Clear();
-                    ListenForCommands();
-                }
-            }
-
-            else if (command == "Clear" || command == "clear") Console.Clear();
-
-            else if (command == "Exit" || command == "exit")
-            {
-                List<ServerClient> clientsToKick = new List<ServerClient>();
-
-                foreach (ServerClient sc in _Networking.connectedClients)
-                {
-                    clientsToKick.Add(sc);
-                }
-
-                foreach (ServerClient sc in clientsToKick)
-                {
-                    _Networking.SendData(sc, "Disconnect│Closing");
-                    sc.disconnectFlag = true;
-                }
-
-                Environment.Exit(0);
-            }
-
+            else if (commandWord == "settlements") Settlements();
+            else if (commandWord == "banlist") BanList();
+            else if (commandWord == "kick") Kick(command);
+            else if (commandWord == "ban") Ban(command);
+            else if (commandWord == "pardon") Pardon(command);
+            else if (commandWord == "promote") Promote(command);
+            else if (commandWord == "demote") Demote(command);
+            else if (commandWord == "giveitem") GiveItem(command);
+            else if (commandWord == "giveitemall") GiveItemAll(command);
+            else if (commandWord == "protect") Protect(command);
+            else if (commandWord == "deprotect") Deprotect(command);
+            else if (commandWord == "immunize") Immunize(command);
+            else if (commandWord == "deimmunize") Deimmunize(command);
+            else if (commandWord == "adminlist") AdminList();
+            else if (commandWord == "whitelist") WhiteList();
+            else if (commandWord == "wipe") Wipe();
+            else if (commandWord == "clear") Console.Clear();
+            else if (commandWord == "exit") Exit();
             else
             {
                 Console.Clear();
-
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("[{0}] | Command [{1}] Not Found", DateTime.Now, command);
-                Console.ForegroundColor = ConsoleColor.White;
+                WriteColoredLog($"Command \"{command}\" Not Found", ConsoleColor.Yellow);
                 Console.WriteLine(Environment.NewLine);
             }
 
