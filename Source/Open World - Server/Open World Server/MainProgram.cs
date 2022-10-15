@@ -12,8 +12,11 @@ namespace Open_World_Server
     [Serializable]
     public class MainProgram
     {
-        // Instances
+        // TODO: WHY IS THIS HERE?
         public static MainProgram _MainProgram = new MainProgram();
+
+        // -- Declarations --
+        // Static Instances
         public static Threading _Threading = new Threading();
         public static Networking _Networking = new Networking();
         public static Encryption _Encryption = new Encryption();
@@ -25,6 +28,7 @@ namespace Open_World_Server
         public string mainFolderPath, serverSettingsPath, worldSettingsPath, playersFolderPath, modsFolderPath, whitelistedModsFolderPath, whitelistedUsersPath, logFolderPath;
 
         // Player Parameters
+        // TODO: HASH THE PASSWORDS!!!
         public List<ServerClient> savedClients = new List<ServerClient>();
         public Dictionary<string, List<string>> savedSettlements = new Dictionary<string, List<string>>();
 
@@ -64,11 +68,13 @@ namespace Open_World_Server
             warnColor = ConsoleColor.Yellow,
             errorColor = ConsoleColor.Red,
             messageColor = ConsoleColor.Green;
+        // -- End Declarations --
 
         // TODO: Resolve duplication with ServerUtils.LogToConsole()
         private void WriteColoredLog(string output, ConsoleColor color = defaultColor)
         {
             Console.ForegroundColor = color;
+            // TODO: Build string then write
             foreach (string line in output.Split("\n")) Console.WriteLine(string.IsNullOrWhiteSpace(line) ? "\n" : $"[{DateTime.Now}] | {line}");
         }
         static void Main()
@@ -292,7 +298,6 @@ namespace Open_World_Server
         }
         private void Invoke(string command)
         {
-
             string clientID = "";
             string eventID = "";
             ServerClient target = null;
@@ -306,7 +311,6 @@ namespace Open_World_Server
                 WriteColoredLog("Missing Parameters\n", warnColor);
                 ListenForCommands();
             }
-
 
             target = _Networking.connectedClients.Where(x => x.username == clientID).SingleOrDefault();
             if (target == null)
@@ -354,7 +358,6 @@ namespace Open_World_Server
                     WriteColoredLog($"Error Processing Player With IP [{((IPEndPoint)client.tcp.Client.RemoteEndPoint).Address}]", errorColor);
                 }
             }
-
             WriteColoredLog($"\nSaved Players: [{_MainProgram.savedClients.Count}]", messageColor);
             if (_MainProgram.savedClients.Count() == 0) Console.WriteLine("[{0}] | No Players Saved", DateTime.Now);
             else foreach (ServerClient savedClient in _MainProgram.savedClients)
@@ -362,9 +365,7 @@ namespace Open_World_Server
                 try { Console.WriteLine("[{0}] | " + savedClient.username, DateTime.Now); }
                 catch
                 {
-
                     WriteColoredLog($"Error Processing Player With IP [{((IPEndPoint)savedClient.tcp.Client.RemoteEndPoint).Address}]", errorColor);
-
                 }
             }
         }
@@ -472,7 +473,6 @@ namespace Open_World_Server
         }
         private void Pardon(string command)
         {
-
             string clientUsername = "";
             try { clientUsername = command.Split(' ')[1]; }
             catch
@@ -569,7 +569,6 @@ namespace Open_World_Server
                     ListenForCommands();
                 }
             }
-
             WriteColoredLog($"Player {clientID} Not Found\n", warnColor);
         }
         private void GiveItem(string command)
@@ -746,9 +745,7 @@ namespace Open_World_Server
         private void AdminList()
         {
             adminList.Clear();
-
             foreach (ServerClient client in savedClients) if (client.isAdmin) adminList.Add(client.username);
-
             WriteColoredLog($"Server Administrators: [{adminList.Count}]", messageColor);
             WriteColoredLog(adminList.Count == 0 ? "No Administrators Found\n" : string.Join("\n", adminList.ToArray()) + "\n");
         }
@@ -760,23 +757,19 @@ namespace Open_World_Server
         private void Wipe()
         {
             WriteColoredLog("WARNING! THIS ACTION WILL IRRECOVERABLY DELETE ALL PLAYER DATA. DO YOU WANT TO PROCEED? (Y/N)", errorColor);
-
             if (Console.ReadLine().Trim().ToUpper() == "Y")
             {
                 foreach (ServerClient client in _Networking.connectedClients)
                 {
                     client.disconnectFlag = true;
                 }
-
                 Thread.Sleep(1000);
-
                 foreach (ServerClient client in _MainProgram.savedClients)
                 {
                     client.wealth = 0;
                     client.pawnCount = 0;
                     SaveSystem.SaveUserData(client);
                 }
-
                 Console.Clear();
                 WriteColoredLog("All Player Files Have Been Set To Wipe", errorColor);
             }
@@ -793,14 +786,12 @@ namespace Open_World_Server
                 _Networking.SendData(sc, "Disconnect│Closing");
                 sc.disconnectFlag = true;
             }
-
             Environment.Exit(0);
         }
         private void ListenForCommands()
         {
             // Trim the leading and trailing white space off the commmand, if any, then pull the command word off to use in the switch.
             string command = Console.ReadLine().Trim(), commandWord = command.Split(" ")[0].ToLower();
-
             Dictionary<string, Action> simpleCommands = new Dictionary<string, Action>()
             {
                 {"help", Help},
