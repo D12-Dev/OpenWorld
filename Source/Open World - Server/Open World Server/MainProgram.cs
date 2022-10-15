@@ -446,20 +446,8 @@ namespace Open_World_Server
         private void EventList()
         {
             Console.Clear();
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("[{0}] | List Of Available Events:", DateTime.Now);
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine("[{0}] | Raid", DateTime.Now);
-            Console.WriteLine("[{0}] | Infestation", DateTime.Now);
-            Console.WriteLine("[{0}] | MechCluster", DateTime.Now);
-            Console.WriteLine("[{0}] | ToxicFallout", DateTime.Now);
-            Console.WriteLine("[{0}] | Manhunter", DateTime.Now);
-            Console.WriteLine("[{0}] | Wanderer", DateTime.Now);
-            Console.WriteLine("[{0}] | FarmAnimals", DateTime.Now);
-            Console.WriteLine("[{0}] | ShipChunk", DateTime.Now);
-            Console.WriteLine("[{0}] | GiveQuest", DateTime.Now);
-            Console.WriteLine("[{0}] | TraderCaravan", DateTime.Now);
-
+            WriteColoredLog("List Of Available Events:", ConsoleColor.Green);
+            WriteColoredLog("Raid\nInfestation\nMechCluster\nToxicFallout\nManhunter\nFarmAnimals\nShipChunk\nGiveQuest\nTraderCaravan");
             Console.WriteLine(Environment.NewLine);
         }
         private void Chat()
