@@ -132,6 +132,7 @@ namespace Open_World_Server
                 "Banlist - Shows All Banned Players\n" +
                 "Wipe - Deletes Every Player Data In The Server\n");
         }
+        // TODO: Parameterize the methods so the whole command doesn't have to be passed in, it should be caught when the predicates are called.
         private void Say(string command)
         {
             string message = "";
@@ -139,6 +140,7 @@ namespace Open_World_Server
             catch
             {
                 WriteColoredLog("Missing Parameters\n", warnColor);
+                // TODO: STOP CALLING THIS RECURSIVELY! IT'S CAUSING A MEMORY LEAK!
                 ListenForCommands();
             }
 
@@ -159,14 +161,11 @@ namespace Open_World_Server
         }
         private void Broadcast(string command)
         {
-
             string text = "";
-
             try
             {
                 command = command.Remove(0, 10);
                 text = command;
-
                 if (string.IsNullOrWhiteSpace(text))
                 {
                     WriteColoredLog("Missing Parameters\n", warnColor);
@@ -178,7 +177,6 @@ namespace Open_World_Server
                 WriteColoredLog("Missing Parameters\n", warnColor);
                 ListenForCommands();
             }
-
             foreach (ServerClient sc in _Networking.connectedClients)
             {
                 _Networking.SendData(sc, "Notification│" + text);
@@ -308,14 +306,9 @@ namespace Open_World_Server
                 WriteColoredLog("Missing Parameters\n", warnColor);
                 ListenForCommands();
             }
-            foreach (ServerClient client in _Networking.connectedClients)
-            {
-                if (client.username == clientID)
-                {
-                    target = client;
-                    break;
-                }
-            }
+
+
+            target = _Networking.connectedClients.Where(x => x.username == clientID).SingleOrDefault();
             if (target == null)
             {
                 WriteColoredLog($"Player {clientID} Not Found\n", warnColor);
