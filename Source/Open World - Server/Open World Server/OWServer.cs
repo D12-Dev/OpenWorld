@@ -68,10 +68,8 @@ namespace Open_World_Server
           MESSAGE_COLOR = ConsoleColor.Green;
 
         // Setup Tracking
-        public static bool networkingDone = false;
+        public static bool exitFlag = false;
 
-
-        public int vCursorCache = 0, hCursorCache = 0;
         // -- End Declarations --
 
         
@@ -94,7 +92,7 @@ namespace Open_World_Server
             _ServerUtils.CheckForFiles();
 
             _Threading.GenerateThreads(0);
-            while(true) ListenForCommands();
+            while(!exitFlag) ListenForCommands();
         }
         
 

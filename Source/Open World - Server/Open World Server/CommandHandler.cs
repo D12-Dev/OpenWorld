@@ -651,7 +651,7 @@ namespace Open_World_Server
                 OWServer._Networking.SendData(sc, "Disconnect│Closing");
                 sc.disconnectFlag = true;
             }
-            Environment.Exit(0);
+            OWServer.exitFlag = true;
         }
 
     }
