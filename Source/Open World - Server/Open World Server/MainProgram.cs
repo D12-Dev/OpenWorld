@@ -65,6 +65,7 @@ namespace Open_World_Server
             errorColor = ConsoleColor.Red,
             messageColor = ConsoleColor.Green;
 
+        // TODO: Resolve duplication with ServerUtils.LogToConsole()
         private void WriteColoredLog(string output, ConsoleColor color = defaultColor)
         {
             Console.ForegroundColor = color;
@@ -92,7 +93,6 @@ namespace Open_World_Server
         }
         private void Help()
         {
-            Console.Clear();
             WriteColoredLog("List Of Available Commands:", ConsoleColor.Green);
             WriteColoredLog("Help - Displays Help Menu\n" +
                 "Settings - Displays Settings Menu\n" +
@@ -159,7 +159,6 @@ namespace Open_World_Server
         }
         private void Broadcast(string command)
         {
-            Console.Clear();
 
             string text = "";
 
@@ -189,11 +188,8 @@ namespace Open_World_Server
         }
         private void Notify(string command)
         {
-            Console.Clear();
-
             string target = "";
             string text = "";
-
             try
             {
                 command = command.Remove(0, 7);
@@ -213,9 +209,7 @@ namespace Open_World_Server
                 Console.WriteLine(Environment.NewLine);
                 ListenForCommands();
             }
-
             ServerClient targetClient = _Networking.connectedClients.Find(fetch => fetch.username == target);
-
             if (targetClient == null)
             {
                 WriteColoredLog($"Player {target} Not Found", ConsoleColor.Yellow);
@@ -235,7 +229,6 @@ namespace Open_World_Server
         }
         private void Settings()
         {
-            Console.Clear();
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("[{0}] | Server Settings:", DateTime.Now);
             Console.ForegroundColor = ConsoleColor.White;
@@ -277,7 +270,6 @@ namespace Open_World_Server
         }
         private void Reload()
         {
-            Console.Clear();
             WriteColoredLog("Reloading All Current Mods", ConsoleColor.Green);
             Console.ForegroundColor = ConsoleColor.White;
             _ServerUtils.CheckMods();
@@ -293,7 +285,6 @@ namespace Open_World_Server
         }
         private void Status()
         {
-            Console.Clear();
             WriteColoredLog("Server Status", ConsoleColor.Green);
             WriteColoredLog($"Version: {MainProgram._MainProgram.serverVersion}\n" +
                 "Connection: Online\n" +
@@ -359,7 +350,6 @@ namespace Open_World_Server
         }
         private void Invoke(string command)
         {
-            Console.Clear();
 
             string clientID = "";
             string eventID = "";
@@ -397,15 +387,13 @@ namespace Open_World_Server
         }
         private void Plague(string command)
         {
-            Console.Clear();
 
             string eventID = "";
 
             try { eventID = command.Split(' ')[1]; }
             catch
             {
-                WriteColoredLog("Missing Parameters", ConsoleColor.Yellow);
-                Console.WriteLine(Environment.NewLine);
+                WriteColoredLog("Missing Parameters\n", warnColor);
                 ListenForCommands();
             }
 
@@ -418,28 +406,16 @@ namespace Open_World_Server
         }
         private void EventList()
         {
-            Console.Clear();
             WriteColoredLog("List Of Available Events:", ConsoleColor.Green);
             WriteColoredLog("Raid\nInfestation\nMechCluster\nToxicFallout\nManhunter\nFarmAnimals\nShipChunk\nGiveQuest\nTraderCaravan\n");
         }
         private void Chat()
         {
-            Console.Clear();
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("[{0}] | Server Chat:", DateTime.Now);
-            Console.ForegroundColor = ConsoleColor.White;
-
-            if (chatCache.Count == 0) Console.WriteLine("[{0}] | No Chat Messages", DateTime.Now);
-            else foreach (string message in chatCache)
-                {
-                    Console.WriteLine(message);
-                }
-
-            Console.WriteLine(Environment.NewLine);
+            WriteColoredLog("Server Chat:", messageColor);
+            WriteColoredLog(chatCache.Count == 0 ? "No Chat Messages\n" : string.Join("\n", chatCache.ToArray()) + "\n");
         }
         private void List()
         {
-            Console.Clear();
             WriteColoredLog($"Connected Players: [{_Networking.connectedClients.Count}]", messageColor);
 
             if (_Networking.connectedClients.Count() == 0) Console.WriteLine("[{0}] | No Players Connected", DateTime.Now);
@@ -470,7 +446,6 @@ namespace Open_World_Server
         }
         private void Investigate(string command)
         {
-            Console.Clear();
 
             string clientID = "";
             try { clientID = command.Split(' ')[1]; }
@@ -523,7 +498,6 @@ namespace Open_World_Server
         }
         private void Settlements()
         {
-            Console.Clear();
 
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("[{0}] | Server Settlements: [{1}]", DateTime.Now, savedSettlements.Count);
@@ -539,7 +513,6 @@ namespace Open_World_Server
         }
         private void BanList()
         {
-            Console.Clear();
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("[{0}] | Banned players: [{1}]", DateTime.Now, bannedIPs.Count());
             Console.ForegroundColor = ConsoleColor.White;
@@ -554,7 +527,6 @@ namespace Open_World_Server
         }
         private void Kick(string command)
         {
-            Console.Clear();
 
             string clientID = "";
             try { clientID = command.Split(' ')[1]; }
@@ -584,7 +556,6 @@ namespace Open_World_Server
         private void Ban(string command)
         {
 
-            Console.Clear();
 
             string clientID = "";
             try { clientID = command.Split(' ')[1]; }
@@ -615,7 +586,6 @@ namespace Open_World_Server
         }
         private void Pardon(string command)
         {
-            Console.Clear();
 
             string clientUsername = "";
             try { clientUsername = command.Split(' ')[1]; }
@@ -645,7 +615,6 @@ namespace Open_World_Server
         }
         private void Promote(string command)
         {
-            Console.Clear();
 
             string clientID = "";
             try { clientID = command.Split(' ')[1]; }
@@ -691,7 +660,6 @@ namespace Open_World_Server
         }
         private void Demote(string command)
         {
-            Console.Clear();
 
             string clientID = "";
             try { clientID = command.Split(' ')[1]; }
@@ -737,7 +705,6 @@ namespace Open_World_Server
         }
         private void GiveItem(string command)
         {
-            Console.Clear();
             // TODO: Prescreen the length and get rid of all the repeated try/catches.
             string clientID = "";
             try { clientID = command.Split(' ')[1]; }
@@ -786,7 +753,6 @@ namespace Open_World_Server
         }
         private void GiveItemAll(string command)
         {
-            Console.Clear();
             // TODO: Prescreen the length and get rid of all the repeated try/catches.
             string itemID = "";
             try { itemID = command.Split(' ')[1]; }
@@ -822,7 +788,6 @@ namespace Open_World_Server
         }
         private void Protect(string command)
         {
-            Console.Clear();
 
             string clientID = "";
             try { clientID = command.Split(' ')[1]; }
@@ -847,7 +812,6 @@ namespace Open_World_Server
         }
         private void Deprotect(string command)
         {
-            Console.Clear();
 
             string clientID = "";
             try { clientID = command.Split(' ')[1]; }
@@ -871,7 +835,6 @@ namespace Open_World_Server
         }
         private void Immunize(string command)
         {
-            Console.Clear();
 
             string clientID = "";
             try { clientID = command.Split(' ')[1]; }
@@ -897,7 +860,6 @@ namespace Open_World_Server
         }
         private void Deimmunize(string command)
         {
-            Console.Clear();
 
             string clientID = "";
             try { clientID = command.Split(' ')[1]; }
@@ -941,7 +903,6 @@ namespace Open_World_Server
         }
         private void Wipe()
         {
-            Console.Clear();
             WriteColoredLog("WARNING! THIS ACTION WILL IRRECOVERABLY DELETE ALL PLAYER DATA. DO YOU WANT TO PROCEED? (Y/N)", errorColor);
 
             if (Console.ReadLine().Trim().ToUpper() == "Y")
@@ -1028,14 +989,12 @@ namespace Open_World_Server
                 {"immunize", Immunize},
                 {"deimmunize", Deimmunize}
             };
-
+            Console.Clear();
             if (simpleCommands.ContainsKey(commandWord)) simpleCommands[commandWord]();
             else if (complexCommands.ContainsKey(commandWord)) complexCommands[commandWord](command);
             else
             {
-                Console.Clear();
-                WriteColoredLog($"Command \"{command}\" Not Found", ConsoleColor.Yellow);
-                Console.WriteLine(Environment.NewLine);
+                WriteColoredLog($"Command \"{command}\" Not Found\n", ConsoleColor.Yellow);
             }
             ListenForCommands();
         }
