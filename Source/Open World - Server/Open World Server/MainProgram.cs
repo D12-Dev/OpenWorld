@@ -874,10 +874,7 @@ namespace Open_World_Server
                 {
                     client.eventShielded = true;
                     _MainProgram.savedClients.Find(fetch => fetch.username == client.username).eventShielded = true;
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("[{0}] | Player [{1}] Has Been Protected", DateTime.Now, client.username);
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.WriteLine(Environment.NewLine);
+                    WriteColoredLog($"Player [{client.username}] Has Been Protected\n", messageColor);
                     ListenForCommands();
                 }
             }
@@ -904,10 +901,7 @@ namespace Open_World_Server
                 {
                     client.eventShielded = false;
                     _MainProgram.savedClients.Find(fetch => fetch.username == client.username).eventShielded = false;
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("[{0}] | Player [{1}] Has Been Deprotected", DateTime.Now, client.username);
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.WriteLine(Environment.NewLine);
+                    WriteColoredLog($"Player [{client.username}] Has Been Deprotected\n", messageColor);
                     ListenForCommands();
                 }
             }
