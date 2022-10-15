@@ -29,7 +29,7 @@ namespace Open_World_Server
 
             ServerUtils.WriteServerLog("Communication:", messageColor);
             ServerUtils.WriteServerLog("Say - Send A Chat Message\n" +
-                "Broadcast - Send A Letter To Every Player Connected\n" +
+                "NotifyAll - Send A Letter To Every Player Connected\n" +
                 "Notify - Send A Letter To X Player\n" +
                 "Chat - Displays Chat Menu\n");
 
@@ -87,12 +87,12 @@ namespace Open_World_Server
 
             }
         }
-        public void Broadcast(string[] args)
+        public void NotifyAll(string[] args)
         {
             // Args is expected to be split on spaces, but since the say command takes multiple words as a string, we'll glue them back together.
             string message = String.Join(' ', args);
             // If the result is whitespace, they didn't give us a message.
-            if (string.IsNullOrWhiteSpace(message)) ServerUtils.WriteServerLog("Missing Parameter 'message'\nCorrect Usage: \"broadcast [message]\" where [message] is one or more characters, including spaces.\n", warnColor);
+            if (string.IsNullOrWhiteSpace(message)) ServerUtils.WriteServerLog("Missing Parameter 'message'\nCorrect Usage: \"notifyall [message]\" where [message] is one or more characters, including spaces.\n", warnColor);
             // If it's not, handle the command.
             else
             {

@@ -124,7 +124,7 @@ namespace Open_World_Server
             Dictionary<string, Action<string[]>> complexCommands = new Dictionary<string, Action<string[]>>()
             {
                 {"say", _CommandHandler.Say},
-                {"broadcast", _CommandHandler.Broadcast},
+                {"notifyall", _CommandHandler.NotifyAll},
                 {"notify", _CommandHandler.Notify},
                 {"invoke", _CommandHandler.Invoke},
                 {"plague", _CommandHandler.Plague},
