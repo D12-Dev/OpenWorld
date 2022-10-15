@@ -498,32 +498,19 @@ namespace Open_World_Server
         }
         private void Settlements()
         {
-
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("[{0}] | Server Settlements: [{1}]", DateTime.Now, savedSettlements.Count);
-            Console.ForegroundColor = ConsoleColor.White;
-
-            if (savedSettlements.Count == 0) Console.WriteLine("[{0}] | No Active Settlements", DateTime.Now);
-            else foreach (KeyValuePair<string, List<string>> pair in savedSettlements)
-                {
-                    Console.WriteLine("[{0}] | {1} - {2} ", DateTime.Now, pair.Key, pair.Value[0]);
-                }
-
-            Console.WriteLine(Environment.NewLine);
+            WriteColoredLog("Server Settlements:", messageColor);
+            string logMessage = "";
+            if (savedSettlements.Count == 0) logMessage = "No Active Settlements";
+            else foreach (KeyValuePair<string, List<string>> pair in savedSettlements) logMessage += $"{pair.Key} - {pair.Value[0]}";
+            WriteColoredLog($"{logMessage}\n");
         }
         private void BanList()
         {
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("[{0}] | Banned players: [{1}]", DateTime.Now, bannedIPs.Count());
-            Console.ForegroundColor = ConsoleColor.White;
-
-            if (bannedIPs.Count == 0) Console.WriteLine("[{0}] | No Banned Players", DateTime.Now);
-            else foreach (KeyValuePair<string, string> pair in bannedIPs)
-                {
-                    Console.WriteLine("[{0}] | [{1}] - [{2}]", DateTime.Now, pair.Value, pair.Key);
-                }
-
-            Console.WriteLine(Environment.NewLine);
+            WriteColoredLog($"Banned Players: [{bannedIPs.Count}]", messageColor);
+            string logMessage = "";
+            if (savedSettlements.Count == 0) logMessage = "No Active Settlements\n";
+            else foreach (KeyValuePair<string, string> pair in bannedIPs) logMessage += $"{pair.Key} - {pair.Value}\n";
+            WriteColoredLog($"{logMessage}");
         }
         private void Kick(string command)
         {
