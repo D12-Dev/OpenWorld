@@ -912,7 +912,7 @@ namespace Open_World_Server
             {
                 // Console writes take a relatively large amount of time. Better to build a multi-line write and write once.
                 toWrite += (string.IsNullOrWhiteSpace(line) ? "" : $"[{DateTime.Now.ToString("HH:mm:ss")}] | {line}")+"\n";
-                Console.WriteLine(toWrite);
+                
 
                 if (line.StartsWith("Chat - [")) OWServer._ServerUtils.WriteToLog(line, "Chat");
                 else if (line.StartsWith("Gift Done Between")) OWServer._ServerUtils.WriteToLog(line, "Gift");
@@ -923,6 +923,7 @@ namespace Open_World_Server
                 else if (line.StartsWith("Visit Done Between")) OWServer._ServerUtils.WriteToLog(line, "Visit");
                 else OWServer._ServerUtils.WriteToLog(line, "Normal");
             }
+            Console.Write(toWrite);
             // Re-write our "Enter Command>" prompt.
             Console.ForegroundColor = OWServer.DEFAULT_COLOR;
             Console.Write("Enter Command> ");
