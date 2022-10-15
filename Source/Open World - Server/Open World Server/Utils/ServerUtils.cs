@@ -15,7 +15,7 @@ namespace Open_World_Server
 
         public void SetupPaths()
         {
-            MainProgram._ServerUtils.LogToConsole("Base Directory At: [" + MainProgram.mainFolderPath + "]");
+            MainProgram._ServerUtils.WriteServerLog("Base Directory At: [" + MainProgram.mainFolderPath + "]");
             Console.ForegroundColor = ConsoleColor.White;
 
             MainProgram.serverSettingsPath = MainProgram.mainFolderPath + Path.DirectorySeparatorChar + "Server Settings.txt";
@@ -53,13 +53,13 @@ namespace Open_World_Server
             catch 
             {
                 Console.ForegroundColor = ConsoleColor.Yellow;
-                MainProgram._ServerUtils.LogToConsole("Version Check Failed. This is not dangerous");
+                MainProgram._ServerUtils.WriteServerLog("Version Check Failed. This is not dangerous");
                 Console.ForegroundColor = ConsoleColor.White;
             }
 
             Console.ForegroundColor = ConsoleColor.Yellow;
-            if (MainProgram.serverVersion == latestVersion) MainProgram._ServerUtils.LogToConsole("Running Latest Version");
-            else MainProgram._ServerUtils.LogToConsole("Running outdated version. Please Update From Github At Earliest Convenience To Prevent Errors");
+            if (MainProgram.serverVersion == latestVersion) MainProgram._ServerUtils.WriteServerLog("Running Latest Version");
+            else MainProgram._ServerUtils.WriteServerLog("Running outdated version. Please Update From Github At Earliest Convenience To Prevent Errors");
             Console.ForegroundColor = ConsoleColor.White;
         }
 
@@ -272,7 +272,7 @@ namespace Open_World_Server
                     }
                 }
 
-                MainProgram._ServerUtils.LogToConsole("Loaded Settings File");
+                MainProgram._ServerUtils.WriteServerLog("Loaded Settings File");
             }
 
             else
@@ -313,7 +313,7 @@ namespace Open_World_Server
 
                 File.WriteAllLines(MainProgram.serverSettingsPath, settingsPreset);
 
-                MainProgram._ServerUtils.LogToConsole("Generating Settings File");
+                MainProgram._ServerUtils.WriteServerLog("Generating Settings File");
 
                 CheckSettingsFile();
             }
@@ -327,7 +327,7 @@ namespace Open_World_Server
             if (!Directory.Exists(MainProgram.modsFolderPath))
             {
                 Directory.CreateDirectory(MainProgram.modsFolderPath);
-                MainProgram._ServerUtils.LogToConsole("No Mods Folder Found, Generating");
+                MainProgram._ServerUtils.WriteServerLog("No Mods Folder Found, Generating");
                 return;
             }
 
@@ -337,7 +337,7 @@ namespace Open_World_Server
 
                 if (modFolders.Length == 0)
                 {
-                    MainProgram._ServerUtils.LogToConsole("No Mods Found, Ignoring");
+                    MainProgram._ServerUtils.WriteServerLog("No Mods Found, Ignoring");
                     return;
                 }
 
@@ -368,7 +368,7 @@ namespace Open_World_Server
 
                     modlist.Sort();
                     MainProgram.modList = modlist.ToList();
-                    MainProgram._ServerUtils.LogToConsole("Loaded [" + MainProgram.modList.Count() + "] Mods");
+                    MainProgram._ServerUtils.WriteServerLog("Loaded [" + MainProgram.modList.Count() + "] Mods");
                 }
             }
         }
@@ -381,7 +381,7 @@ namespace Open_World_Server
             if (!Directory.Exists(MainProgram.whitelistedModsFolderPath))
             {
                 Directory.CreateDirectory(MainProgram.whitelistedModsFolderPath);
-                MainProgram._ServerUtils.LogToConsole("No Whitelisted Mods Folder Found, Generating");
+                MainProgram._ServerUtils.WriteServerLog("No Whitelisted Mods Folder Found, Generating");
                 return;
             }
 
@@ -389,7 +389,7 @@ namespace Open_World_Server
             {
                 string[] modFolders = Directory.GetDirectories(MainProgram.whitelistedModsFolderPath);
 
-                if (modFolders.Length == 0) MainProgram._ServerUtils.LogToConsole("No Whitelisted Mods Found, Ignoring");
+                if (modFolders.Length == 0) MainProgram._ServerUtils.WriteServerLog("No Whitelisted Mods Found, Ignoring");
 
                 else
                 {
@@ -418,7 +418,7 @@ namespace Open_World_Server
 
                     whitelistedModsList.Sort();
                     MainProgram.whitelistedMods = whitelistedModsList;
-                    MainProgram._ServerUtils.LogToConsole("Loaded [" + MainProgram.whitelistedMods.Count() + "] Whitelisted Mods");
+                    MainProgram._ServerUtils.WriteServerLog("Loaded [" + MainProgram.whitelistedMods.Count() + "] Whitelisted Mods");
                 }
             }
         }
@@ -467,7 +467,7 @@ namespace Open_World_Server
                     }
                 }
 
-                MainProgram._ServerUtils.LogToConsole("Loaded World File");
+                MainProgram._ServerUtils.WriteServerLog("Loaded World File");
             }
 
             else
@@ -484,7 +484,7 @@ namespace Open_World_Server
 
                 File.WriteAllLines(MainProgram.worldSettingsPath, settingsPreset);
 
-                MainProgram._ServerUtils.LogToConsole("Generating World File");
+                MainProgram._ServerUtils.WriteServerLog("Generating World File");
 
                 CheckWorldFile();
             }
@@ -494,7 +494,7 @@ namespace Open_World_Server
         {
             if (!File.Exists(MainProgram.mainFolderPath + Path.DirectorySeparatorChar + "Banned IPs.data"))
             {
-                MainProgram._ServerUtils.LogToConsole("No Bans File Found, Ignoring");
+                MainProgram._ServerUtils.WriteServerLog("No Bans File Found, Ignoring");
                 return;
             }
 
@@ -503,8 +503,8 @@ namespace Open_World_Server
                 MainProgram.bannedIPs = list.bannedIPs;
             }
 
-            if (MainProgram.bannedIPs.Count() == 0) MainProgram._ServerUtils.LogToConsole("No Banned Players Found, Ignoring");
-            else MainProgram._ServerUtils.LogToConsole("Loaded [" + MainProgram.bannedIPs.Count() + "] Banned Players");
+            if (MainProgram.bannedIPs.Count() == 0) MainProgram._ServerUtils.WriteServerLog("No Banned Players Found, Ignoring");
+            else MainProgram._ServerUtils.WriteServerLog("Loaded [" + MainProgram.bannedIPs.Count() + "] Banned Players");
         }
 
         public void CheckForWhitelistedPlayers()
@@ -515,12 +515,12 @@ namespace Open_World_Server
             {
                 File.Create(MainProgram.whitelistedUsersPath);
 
-                MainProgram._ServerUtils.LogToConsole("No Whitelisted Players File Found, Generating");
+                MainProgram._ServerUtils.WriteServerLog("No Whitelisted Players File Found, Generating");
             }
 
             else
             {
-                if (File.ReadAllLines(MainProgram.whitelistedUsersPath).Count() == 0) MainProgram._ServerUtils.LogToConsole("No Whitelisted Players Found, Ignoring");
+                if (File.ReadAllLines(MainProgram.whitelistedUsersPath).Count() == 0) MainProgram._ServerUtils.WriteServerLog("No Whitelisted Players Found, Ignoring");
                 else
                 {
                     foreach (string str in File.ReadAllLines(MainProgram.whitelistedUsersPath))
@@ -528,7 +528,7 @@ namespace Open_World_Server
                         MainProgram.whitelistedUsernames.Add(str);
                     }
 
-                    MainProgram._ServerUtils.LogToConsole("Loaded [" + MainProgram.whitelistedUsernames.Count() + "] Whitelisted Players");
+                    MainProgram._ServerUtils.WriteServerLog("Loaded [" + MainProgram.whitelistedUsernames.Count() + "] Whitelisted Players");
                 }
             }
         }
@@ -675,14 +675,14 @@ namespace Open_World_Server
 
                         MainProgram._ServerUtils.UpdateTitle();
 
-                        MainProgram._ServerUtils.LogToConsole("Player [" + client.username + "] " + "[" + ((IPEndPoint)client.tcp.Client.RemoteEndPoint).Address.ToString() + "] " + "Has Connected");
+                        MainProgram._ServerUtils.WriteServerLog("Player [" + client.username + "] " + "[" + ((IPEndPoint)client.tcp.Client.RemoteEndPoint).Address.ToString() + "] " + "Has Connected");
 
                         RefreshClientCount(client);
 
                         if (joinMode == "NewGame")
                         {
                             SendNewGameData();
-                            MainProgram._ServerUtils.LogToConsole("Player [" + client.username + "] Has Reset Game Progress");
+                            MainProgram._ServerUtils.WriteServerLog("Player [" + client.username + "] Has Reset Game Progress");
                         }
 
                         else if (joinMode == "LoadGame")
@@ -697,7 +697,7 @@ namespace Open_World_Server
                         MainProgram._Networking.SendData(client, "Disconnect│WrongPassword");
 
                         client.disconnectFlag = true;
-                        MainProgram._ServerUtils.LogToConsole("Player [" + client.username + "] Has Been Kicked For: [Wrong Password]");
+                        MainProgram._ServerUtils.WriteServerLog("Player [" + client.username + "] Has Been Kicked For: [Wrong Password]");
                         return;
                     }
 
@@ -717,7 +717,7 @@ namespace Open_World_Server
 
                 MainProgram._ServerUtils.UpdateTitle();
 
-                MainProgram._ServerUtils.LogToConsole("New Player [" + client.username + "] " + "[" + ((IPEndPoint)client.tcp.Client.RemoteEndPoint).Address.ToString() + "] " + "Has Connected For The First Time");
+                MainProgram._ServerUtils.WriteServerLog("New Player [" + client.username + "] " + "[" + ((IPEndPoint)client.tcp.Client.RemoteEndPoint).Address.ToString() + "] " + "Has Connected For The First Time");
 
                 MainProgram._PlayerUtils.SaveNewPlayerFile(client.username, client.password);
 
@@ -729,7 +729,7 @@ namespace Open_World_Server
                 else if (joinMode == "LoadGame")
                 {
                     SendLoadGameData();
-                    MainProgram._ServerUtils.LogToConsole("Player [" + client.username + "] Has Registered With Existing Save");
+                    MainProgram._ServerUtils.WriteServerLog("Player [" + client.username + "] Has Registered With Existing Save");
                 }
             }
         }
@@ -740,7 +740,7 @@ namespace Open_World_Server
 
             string messageForConsole = "Chat - [" + client.username + "] " + message;
 
-            MainProgram._ServerUtils.LogToConsole(messageForConsole);
+            MainProgram._ServerUtils.WriteServerLog(messageForConsole);
 
             MainProgram.chatCache.Add("[" + DateTime.Now + "]" + " │ " + messageForConsole);
 
@@ -787,7 +787,7 @@ namespace Open_World_Server
 
             if (flagged)
             {
-                MainProgram._ServerUtils.LogToConsole("Player [" + client.username + "] " + "Doesn't Have The Required Mod Or Mod Files Mismatch!");
+                MainProgram._ServerUtils.WriteServerLog("Player [" + client.username + "] " + "Doesn't Have The Required Mod Or Mod Files Mismatch!");
                 flaggedMods = flaggedMods.Remove(flaggedMods.Count() - 1, 1);
                 MainProgram._Networking.SendData(client, "Disconnect│WrongMods│" + flaggedMods);
 
@@ -824,7 +824,7 @@ namespace Open_World_Server
 
             MainProgram._Networking.SendData(client, "Disconnect│Whitelist");
             client.disconnectFlag = true;
-            LogToConsole("Player [" + client.username + "] Tried To Join But Is Not Whitelisted");
+            WriteServerLog("Player [" + client.username + "] Tried To Join But Is Not Whitelisted");
             return false;
         }
 
@@ -847,7 +847,7 @@ namespace Open_World_Server
             {
                 MainProgram._Networking.SendData(client, "Disconnect│Version");
                 client.disconnectFlag = true;
-                LogToConsole("Player [" + client.username + "] Tried To Join But Is Using Other Version");
+                WriteServerLog("Player [" + client.username + "] Tried To Join But Is Using Other Version");
                 return false;
             }
         }
@@ -860,7 +860,7 @@ namespace Open_World_Server
                 {
                     MainProgram._Networking.SendData(client, "Disconnect│Banned");
                     client.disconnectFlag = true;
-                    LogToConsole("Player [" + client.username + "] Tried To Join But Is Banned");
+                    WriteServerLog("Player [" + client.username + "] Tried To Join But Is Banned");
                     return false;
                 }
             }
@@ -913,24 +913,27 @@ namespace Open_World_Server
 
             else return true;
         }
-
-        public void LogToConsole(string data)
+        public void WriteServerLog(string output, ConsoleColor color = MainProgram.defaultColor)
         {
-            string dataToLog = "";
-            if (data != Environment.NewLine) dataToLog = "[" + DateTime.Now + "]" + " │ " + data;
-            else dataToLog = "";
+            Console.ForegroundColor = color;
+            // TODO: Build string then write
+            foreach (string line in output.Split("\n"))
+            {
+                string parsedLine = (string.IsNullOrWhiteSpace(line) ? "\n" : $"[{DateTime.Now.ToString("HH:mm:ss")}] | {line}");
+                Console.WriteLine(parsedLine);
 
-            Console.WriteLine(dataToLog);
-
-            if (data.StartsWith("Chat - [")) WriteToLog(dataToLog, "Chat");
-            else if (data.StartsWith("Gift Done Between")) WriteToLog(dataToLog, "Gift");
-            else if (data.StartsWith("Trade Done Between")) WriteToLog(dataToLog, "Trade");
-            else if (data.StartsWith("Barter Done Between")) WriteToLog(dataToLog, "Barter");
-            else if (data.StartsWith("Spy Done Between")) WriteToLog(dataToLog, "Spy");
-            else if (data.StartsWith("PvP Done Between")) WriteToLog(dataToLog, "PvP");
-            else if (data.StartsWith("Visit Done Between")) WriteToLog(dataToLog, "Visit");
-            else WriteToLog(dataToLog, "Normal");
+                if (line.StartsWith("Chat - [")) WriteToLog(line, "Chat");
+                else if (line.StartsWith("Gift Done Between")) WriteToLog(line, "Gift");
+                else if (line.StartsWith("Trade Done Between")) WriteToLog(line, "Trade");
+                else if (line.StartsWith("Barter Done Between")) WriteToLog(line, "Barter");
+                else if (line.StartsWith("Spy Done Between")) WriteToLog(line, "Spy");
+                else if (line.StartsWith("PvP Done Between")) WriteToLog(line, "PvP");
+                else if (line.StartsWith("Visit Done Between")) WriteToLog(line, "Visit");
+                else WriteToLog(line, "Normal");
+            }
+            
         }
+      
 
         public void WriteToLog(string data, string logMode)
         {

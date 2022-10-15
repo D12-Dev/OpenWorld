@@ -52,7 +52,7 @@ namespace Open_World_Server
             if (!Directory.Exists(MainProgram.playersFolderPath))
             {
                 Directory.CreateDirectory(MainProgram.playersFolderPath);
-                MainProgram._ServerUtils.LogToConsole("No Players Folder Found, Generating");
+                MainProgram._ServerUtils.WriteServerLog("No Players Folder Found, Generating");
                 return;
             }
 
@@ -82,15 +82,15 @@ namespace Open_World_Server
                             catch 
                             {
                                 Console.ForegroundColor = ConsoleColor.Red;
-                                MainProgram._ServerUtils.LogToConsole("Error! Player " + dummy.username + " Is Using A Cloned Entry! Skipping Entry");
+                                MainProgram._ServerUtils.WriteServerLog("Error! Player " + dummy.username + " Is Using A Cloned Entry! Skipping Entry");
                                 Console.ForegroundColor = ConsoleColor.White;
                             }
                         }
                     }
                 }
 
-                if (MainProgram.savedClients.Count == 0) MainProgram._ServerUtils.LogToConsole("No Saved Players Found, Ignoring");
-                else MainProgram._ServerUtils.LogToConsole("Loaded [" + MainProgram.savedClients.Count + "] Player Files");
+                if (MainProgram.savedClients.Count == 0) MainProgram._ServerUtils.WriteServerLog("No Saved Players Found, Ignoring");
+                else MainProgram._ServerUtils.WriteServerLog("Loaded [" + MainProgram.savedClients.Count + "] Player Files");
             }
         }
 
@@ -113,7 +113,7 @@ namespace Open_World_Server
                 SaveSystem.SaveBannedIPs(MainProgram.bannedIPs);
 
                 Console.ForegroundColor = ConsoleColor.Red;
-                MainProgram._ServerUtils.LogToConsole("Player [" + client.username + "]'s Wealth Triggered Alarm [" + wealthToCompare + " > " + (int)client.wealth + "], Banning");
+                MainProgram._ServerUtils.WriteServerLog("Player [" + client.username + "]'s Wealth Triggered Alarm [" + wealthToCompare + " > " + (int)client.wealth + "], Banning");
                 Console.ForegroundColor = ConsoleColor.White;
             }
             else if (client.wealth - wealthToCompare > MainProgram.warningWealthThreshold && MainProgram.warningWealthThreshold > 0)
@@ -123,7 +123,7 @@ namespace Open_World_Server
                 MainProgram.savedClients.Find(fetch => fetch.username == client.username).pawnCount = client.pawnCount;
 
                 Console.ForegroundColor = ConsoleColor.Yellow;
-                MainProgram._ServerUtils.LogToConsole("Player [" + client.username + "]'s Wealth Triggered Warning [" + wealthToCompare + " > " + (int) client.wealth + "]");
+                MainProgram._ServerUtils.WriteServerLog("Player [" + client.username + "]'s Wealth Triggered Warning [" + wealthToCompare + " > " + (int) client.wealth + "]");
                 Console.ForegroundColor = ConsoleColor.White;
             }
             else
@@ -190,7 +190,7 @@ namespace Open_World_Server
                     int chance = rnd.Next(0, 2);
                     if (chance == 1) MainProgram._Networking.SendData(client, "Spy│" + origin.username);
 
-                    MainProgram._ServerUtils.LogToConsole("Spy Done Between [" + origin.username + "] And [" + client.username + "]");
+                    MainProgram._ServerUtils.WriteServerLog("Spy Done Between [" + origin.username + "] And [" + client.username + "]");
 
                     return dataToReturn;
                 }
@@ -207,7 +207,7 @@ namespace Open_World_Server
             {
                 if (sc.homeTileID == data.Split('│')[2])
                 {
-                    MainProgram._ServerUtils.LogToConsole("Player [" + invoker.username + "] Has Sent Forced Event [" + data.Split('│')[1] + "] To [" + sc.username + "]");
+                    MainProgram._ServerUtils.WriteServerLog("Player [" + invoker.username + "] Has Sent Forced Event [" + data.Split('│')[1] + "] To [" + sc.username + "]");
                     MainProgram._Networking.SendData(sc, dataToSend);
                     break;
                 }
@@ -241,7 +241,7 @@ namespace Open_World_Server
                 if (sc.homeTileID == tileToSend)
                 {
                     MainProgram._Networking.SendData(sc, dataToSend);
-                    MainProgram._ServerUtils.LogToConsole("Gift Done Between [" + invoker.username + "] And [" + sc.username + "]");
+                    MainProgram._ServerUtils.WriteServerLog("Gift Done Between [" + invoker.username + "] And [" + sc.username + "]");
                     return;
                 }
             }
@@ -254,7 +254,7 @@ namespace Open_World_Server
                 {
                     sc.giftString.Add(dataToSend);
                     SaveSystem.SaveUserData(sc);
-                    MainProgram._ServerUtils.LogToConsole("Gift Done Between [" + invoker.username + "] And [" + sc.username + "] But Was Offline. Saving");
+                    MainProgram._ServerUtils.WriteServerLog("Gift Done Between [" + invoker.username + "] And [" + sc.username + "] But Was Offline. Saving");
                     return;
                 }
             }

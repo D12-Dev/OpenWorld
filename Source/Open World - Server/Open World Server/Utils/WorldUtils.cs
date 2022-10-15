@@ -40,7 +40,7 @@ namespace Open_World_Server
 
             MainProgram.savedSettlements.Add(client.homeTileID, new List<string> { client.username });
 
-            MainProgram._ServerUtils.LogToConsole("Settlement With ID [" + dataSplit[0] + "] And Owner [" + dataSplit[1] + "] Has Been Added");
+            MainProgram._ServerUtils.WriteServerLog("Settlement With ID [" + dataSplit[0] + "] And Owner [" + dataSplit[1] + "] Has Been Added");
         }
 
         public void RemoveSettlement(ServerClient? client, string tile)
@@ -77,7 +77,7 @@ namespace Open_World_Server
 
                 MainProgram.savedSettlements.Remove(tile);
 
-                MainProgram._ServerUtils.LogToConsole("Settlement With ID [" + tile + "] Has Been Deleted");
+                MainProgram._ServerUtils.WriteServerLog("Settlement With ID [" + tile + "] Has Been Deleted");
             }
         }
 
@@ -112,7 +112,7 @@ namespace Open_World_Server
                         MainProgram._Networking.SendData(client, "Disconnect│Corrupted");
 
                         Console.ForegroundColor = ConsoleColor.Red;
-                        MainProgram._ServerUtils.LogToConsole("Player [" + client.username + "] Tried To Claim Used Tile! [" + tileID + "]");
+                        MainProgram._ServerUtils.WriteServerLog("Player [" + client.username + "] Tried To Claim Used Tile! [" + tileID + "]");
                         Console.ForegroundColor = ConsoleColor.White;
                         return;
                     }

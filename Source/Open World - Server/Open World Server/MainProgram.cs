@@ -65,7 +65,7 @@ namespace Open_World_Server
         public static int overallRainfall, overallTemperature, overallPopulation;
 
         // Console Colours
-        private const ConsoleColor defaultColor = ConsoleColor.White,
+        public const ConsoleColor defaultColor = ConsoleColor.White,
           warnColor = ConsoleColor.Yellow,
           errorColor = ConsoleColor.Red,
           messageColor = ConsoleColor.Green;
@@ -73,12 +73,7 @@ namespace Open_World_Server
 
         // -- End Declarations --
 
-        public static void WriteColoredLog(string output, ConsoleColor color = defaultColor)
-        {
-            Console.ForegroundColor = color;
-            // TODO: Build string then write
-            foreach (string line in output.Split("\n")) Console.WriteLine(string.IsNullOrWhiteSpace(line) ? "\n" : $"[{DateTime.Now.ToString("HH:mm:ss")}] | {line}");
-        }
+        
 
         static void Main()
         {
@@ -91,8 +86,8 @@ namespace Open_World_Server
             logFolderPath = mainFolderPath + Path.DirectorySeparatorChar + "Logs";
 
             Console.ForegroundColor = messageColor;
-            WriteColoredLog("--------------\nServer Startup\n--------------\nWelcome to Open World - Multiplayer for RimWorld", messageColor);
-            WriteColoredLog($"Using Culture Info: '{CultureInfo.CurrentCulture}'");
+            _ServerUtils.WriteServerLog("--------------\nServer Startup\n--------------\nWelcome to Open World - Multiplayer for RimWorld", messageColor);
+            _ServerUtils.WriteServerLog($"Using Culture Info: '{CultureInfo.CurrentCulture}'");
 
             _ServerUtils.SetupPaths();
             _ServerUtils.CheckForFiles();
@@ -147,7 +142,7 @@ namespace Open_World_Server
             Console.Clear();
             if (simpleCommands.ContainsKey(commandWord)) simpleCommands[commandWord]();
             else if (complexCommands.ContainsKey(commandWord)) complexCommands[commandWord](command);
-            else WriteColoredLog($"Command \"{command}\" Not Found\n", warnColor);
+            else _ServerUtils.WriteServerLog($"Command \"{command}\" Not Found\n", warnColor);
         }
     }
 }

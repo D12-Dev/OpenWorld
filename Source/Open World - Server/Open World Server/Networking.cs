@@ -24,8 +24,8 @@ namespace Open_World_Server
 
             MainProgram._ServerUtils.UpdateTitle();
 
-            MainProgram._ServerUtils.LogToConsole("Server Started");
-            MainProgram._ServerUtils.LogToConsole("Type 'Help' To See Available Commands");
+            MainProgram._ServerUtils.WriteServerLog("Server Started");
+            MainProgram._ServerUtils.WriteServerLog("Type 'Help' To See Available Commands");
 
             MainProgram._Threading.GenerateThreads(1);
 
@@ -198,7 +198,7 @@ namespace Open_World_Server
                                 {
                                     SendData(target, "│SentTrade│Deal│");
 
-                                    MainProgram._ServerUtils.LogToConsole("Trade Done Between [" + target.username + "] And [" + client.username + "]");
+                                    MainProgram._ServerUtils.WriteServerLog("Trade Done Between [" + target.username + "] And [" + client.username + "]");
                                 }
 
                                 else if (encryptedData.StartsWith(MainProgram._Encryption.EncryptString("TradeStatus│Reject│")))
@@ -234,7 +234,7 @@ namespace Open_World_Server
                                 {
                                     SendData(target, "│SentBarter│Deal│");
 
-                                    MainProgram._ServerUtils.LogToConsole("Barter Done Between [" + target.username + "] And [" + client.username + "]");
+                                    MainProgram._ServerUtils.WriteServerLog("Barter Done Between [" + target.username + "] And [" + client.username + "]");
                                 }
 
                                 else if (encryptedData.StartsWith(MainProgram._Encryption.EncryptString("BarterStatus│Reject│")))
@@ -341,7 +341,7 @@ namespace Open_World_Server
             try { connectedClients.Remove(client); }
             catch { }
 
-            if (kickMode == "Normal") MainProgram._ServerUtils.LogToConsole("Player [" + client.username + "] Has Disconnected");
+            if (kickMode == "Normal") MainProgram._ServerUtils.WriteServerLog("Player [" + client.username + "] Has Disconnected");
             else if (kickMode == "Silent") { }
             else { }
 
@@ -352,8 +352,8 @@ namespace Open_World_Server
 
         public void CheckClientsConnection()
         {
-            MainProgram._ServerUtils.LogToConsole("Network Line Started");
-            MainProgram._ServerUtils.LogToConsole(Environment.NewLine);
+            MainProgram._ServerUtils.WriteServerLog("Network Line Started");
+            MainProgram._ServerUtils.WriteServerLog(Environment.NewLine);
 
             while (true)
             {
