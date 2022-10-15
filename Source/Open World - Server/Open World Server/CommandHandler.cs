@@ -144,15 +144,10 @@ namespace Open_World_Server
         public void Reload()
         {
             ServerUtils.WriteServerLog("Reloading All Current Mods", messageColor);
-            // TODO: Is this color change necessary?
-            Console.ForegroundColor = defaultColor;
             OWServer._ServerUtils.CheckMods();
             OWServer._ServerUtils.CheckWhitelistedMods();
-            ServerUtils.WriteServerLog("Mods Have Been Reloaded\n", messageColor);
-
-            ServerUtils.WriteServerLog("Reloading All Whitelisted Players\n", messageColor);
-            // TODO: Is this color change necessary?
-            Console.ForegroundColor = defaultColor;
+            ServerUtils.WriteServerLog("Mods Have Been Reloaded", messageColor);
+            ServerUtils.WriteServerLog("Reloading All Whitelisted Players", messageColor);
             OWServer._ServerUtils.CheckForWhitelistedPlayers();
             ServerUtils.WriteServerLog("Whitelisted Players Have Been Reloaded", messageColor);
         }
