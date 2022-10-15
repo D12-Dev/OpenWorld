@@ -812,11 +812,7 @@ namespace Open_World_Server
             try { itemID = command.Split(' ')[1]; }
             catch
             {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
-                Console.WriteLine("[{0}] | Usage: Giveitemall [itemID] [itemQuantity] [itemQuality]", DateTime.Now);
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine(Environment.NewLine);
+                WriteColoredLog($"Missing Parameter(s)\nUsage: Giveitemall [itemID] [itemQuantity] [itemQuality]\n", warnColor);
                 ListenForCommands();
             }
 
@@ -824,11 +820,7 @@ namespace Open_World_Server
             try { itemQuantity = command.Split(' ')[2]; }
             catch
             {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
-                Console.WriteLine("[{0}] | Usage: Giveitemall [itemID] [itemQuantity] [itemQuality]", DateTime.Now);
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine(Environment.NewLine);
+                WriteColoredLog($"Missing Parameter(s)\nUsage: Giveitemall [itemID] [itemQuantity] [itemQuality]\n", warnColor);
                 ListenForCommands();
             }
 
@@ -836,11 +828,7 @@ namespace Open_World_Server
             try { itemQuality = command.Split(' ')[3]; }
             catch
             {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
-                Console.WriteLine("[{0}] | Usage: Giveitemall [itemID] [itemQuantity] [itemQuality]", DateTime.Now);
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine(Environment.NewLine);
+                WriteColoredLog($"Missing Parameter(s)\nUsage: Giveitemall [itemID] [itemQuantity] [itemQuality]\n", warnColor);
                 ListenForCommands();
             }
 
@@ -848,10 +836,7 @@ namespace Open_World_Server
             {
                 _Networking.SendData(client, "GiftedItems│" + itemID + "┼" + itemQuantity + "┼" + itemQuality + "┼");
 
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("[{0}] | Item Has Neen Gifted To All Players", DateTime.Now);
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine(Environment.NewLine);
+                WriteColoredLog($"Item Has Neen Gifted To All Players\n", messageColor);
                 ListenForCommands();
             }
         }
@@ -863,8 +848,7 @@ namespace Open_World_Server
             try { clientID = command.Split(' ')[1]; }
             catch
             {
-                WriteColoredLog("Missing Parameters", ConsoleColor.Yellow);
-                Console.WriteLine(Environment.NewLine);
+                WriteColoredLog("Missing Parameters\n", warnColor);
                 ListenForCommands();
             }
 
@@ -879,8 +863,7 @@ namespace Open_World_Server
                 }
             }
 
-            WriteColoredLog($"Player {clientID} Not Found", ConsoleColor.Yellow);
-            Console.WriteLine(Environment.NewLine);
+            WriteColoredLog($"Player {clientID} Not Found\n", warnColor);
         }
         private void Deprotect(string command)
         {
@@ -890,8 +873,7 @@ namespace Open_World_Server
             try { clientID = command.Split(' ')[1]; }
             catch
             {
-                WriteColoredLog("Missing Parameters", ConsoleColor.Yellow);
-                Console.WriteLine(Environment.NewLine);
+                WriteColoredLog("Missing Parameters\n", warnColor);
                 ListenForCommands();
             }
 
@@ -905,9 +887,7 @@ namespace Open_World_Server
                     ListenForCommands();
                 }
             }
-
-            WriteColoredLog($"Player {clientID} Not Found", ConsoleColor.Yellow);
-            Console.WriteLine(Environment.NewLine);
+            WriteColoredLog($"Player {clientID} Not Found\n", warnColor);
         }
         private void Immunize(string command)
         {
@@ -917,8 +897,7 @@ namespace Open_World_Server
             try { clientID = command.Split(' ')[1]; }
             catch
             {
-                WriteColoredLog("Missing Parameters", ConsoleColor.Yellow);
-                Console.WriteLine(Environment.NewLine);
+                WriteColoredLog("Missing Parameters\n", warnColor);
                 ListenForCommands();
             }
 
@@ -934,8 +913,7 @@ namespace Open_World_Server
                 }
             }
 
-            WriteColoredLog($"Player {clientID} Not Found", ConsoleColor.Yellow);
-            Console.WriteLine(Environment.NewLine);
+            WriteColoredLog($"Player {clientID} Not Found\n", warnColor);
         }
         private void Deimmunize(string command)
         {
@@ -962,8 +940,7 @@ namespace Open_World_Server
                 }
             }
 
-            WriteColoredLog($"Player {clientID} Not Found", ConsoleColor.Yellow);
-            Console.WriteLine(Environment.NewLine);
+            WriteColoredLog($"Player {clientID} Not Found\n", warnColor);
         }
         private void AdminList()
         {
@@ -1031,8 +1008,6 @@ namespace Open_World_Server
         }
         private void ListenForCommands()
         {
-            Console.ForegroundColor = ConsoleColor.White;
-
             // Trim the leading and trailing white space off the commmand, if any, then pull the command word off to use in the switch.
             string command = Console.ReadLine().Trim(), commandWord = command.Split(" ")[0].ToLower();
 
