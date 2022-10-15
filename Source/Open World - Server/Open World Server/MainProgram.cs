@@ -138,8 +138,7 @@ namespace Open_World_Server
             try { message = command.Remove(0, 4); }
             catch
             {
-                WriteColoredLog("Missing Parameters", ConsoleColor.Yellow);
-                Console.WriteLine(Environment.NewLine);
+                WriteColoredLog("Missing Parameters\n", ConsoleColor.Yellow);
                 ListenForCommands();
             }
 
@@ -171,15 +170,13 @@ namespace Open_World_Server
 
                 if (string.IsNullOrWhiteSpace(text))
                 {
-                    WriteColoredLog("Missing Parameters", ConsoleColor.Yellow);
-                    Console.WriteLine(Environment.NewLine);
+                    WriteColoredLog("Missing Parameters\n", ConsoleColor.Yellow);
                     ListenForCommands();
                 }
             }
             catch
             {
-                WriteColoredLog("Missing Parameters", ConsoleColor.Yellow);
-                Console.WriteLine(Environment.NewLine);
+                WriteColoredLog("Missing Parameters\n", ConsoleColor.Yellow);
                 ListenForCommands();
             }
 
@@ -187,11 +184,7 @@ namespace Open_World_Server
             {
                 _Networking.SendData(sc, "Notification│" + text);
             }
-
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("[{0}] | Letter Sent To Every Connected Player", DateTime.Now);
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine(Environment.NewLine);
+            WriteColoredLog("Letter Sent To Every Connected Player\n", ConsoleColor.Green);
             ListenForCommands();
         }
         private void Notify(string command)
