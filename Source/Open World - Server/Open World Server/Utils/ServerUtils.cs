@@ -799,16 +799,11 @@ namespace Open_World_Server
 
         public void CompareConnectingClientWithConnecteds(ServerClient client)
         {
-            foreach (ServerClient sc in OWServer._Networking.connectedClients)
-            {
-                if (sc.username == client.username)
-                {
-                    if (sc == client) continue;
-
-                    OWServer._Networking.SendData(sc, "Disconnect│AnotherLogin");
-                    sc.disconnectFlag = true;
-                    break;
-                }
+            // TODO: Maybe do this with SteamID's?
+            if (OWServer._Networking.connectedClients.Any(x => x.username == client.username && x!=client))
+            { 
+                OWServer._Networking.SendData(client, "Disconnect│AnotherLogin");
+                client.disconnectFlag = true;
             }
         }
 
