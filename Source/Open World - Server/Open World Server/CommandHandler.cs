@@ -29,7 +29,7 @@ namespace Open_World_Server
 
             ServerUtils.WriteServerLog("Communication:", messageColor);
             ServerUtils.WriteServerLog("Say - Send A Chat Message\n" +
-                "Broadcast - Send A Letter To Every Player Connected\n" +
+                "NotifyAll - Send A Letter To Every Player Connected\n" +
                 "Notify - Send A Letter To X Player\n" +
                 "Chat - Displays Chat Menu\n");
 
@@ -56,79 +56,71 @@ namespace Open_World_Server
                 "Wipe - Deletes Every Player Data In The Server\n");
         }
         // TODO: Parameterize the methods so the whole command doesn't have to be passed in, it should be caught when the predicates are called.
-        public void Say(string command)
+        public void Say(string[] args)
         {
-            string message = "";
-            try { message = command.Remove(0, 4); }
-            catch
+            // Args is expected to be split on spaces, but since the say command takes multiple words as a string, we'll glue them back together.
+            string message = String.Join(' ', args);
+            // If the result is whitespace, they didn't give us a message.
+            if (string.IsNullOrWhiteSpace(message)) ServerUtils.WriteServerLog("Missing Parameter 'message'\nCorrect Usage: \"say [message]\" where [message] is one or more characters, including spaces.\n", warnColor);
+            // If it's not, handle the command.
+            else
             {
-                ServerUtils.WriteServerLog("Missing Parameters\n", warnColor);
+                string messageForConsole = "Chat - [Console] " + message;
+
+                ServerUtils.WriteServerLog(messageForConsole);
+
+                OWServer.chatCache.Add("[" + DateTime.Now + "]" + " │ " + messageForConsole);
+
+
+                // TODO: This should really be a static broadcast method in Networking rather than a foreach everywhere we send to all clients.
+                foreach (ServerClient sc in OWServer._Networking.connectedClients)
+                {
+                    try
+                    {
+                        OWServer._Networking.SendData(sc, "ChatMessage│SERVER│" + message);
+                    }
+                    catch
+                    {
+                        ServerUtils.WriteServerLog($"Failed to send chat data to client {sc.username}.", errorColor);
+                    }
+                }
+
             }
-
-            string messageForConsole = "Chat - [Console] " + message;
-
-            ServerUtils.WriteServerLog(messageForConsole);
-
-            OWServer.chatCache.Add("[" + DateTime.Now + "]" + " │ " + messageForConsole);
-
-            try
+        }
+        public void NotifyAll(string[] args)
+        {
+            // Args is expected to be split on spaces, but since the say command takes multiple words as a string, we'll glue them back together.
+            string message = String.Join(' ', args);
+            // If the result is whitespace, they didn't give us a message.
+            if (string.IsNullOrWhiteSpace(message)) ServerUtils.WriteServerLog("Missing Parameter 'message'\nCorrect Usage: \"notifyall [message]\" where [message] is one or more characters, including spaces.\n", warnColor);
+            // If it's not, handle the command.
+            else
             {
                 foreach (ServerClient sc in OWServer._Networking.connectedClients)
                 {
-                    OWServer._Networking.SendData(sc, "ChatMessage│SERVER│" + message);
+                    try
+                    {
+                        // TODO: These pefixes should really be an enum parameter.
+                        OWServer._Networking.SendData(sc, "Notification│" + message);
+                    }
+                    catch
+                    {
+                        ServerUtils.WriteServerLog($"Failed to send notification data to client {sc.username}.", errorColor);
+                    }
                 }
             }
-            catch { }
+            ServerUtils.WriteServerLog("Notification sent to all connected players.\n", messageColor);
         }
-        public void Broadcast(string command)
+        public void Notify(string[] args)
         {
-            string text = "";
-            try
-            {
-                command = command.Remove(0, 10);
-                text = command;
-                if (string.IsNullOrWhiteSpace(text))
-                {
-                    ServerUtils.WriteServerLog("Missing Parameters\n", warnColor);
-                }
-            }
-            catch
-            {
-                ServerUtils.WriteServerLog("Missing Parameters\n", warnColor);
-            }
-            foreach (ServerClient sc in OWServer._Networking.connectedClients)
-            {
-                OWServer._Networking.SendData(sc, "Notification│" + text);
-            }
-            ServerUtils.WriteServerLog("Letter Sent To Every Connected Player\n", messageColor);
-        }
-        public void Notify(string command)
-        {
-            string target = "", text = "";
-            try
-            {
-                command = command.Remove(0, 7);
-                target = command.Split(' ')[0];
-                text = command.Replace(target + " ", "");
-
-                if (string.IsNullOrWhiteSpace(text))
-                {
-                    ServerUtils.WriteServerLog("Missing Parameters\n", warnColor);
-                }
-            }
-            catch
-            {
-                ServerUtils.WriteServerLog("Missing Parameters\n", warnColor);
-            }
-            ServerClient targetClient = OWServer._Networking.connectedClients.Find(fetch => fetch.username == target);
-            if (targetClient == null)
-            {
-                ServerUtils.WriteServerLog($"Player {target} Not Found\n", warnColor);
-            }
+            string target = args[0], message = String.Join(' ', args.TakeLast(args.Length-1).ToArray());
+            if (string.IsNullOrWhiteSpace(target) || string.IsNullOrWhiteSpace(message)) ServerUtils.WriteServerLog("Missing Parameter(s)\nCorrect Usage: \"notify [targer] [message]\" where [target] is a player's username and [message] is one or more characters, including spaces.\n", warnColor);
+            ServerClient targetClient;
+            if ((targetClient = OWServer._Networking.connectedClients.Where(x => x.username == target).SingleOrDefault()) == null) ServerUtils.WriteServerLog($"Player {target} was not found.\n", warnColor);
             else
             {
-                OWServer._Networking.SendData(targetClient, "Notification│" + text);
-                ServerUtils.WriteServerLog($"Sent Letter To [{targetClient.username}]\n", messageColor);
+                OWServer._Networking.SendData(targetClient, "Notification│" + message);
+                ServerUtils.WriteServerLog($"Notification sent to player {targetClient.username}.\n", messageColor);
             }
         }
         public void Settings()

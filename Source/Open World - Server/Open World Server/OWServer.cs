@@ -101,8 +101,9 @@ namespace Open_World_Server
         private static void ListenForCommands()
         {
             // Trim the leading and trailing white space off the commmand, if any, then pull the command word off to use in the switch.
-            
-            string command = Console.ReadLine().Trim(), commandWord = command.Split(" ")[0].ToLower();
+
+            string[] commandParts = Console.ReadLine().Trim().Split(" "), commandArgs = commandParts.TakeLast(commandParts.Length-1).ToArray();
+            string commandWord = commandParts[0].ToLower();
             Dictionary<string, Action> simpleCommands = new Dictionary<string, Action>()
             {
                 {"help", _CommandHandler.Help},
@@ -120,11 +121,15 @@ namespace Open_World_Server
                 {"clear", Console.Clear},
                 {"exit", _CommandHandler.Exit}
             };
-            Dictionary<string, Action<string>> complexCommands = new Dictionary<string, Action<string>>()
+            Dictionary<string, Action<string[]>> rewrittenCommands = new Dictionary<string, Action<string[]>>()
             {
                 {"say", _CommandHandler.Say},
-                {"broadcast", _CommandHandler.Broadcast},
+                {"notifyall", _CommandHandler.NotifyAll},
                 {"notify", _CommandHandler.Notify},
+                
+            };
+            Dictionary<string, Action<string>> complexCommands = new Dictionary<string, Action<string>>()
+            {
                 {"invoke", _CommandHandler.Invoke},
                 {"plague", _CommandHandler.Plague},
                 {"investigate", _CommandHandler.Investigate},
@@ -141,8 +146,9 @@ namespace Open_World_Server
                 {"deimmunize", _CommandHandler.Deimmunize}
             };
             if (simpleCommands.ContainsKey(commandWord)) simpleCommands[commandWord]();
-            else if (complexCommands.ContainsKey(commandWord)) complexCommands[commandWord](command);
-            else ServerUtils.WriteServerLog($"Command \"{command}\" Not Found\n", WARN_COLOR);
+            else if (complexCommands.ContainsKey(commandWord)) complexCommands[commandWord](String.Join(' ', commandParts));
+            else if (rewrittenCommands.ContainsKey(commandWord)) rewrittenCommands[commandWord](commandArgs);
+            else ServerUtils.WriteServerLog($"Command \"{commandWord}\" Not Found\n", WARN_COLOR);
         }
     }
 }
