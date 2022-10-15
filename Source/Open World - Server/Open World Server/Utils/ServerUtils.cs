@@ -814,18 +814,16 @@ namespace Open_World_Server
 
         public bool CompareConnectingClientWithWhitelist(ServerClient client)
         {
-            if (!OWServer.usingWhitelist) return true;
-            if (client.isAdmin) return true;
-
-            foreach (string str in OWServer.whitelistedUsernames)
+            bool allowConnection = false;
+            // TODO: The usingWhitelist check should be done before this method is even called.
+            if (!OWServer.usingWhitelist || client.isAdmin || OWServer.whitelistedUsernames.Any(x => x == client.username)) allowConnection = true;
+            else
             {
-                if (str == client.username) return true;
+                OWServer._Networking.SendData(client, "Disconnect│Whitelist");
+                client.disconnectFlag = true;
+                WriteServerLog("Player [" + client.username + "] Tried To Join But Is Not Whitelisted");
             }
-
-            OWServer._Networking.SendData(client, "Disconnect│Whitelist");
-            client.disconnectFlag = true;
-            WriteServerLog("Player [" + client.username + "] Tried To Join But Is Not Whitelisted");
-            return false;
+            return allowConnection;
         }
 
         public bool CompareConnectingClientVersion(ServerClient client, string clientVersion)
