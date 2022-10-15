@@ -542,10 +542,7 @@ namespace Open_World_Server
                 if (client.username == clientID)
                 {
                     client.disconnectFlag = true;
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("[{0}] | Player [{1}] Has Been Kicked", DateTime.Now, clientID);
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.WriteLine(Environment.NewLine);
+                    WriteColoredLog($"Player {clientID} Has Been Kicked\n", warnColor);
                     ListenForCommands();
                 }
             }
@@ -555,8 +552,6 @@ namespace Open_World_Server
         }
         private void Ban(string command)
         {
-
-
             string clientID = "";
             try { clientID = command.Split(' ')[1]; }
             catch
