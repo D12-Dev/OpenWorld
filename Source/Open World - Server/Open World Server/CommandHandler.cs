@@ -63,7 +63,6 @@ namespace Open_World_Server
             catch
             {
                 MainProgram._ServerUtils.WriteServerLog("Missing Parameters\n", warnColor);
-                // TODO: STOP CALLING THIS RECURSIVELY! IT'S CAUSING A MEMORY LEAK!
             }
 
             string messageForConsole = "Chat - [Console] " + message;

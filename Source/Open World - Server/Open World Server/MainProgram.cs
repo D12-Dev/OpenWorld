@@ -12,9 +12,6 @@ namespace Open_World_Server
     [Serializable]
     public class MainProgram
     {
-        // TODO: WHY IS THIS HERE?
-        public static MainProgram _MainProgram = new MainProgram();
-
         // -- Declarations --
         // Static Instances
         public static Threading _Threading = new Threading();
@@ -93,10 +90,10 @@ namespace Open_World_Server
             _ServerUtils.CheckForFiles();
 
             _Threading.GenerateThreads(0);
-            while(true) _MainProgram.ListenForCommands();
+            while(true) ListenForCommands();
         }
         
-        private void ListenForCommands()
+        private static void ListenForCommands()
         {
             // Trim the leading and trailing white space off the commmand, if any, then pull the command word off to use in the switch.
             Console.ForegroundColor = ConsoleColor.White;
