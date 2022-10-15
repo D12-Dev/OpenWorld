@@ -75,7 +75,7 @@ namespace Open_World_Server
         private void WriteColoredLog(string output, ConsoleColor color = defaultColor)
         {
             Console.ForegroundColor = color;
-            foreach (string line in output.Split("\n")) Console.WriteLine($"[{DateTime.Now}] | {line}");
+            foreach (string line in output.Split("\n")) Console.WriteLine(string.IsNullOrWhiteSpace(line)?"\n":$"[{DateTime.Now}] | {line}");
         }
         static void Main()
         {
@@ -109,15 +109,13 @@ namespace Open_World_Server
                 "List - Displays Player List Menu\n" +
                 "Whitelist - Shows All Whitelisted Players\n" +
                 "Clear - Clears The Console\n" +
-                "Exit - Closes The Server");
-            Console.WriteLine(Environment.NewLine);
+                "Exit - Closes The Server\n");
 
             WriteColoredLog("Communication:", ConsoleColor.Green);
             WriteColoredLog("Say - Send A Chat Message\n" +
                 "Broadcast - Send A Letter To Every Player Connected\n" +
                 "Notify - Send A Letter To X Player\n" +
-                "Chat - Displays Chat Menu");
-            Console.WriteLine(Environment.NewLine);
+                "Chat - Displays Chat Menu\n");
 
             WriteColoredLog("Interaction:", ConsoleColor.Green);
             WriteColoredLog("Invoke - Invokes An Event To X Player\n" +
@@ -128,8 +126,7 @@ namespace Open_World_Server
                 "Protect - Protects A Player From Any Event Temporarily\n" +
                 "Deprotect - Disables All Protections Given To X Player\n" +
                 "Immunize - Protects A Player From Any Event Permanently\n" +
-                "Deimmunize - Disables The Immunity Given To X Player");
-            Console.WriteLine(Environment.NewLine);
+                "Deimmunize - Disables The Immunity Given To X Player\n");
 
             WriteColoredLog("Admin Control:", ConsoleColor.Green);
             WriteColoredLog("Investigate - Displays All Data About X Player\n" +
@@ -140,8 +137,7 @@ namespace Open_World_Server
                 "Ban - Bans X Player\n" +
                 "Pardon - Pardons X Player\n" +
                 "Banlist - Shows All Banned Players\n" +
-                "Wipe - Deletes Every Player Data In The Server");
-            Console.WriteLine(Environment.NewLine);
+                "Wipe - Deletes Every Player Data In The Server\n");
         }
         private void Say(string command)
         {
