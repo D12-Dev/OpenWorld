@@ -71,11 +71,11 @@ namespace Open_World_Server
         // -- End Declarations --
 
         // TODO: Resolve duplication with ServerUtils.LogToConsole()
-        private void WriteColoredLog(string output, ConsoleColor color = defaultColor)
+        private static void WriteColoredLog(string output, ConsoleColor color = defaultColor)
         {
             Console.ForegroundColor = color;
             // TODO: Build string then write
-            foreach (string line in output.Split("\n")) Console.WriteLine(string.IsNullOrWhiteSpace(line) ? "\n" : $"[{DateTime.Now}] | {line}");
+            foreach (string line in output.Split("\n")) Console.WriteLine(string.IsNullOrWhiteSpace(line) ? "\n" : $"[{DateTime.Now.ToString("HH:mm:ss")}] | {line}");
         }
         static void Main()
         {
@@ -88,8 +88,8 @@ namespace Open_World_Server
             _MainProgram.logFolderPath = _MainProgram.mainFolderPath + Path.DirectorySeparatorChar + "Logs";
 
             Console.ForegroundColor = messageColor;
-            _ServerUtils.LogToConsole("Server Startup:");
-            _ServerUtils.LogToConsole("Using Culture Info: [" + CultureInfo.CurrentCulture + "]");
+            WriteColoredLog("--------------\nServer Startup\n--------------\nWelcome to Open World - Multiplayer for RimWorld", messageColor);
+            WriteColoredLog($"Using Culture Info: '{CultureInfo.CurrentCulture}'");
 
             _ServerUtils.SetupPaths();
             _ServerUtils.CheckForFiles();
@@ -791,6 +791,7 @@ namespace Open_World_Server
         private void ListenForCommands()
         {
             // Trim the leading and trailing white space off the commmand, if any, then pull the command word off to use in the switch.
+            Console.Write("Enter Command> ");
             string command = Console.ReadLine().Trim(), commandWord = command.Split(" ")[0].ToLower();
             Dictionary<string, Action> simpleCommands = new Dictionary<string, Action>()
             {
