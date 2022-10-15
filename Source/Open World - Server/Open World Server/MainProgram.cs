@@ -9,7 +9,7 @@ using System.Threading;
 
 namespace Open_World_Server
 {
-    [System.Serializable]
+    [Serializable]
     public class MainProgram
     {
         // Instances
