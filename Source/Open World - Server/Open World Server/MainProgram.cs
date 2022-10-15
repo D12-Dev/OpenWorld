@@ -738,16 +738,12 @@ namespace Open_World_Server
         private void GiveItem(string command)
         {
             Console.Clear();
-
+            // TODO: Prescreen the length and get rid of all the repeated try/catches.
             string clientID = "";
             try { clientID = command.Split(' ')[1]; }
             catch
             {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
-                Console.WriteLine("[{0}] | Usage: Giveitem [username] [itemID] [itemQuantity] [itemQuality]", DateTime.Now);
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine(Environment.NewLine);
+                WriteColoredLog($"Missing Parameter(s)\nUsage: GiveItem [username] [itemID] [itemQuantity] [itemQuality]\n", warnColor);
                 ListenForCommands();
             }
 
@@ -755,11 +751,7 @@ namespace Open_World_Server
             try { itemID = command.Split(' ')[2]; }
             catch
             {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
-                Console.WriteLine("[{0}] | Usage: GiveItem [username] [itemID] [itemQuantity] [itemQuality]", DateTime.Now);
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine(Environment.NewLine);
+                WriteColoredLog($"Missing Parameter(s)\nUsage: GiveItem [username] [itemID] [itemQuantity] [itemQuality]\n", warnColor);
                 ListenForCommands();
             }
 
@@ -767,11 +759,7 @@ namespace Open_World_Server
             try { itemQuantity = command.Split(' ')[3]; }
             catch
             {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
-                Console.WriteLine("[{0}] | Usage: GiveItem [username] [itemID] [itemQuantity] [itemQuality]", DateTime.Now);
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine(Environment.NewLine);
+                WriteColoredLog($"Missing Parameter(s)\nUsage: GiveItem [username] [itemID] [itemQuantity] [itemQuality]\n", warnColor);
                 ListenForCommands();
             }
 
@@ -779,11 +767,7 @@ namespace Open_World_Server
             try { itemQuality = command.Split(' ')[4]; }
             catch
             {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("[{0}] | Missing Parameters", DateTime.Now);
-                Console.WriteLine("[{0}] | Usage: GiveItem [username] [itemID] [itemQuantity] [itemQuality]", DateTime.Now);
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine(Environment.NewLine);
+                WriteColoredLog($"Missing Parameter(s)\nUsage: GiveItem [username] [itemID] [itemQuantity] [itemQuality]\n", warnColor);
                 ListenForCommands();
             }
 
@@ -793,21 +777,17 @@ namespace Open_World_Server
                 {
                     _Networking.SendData(client, "GiftedItems│" + itemID + "┼" + itemQuantity + "┼" + itemQuality + "┼");
 
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("[{0}] | Item Has Neen Gifted To Player [{1}]", DateTime.Now, client.username);
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.WriteLine(Environment.NewLine);
+                    WriteColoredLog($"Item Has Neen Gifted To Player [{client.username}]\n", messageColor);
                     ListenForCommands();
                 }
             }
 
-            WriteColoredLog($"Player {clientID} Not Found", ConsoleColor.Yellow);
-            Console.WriteLine(Environment.NewLine);
+            WriteColoredLog($"Player {clientID} Not Found\n", ConsoleColor.Yellow);
         }
         private void GiveItemAll(string command)
         {
             Console.Clear();
-
+            // TODO: Prescreen the length and get rid of all the repeated try/catches.
             string itemID = "";
             try { itemID = command.Split(' ')[1]; }
             catch
