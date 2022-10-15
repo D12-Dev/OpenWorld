@@ -456,6 +456,7 @@ namespace Open_World_Server
                 WriteColoredLog("Missing Parameters\n", warnColor);
                 ListenForCommands();
             }
+            // TODO: Update this to Where() syntax, this is checking them all even after it finds the right one.
             foreach (ServerClient client in _Networking.connectedClients)
             {
                 if (client.username == clientID)
@@ -479,6 +480,7 @@ namespace Open_World_Server
                 WriteColoredLog("Missing Parameters\n", warnColor);
                 ListenForCommands();
             }
+            // TODO: Update this to Where() syntax, this is checking them all even after it finds the right one.
             foreach (KeyValuePair<string, string> pair in bannedIPs)
             {
                 if (pair.Value == clientUsername)
@@ -500,6 +502,7 @@ namespace Open_World_Server
                 WriteColoredLog("Missing Parameters\n", warnColor);
                 ListenForCommands();
             }
+            // TODO: Update this to Where() syntax, this is checking them all even after it finds the right one.
             foreach (ServerClient client in _Networking.connectedClients)
             {
                 if (client.username == clientID)
@@ -538,6 +541,7 @@ namespace Open_World_Server
                 WriteColoredLog("Missing Parameters\n", warnColor);
                 ListenForCommands();
             }
+            // TODO: Update this to Where() syntax, this is checking them all even after it finds the right one.
             foreach (ServerClient client in _Networking.connectedClients)
             {
                 if (client.username == clientID)
@@ -599,6 +603,7 @@ namespace Open_World_Server
                 WriteColoredLog($"Missing Parameter(s)\nUsage: GiveItem [username] [itemID] [itemQuantity] [itemQuality]\n", warnColor);
                 ListenForCommands();
             }
+            // TODO: Update this to Where() syntax, this is checking them all even after it finds the right one.
             foreach (ServerClient client in _Networking.connectedClients)
             {
                 if (client.username == clientID)
@@ -654,6 +659,7 @@ namespace Open_World_Server
                 WriteColoredLog("Missing Parameters\n", warnColor);
                 ListenForCommands();
             }
+            // TODO: Update this to Where() syntax, this is checking them all even after it finds the right one.
             foreach (ServerClient client in _Networking.connectedClients)
             {
                 if (client.username == clientID)
@@ -678,6 +684,7 @@ namespace Open_World_Server
                 WriteColoredLog("Missing Parameters\n", warnColor);
                 ListenForCommands();
             }
+            // TODO: Update this to Where() syntax, this is checking them all even after it finds the right one.
             foreach (ServerClient client in _Networking.connectedClients)
             {
                 if (client.username == clientID)
@@ -699,7 +706,7 @@ namespace Open_World_Server
                 WriteColoredLog("Missing Parameters\n", warnColor);
                 ListenForCommands();
             }
-
+            // TODO: Update this to Where() syntax, this is checking them all even after it finds the right one.
             foreach (ServerClient client in _Networking.connectedClients)
             {
                 if (client.username == clientID)
@@ -711,7 +718,6 @@ namespace Open_World_Server
                     ListenForCommands();
                 }
             }
-
             WriteColoredLog($"Player {clientID} Not Found\n", warnColor);
         }
         private void Deimmunize(string command)
@@ -723,7 +729,7 @@ namespace Open_World_Server
                 WriteColoredLog("Missing Parameters\n", warnColor);
                 ListenForCommands();
             }
-
+            // TODO: Update this to Where() syntax, this is checking them all even after it finds the right one.
             foreach (ServerClient client in _Networking.connectedClients)
             {
                 if (client.username == clientID)
@@ -735,7 +741,6 @@ namespace Open_World_Server
                     ListenForCommands();
                 }
             }
-
             WriteColoredLog($"Player {clientID} Not Found\n", warnColor);
         }
         private void AdminList()
@@ -783,14 +788,7 @@ namespace Open_World_Server
         }
         private void Exit()
         {
-            List<ServerClient> clientsToKick = new List<ServerClient>();
-
             foreach (ServerClient sc in _Networking.connectedClients)
-            {
-                clientsToKick.Add(sc);
-            }
-
-            foreach (ServerClient sc in clientsToKick)
             {
                 _Networking.SendData(sc, "Disconnect│Closing");
                 sc.disconnectFlag = true;
@@ -843,10 +841,7 @@ namespace Open_World_Server
             Console.Clear();
             if (simpleCommands.ContainsKey(commandWord)) simpleCommands[commandWord]();
             else if (complexCommands.ContainsKey(commandWord)) complexCommands[commandWord](command);
-            else
-            {
-                WriteColoredLog($"Command \"{command}\" Not Found\n", warnColor);
-            }
+            else WriteColoredLog($"Command \"{command}\" Not Found\n", warnColor);
             ListenForCommands();
         }
     }
