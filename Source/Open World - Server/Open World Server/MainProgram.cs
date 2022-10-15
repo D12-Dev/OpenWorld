@@ -1184,44 +1184,52 @@ namespace Open_World_Server
             // Trim the leading and trailing white space off the commmand, if any, then pull the command word off to use in the switch.
             string command = Console.ReadLine().Trim(), commandWord = command.Split(" ")[0].ToLower();
 
-            if (commandWord == "help") Help();
-            else if (commandWord == "say") Say(command);
-            else if (commandWord == "broadcast") Broadcast(command);
-            else if (commandWord == "notify") Notify(command);
-            else if (commandWord == "settings") Settings();
-            else if (commandWord == "reload") Reload();
-            else if (commandWord == "status") Status();
-            else if (commandWord == "invoke") Invoke(command);
-            else if (commandWord == "plague") Plague(command);
-            else if (commandWord == "eventlist") EventList();
-            else if (commandWord == "chat") Chat();
-            else if (commandWord == "list") List();
-            else if (commandWord == "investigate") Investigate(command);
-            else if (commandWord == "settlements") Settlements();
-            else if (commandWord == "banlist") BanList();
-            else if (commandWord == "kick") Kick(command);
-            else if (commandWord == "ban") Ban(command);
-            else if (commandWord == "pardon") Pardon(command);
-            else if (commandWord == "promote") Promote(command);
-            else if (commandWord == "demote") Demote(command);
-            else if (commandWord == "giveitem") GiveItem(command);
-            else if (commandWord == "giveitemall") GiveItemAll(command);
-            else if (commandWord == "protect") Protect(command);
-            else if (commandWord == "deprotect") Deprotect(command);
-            else if (commandWord == "immunize") Immunize(command);
-            else if (commandWord == "deimmunize") Deimmunize(command);
-            else if (commandWord == "adminlist") AdminList();
-            else if (commandWord == "whitelist") WhiteList();
-            else if (commandWord == "wipe") Wipe();
-            else if (commandWord == "clear") Console.Clear();
-            else if (commandWord == "exit") Exit();
+            Dictionary<string, Action> simpleCommands = new Dictionary<string, Action>()
+            {
+                {"help", Help},
+                {"settings", Settings},
+                {"reload", Reload},
+                {"status", Status},
+                {"eventlist", EventList},
+                {"chat", Chat},
+                {"list", List},
+                {"settlements", Settlements},
+                {"banlist", BanList},
+                {"adminlist", AdminList},
+                {"whitelist", WhiteList},
+                {"wipe", Wipe},
+                {"clear", Console.Clear},
+                {"exit", Exit}
+            };
+            Dictionary<string, Action<string>> complexCommands = new Dictionary<string, Action<string>>()
+            {
+                {"say", Say},
+                {"broadcast", Broadcast},
+                {"notify", Notify},
+                {"invoke", Invoke},
+                {"plague", Plague},
+                {"investigate", Investigate},
+                {"kick", Kick},
+                {"ban", Ban},
+                {"pardon", Pardon},
+                {"promote", Promote},
+                {"demote", Demote},
+                {"giveitem", GiveItem},
+                {"giveitemall", GiveItemAll},
+                {"protect", Protect},
+                {"deprotect", Deprotect},
+                {"immunize", Immunize},
+                {"deimmunize", Deimmunize}
+            };
+
+            if (simpleCommands.ContainsKey(commandWord)) simpleCommands[commandWord]();
+            else if (complexCommands.ContainsKey(commandWord)) complexCommands[commandWord](command);
             else
             {
                 Console.Clear();
                 WriteColoredLog($"Command \"{command}\" Not Found", ConsoleColor.Yellow);
                 Console.WriteLine(Environment.NewLine);
             }
-
             ListenForCommands();
         }
     }
