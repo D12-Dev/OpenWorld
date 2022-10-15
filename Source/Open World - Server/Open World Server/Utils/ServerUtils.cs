@@ -15,7 +15,7 @@ namespace Open_World_Server
 
         public void SetupPaths()
         {
-            OWServer._ServerUtils.WriteServerLog("Base Directory At: [" + OWServer.mainFolderPath + "]");
+            ServerUtils.WriteServerLog("Base Directory At: [" + OWServer.mainFolderPath + "]");
             Console.ForegroundColor = ConsoleColor.White;
 
             OWServer.serverSettingsPath = OWServer.mainFolderPath + Path.DirectorySeparatorChar + "Server Settings.txt";
@@ -53,13 +53,13 @@ namespace Open_World_Server
             catch 
             {
                 Console.ForegroundColor = ConsoleColor.Yellow;
-                OWServer._ServerUtils.WriteServerLog("Version Check Failed. This is not dangerous");
+                ServerUtils.WriteServerLog("Version Check Failed. This is not dangerous");
                 Console.ForegroundColor = ConsoleColor.White;
             }
 
             Console.ForegroundColor = ConsoleColor.Yellow;
-            if (OWServer.serverVersion == latestVersion) OWServer._ServerUtils.WriteServerLog("Running Latest Version");
-            else OWServer._ServerUtils.WriteServerLog("Running outdated version. Please Update From Github At Earliest Convenience To Prevent Errors");
+            if (OWServer.serverVersion == latestVersion) ServerUtils.WriteServerLog("Running Latest Version");
+            else ServerUtils.WriteServerLog("Running outdated version. Please Update From Github At Earliest Convenience To Prevent Errors");
             Console.ForegroundColor = ConsoleColor.White;
         }
 
@@ -272,7 +272,7 @@ namespace Open_World_Server
                     }
                 }
 
-                OWServer._ServerUtils.WriteServerLog("Loaded Settings File");
+                ServerUtils.WriteServerLog("Loaded Settings File");
             }
 
             else
@@ -313,7 +313,7 @@ namespace Open_World_Server
 
                 File.WriteAllLines(OWServer.serverSettingsPath, settingsPreset);
 
-                OWServer._ServerUtils.WriteServerLog("Generating Settings File");
+                ServerUtils.WriteServerLog("Generating Settings File");
 
                 CheckSettingsFile();
             }
@@ -327,7 +327,7 @@ namespace Open_World_Server
             if (!Directory.Exists(OWServer.modsFolderPath))
             {
                 Directory.CreateDirectory(OWServer.modsFolderPath);
-                OWServer._ServerUtils.WriteServerLog("No Mods Folder Found, Generating");
+                ServerUtils.WriteServerLog("No Mods Folder Found, Generating");
                 return;
             }
 
@@ -337,7 +337,7 @@ namespace Open_World_Server
 
                 if (modFolders.Length == 0)
                 {
-                    OWServer._ServerUtils.WriteServerLog("No Mods Found, Ignoring");
+                    ServerUtils.WriteServerLog("No Mods Found, Ignoring");
                     return;
                 }
 
@@ -368,7 +368,7 @@ namespace Open_World_Server
 
                     modlist.Sort();
                     OWServer.modList = modlist.ToList();
-                    OWServer._ServerUtils.WriteServerLog("Loaded [" + OWServer.modList.Count() + "] Mods");
+                    ServerUtils.WriteServerLog("Loaded [" + OWServer.modList.Count() + "] Mods");
                 }
             }
         }
@@ -381,7 +381,7 @@ namespace Open_World_Server
             if (!Directory.Exists(OWServer.whitelistedModsFolderPath))
             {
                 Directory.CreateDirectory(OWServer.whitelistedModsFolderPath);
-                OWServer._ServerUtils.WriteServerLog("No Whitelisted Mods Folder Found, Generating");
+                ServerUtils.WriteServerLog("No Whitelisted Mods Folder Found, Generating");
                 return;
             }
 
@@ -389,7 +389,7 @@ namespace Open_World_Server
             {
                 string[] modFolders = Directory.GetDirectories(OWServer.whitelistedModsFolderPath);
 
-                if (modFolders.Length == 0) OWServer._ServerUtils.WriteServerLog("No Whitelisted Mods Found, Ignoring");
+                if (modFolders.Length == 0) ServerUtils.WriteServerLog("No Whitelisted Mods Found, Ignoring");
 
                 else
                 {
@@ -418,7 +418,7 @@ namespace Open_World_Server
 
                     whitelistedModsList.Sort();
                     OWServer.whitelistedMods = whitelistedModsList;
-                    OWServer._ServerUtils.WriteServerLog("Loaded [" + OWServer.whitelistedMods.Count() + "] Whitelisted Mods");
+                    ServerUtils.WriteServerLog("Loaded [" + OWServer.whitelistedMods.Count() + "] Whitelisted Mods");
                 }
             }
         }
@@ -467,7 +467,7 @@ namespace Open_World_Server
                     }
                 }
 
-                OWServer._ServerUtils.WriteServerLog("Loaded World File");
+                ServerUtils.WriteServerLog("Loaded World File");
             }
 
             else
@@ -484,7 +484,7 @@ namespace Open_World_Server
 
                 File.WriteAllLines(OWServer.worldSettingsPath, settingsPreset);
 
-                OWServer._ServerUtils.WriteServerLog("Generating World File");
+                ServerUtils.WriteServerLog("Generating World File");
 
                 CheckWorldFile();
             }
@@ -494,7 +494,7 @@ namespace Open_World_Server
         {
             if (!File.Exists(OWServer.mainFolderPath + Path.DirectorySeparatorChar + "Banned IPs.data"))
             {
-                OWServer._ServerUtils.WriteServerLog("No Bans File Found, Ignoring");
+                ServerUtils.WriteServerLog("No Bans File Found, Ignoring");
                 return;
             }
 
@@ -503,8 +503,8 @@ namespace Open_World_Server
                 OWServer.bannedIPs = list.bannedIPs;
             }
 
-            if (OWServer.bannedIPs.Count() == 0) OWServer._ServerUtils.WriteServerLog("No Banned Players Found, Ignoring");
-            else OWServer._ServerUtils.WriteServerLog("Loaded [" + OWServer.bannedIPs.Count() + "] Banned Players");
+            if (OWServer.bannedIPs.Count() == 0) ServerUtils.WriteServerLog("No Banned Players Found, Ignoring");
+            else ServerUtils.WriteServerLog("Loaded [" + OWServer.bannedIPs.Count() + "] Banned Players");
         }
 
         public void CheckForWhitelistedPlayers()
@@ -515,12 +515,12 @@ namespace Open_World_Server
             {
                 File.Create(OWServer.whitelistedUsersPath);
 
-                OWServer._ServerUtils.WriteServerLog("No Whitelisted Players File Found, Generating");
+                ServerUtils.WriteServerLog("No Whitelisted Players File Found, Generating");
             }
 
             else
             {
-                if (File.ReadAllLines(OWServer.whitelistedUsersPath).Count() == 0) OWServer._ServerUtils.WriteServerLog("No Whitelisted Players Found, Ignoring");
+                if (File.ReadAllLines(OWServer.whitelistedUsersPath).Count() == 0) ServerUtils.WriteServerLog("No Whitelisted Players Found, Ignoring");
                 else
                 {
                     foreach (string str in File.ReadAllLines(OWServer.whitelistedUsersPath))
@@ -528,7 +528,7 @@ namespace Open_World_Server
                         OWServer.whitelistedUsernames.Add(str);
                     }
 
-                    OWServer._ServerUtils.WriteServerLog("Loaded [" + OWServer.whitelistedUsernames.Count() + "] Whitelisted Players");
+                    ServerUtils.WriteServerLog("Loaded [" + OWServer.whitelistedUsernames.Count() + "] Whitelisted Players");
                 }
             }
         }
@@ -675,14 +675,14 @@ namespace Open_World_Server
 
                         OWServer._ServerUtils.UpdateTitle();
 
-                        OWServer._ServerUtils.WriteServerLog("Player [" + client.username + "] " + "[" + ((IPEndPoint)client.tcp.Client.RemoteEndPoint).Address.ToString() + "] " + "Has Connected");
+                        ServerUtils.WriteServerLog("Player [" + client.username + "] " + "[" + ((IPEndPoint)client.tcp.Client.RemoteEndPoint).Address.ToString() + "] " + "Has Connected");
 
                         RefreshClientCount(client);
 
                         if (joinMode == "NewGame")
                         {
                             SendNewGameData();
-                            OWServer._ServerUtils.WriteServerLog("Player [" + client.username + "] Has Reset Game Progress");
+                            ServerUtils.WriteServerLog("Player [" + client.username + "] Has Reset Game Progress");
                         }
 
                         else if (joinMode == "LoadGame")
@@ -697,7 +697,7 @@ namespace Open_World_Server
                         OWServer._Networking.SendData(client, "Disconnect│WrongPassword");
 
                         client.disconnectFlag = true;
-                        OWServer._ServerUtils.WriteServerLog("Player [" + client.username + "] Has Been Kicked For: [Wrong Password]");
+                        ServerUtils.WriteServerLog("Player [" + client.username + "] Has Been Kicked For: [Wrong Password]");
                         return;
                     }
 
@@ -717,7 +717,7 @@ namespace Open_World_Server
 
                 OWServer._ServerUtils.UpdateTitle();
 
-                OWServer._ServerUtils.WriteServerLog("New Player [" + client.username + "] " + "[" + ((IPEndPoint)client.tcp.Client.RemoteEndPoint).Address.ToString() + "] " + "Has Connected For The First Time");
+                ServerUtils.WriteServerLog("New Player [" + client.username + "] " + "[" + ((IPEndPoint)client.tcp.Client.RemoteEndPoint).Address.ToString() + "] " + "Has Connected For The First Time");
 
                 OWServer._PlayerUtils.SaveNewPlayerFile(client.username, client.password);
 
@@ -729,7 +729,7 @@ namespace Open_World_Server
                 else if (joinMode == "LoadGame")
                 {
                     SendLoadGameData();
-                    OWServer._ServerUtils.WriteServerLog("Player [" + client.username + "] Has Registered With Existing Save");
+                    ServerUtils.WriteServerLog("Player [" + client.username + "] Has Registered With Existing Save");
                 }
             }
         }
@@ -740,7 +740,7 @@ namespace Open_World_Server
 
             string messageForConsole = "Chat - [" + client.username + "] " + message;
 
-            OWServer._ServerUtils.WriteServerLog(messageForConsole);
+            ServerUtils.WriteServerLog(messageForConsole);
 
             OWServer.chatCache.Add("[" + DateTime.Now + "]" + " │ " + messageForConsole);
 
@@ -787,7 +787,7 @@ namespace Open_World_Server
 
             if (flagged)
             {
-                OWServer._ServerUtils.WriteServerLog("Player [" + client.username + "] " + "Doesn't Have The Required Mod Or Mod Files Mismatch!");
+                ServerUtils.WriteServerLog("Player [" + client.username + "] " + "Doesn't Have The Required Mod Or Mod Files Mismatch!");
                 flaggedMods = flaggedMods.Remove(flaggedMods.Count() - 1, 1);
                 OWServer._Networking.SendData(client, "Disconnect│WrongMods│" + flaggedMods);
 
@@ -835,7 +835,7 @@ namespace Open_World_Server
                 latestVersion = latestVersion.Remove(latestVersion.Count() - 1, 1);
             }
             catch {
-                OWServer._ServerUtils.WriteServerLog($"Player {client.username} tried to connect, but the latest version number could not be retrieved. Allowing user to connect.", OWServer.WARN_COLOR);
+                ServerUtils.WriteServerLog($"Player {client.username} tried to connect, but the latest version number could not be retrieved. Allowing user to connect.", OWServer.WARN_COLOR);
                 allowToConnect = true; 
             }
             if (clientVersion == latestVersion) allowToConnect = true;
@@ -898,25 +898,28 @@ namespace Open_World_Server
             }
             else return true;
         }
-        public void WriteServerLog(string output, ConsoleColor color = OWServer.DEFAULT_COLOR)
+        public static void WriteServerLog(string output, ConsoleColor color = OWServer.DEFAULT_COLOR)
         {
+            Console.SetCursorPosition(0, Console.CursorTop);
+            
             Console.ForegroundColor = color;
             // TODO: Build string then write
             foreach (string line in output.Split("\n"))
             {
-                string parsedLine = (string.IsNullOrWhiteSpace(line) ? "\n" : $"[{DateTime.Now.ToString("HH:mm:ss")}] | {line}");
+                string parsedLine = (string.IsNullOrWhiteSpace(line) ? "" : $"[{DateTime.Now.ToString("HH:mm:ss")}] | {line}");
                 Console.WriteLine(parsedLine);
 
-                if (line.StartsWith("Chat - [")) WriteToLog(line, "Chat");
-                else if (line.StartsWith("Gift Done Between")) WriteToLog(line, "Gift");
-                else if (line.StartsWith("Trade Done Between")) WriteToLog(line, "Trade");
-                else if (line.StartsWith("Barter Done Between")) WriteToLog(line, "Barter");
-                else if (line.StartsWith("Spy Done Between")) WriteToLog(line, "Spy");
-                else if (line.StartsWith("PvP Done Between")) WriteToLog(line, "PvP");
-                else if (line.StartsWith("Visit Done Between")) WriteToLog(line, "Visit");
-                else WriteToLog(line, "Normal");
+                if (line.StartsWith("Chat - [")) OWServer._ServerUtils.WriteToLog(line, "Chat");
+                else if (line.StartsWith("Gift Done Between")) OWServer._ServerUtils.WriteToLog(line, "Gift");
+                else if (line.StartsWith("Trade Done Between")) OWServer._ServerUtils.WriteToLog(line, "Trade");
+                else if (line.StartsWith("Barter Done Between")) OWServer._ServerUtils.WriteToLog(line, "Barter");
+                else if (line.StartsWith("Spy Done Between")) OWServer._ServerUtils.WriteToLog(line, "Spy");
+                else if (line.StartsWith("PvP Done Between")) OWServer._ServerUtils.WriteToLog(line, "PvP");
+                else if (line.StartsWith("Visit Done Between")) OWServer._ServerUtils.WriteToLog(line, "Visit");
+                else OWServer._ServerUtils.WriteToLog(line, "Normal");
             }
-            
+            Console.ForegroundColor = OWServer.DEFAULT_COLOR;
+            Console.Write("Enter Command> ");
         }
       
 

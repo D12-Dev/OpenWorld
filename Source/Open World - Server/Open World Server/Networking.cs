@@ -24,8 +24,8 @@ namespace Open_World_Server
 
             OWServer._ServerUtils.UpdateTitle();
 
-            OWServer._ServerUtils.WriteServerLog("Server Started");
-            OWServer._ServerUtils.WriteServerLog("Type 'Help' To See Available Commands");
+            ServerUtils.WriteServerLog("Server Started");
+            ServerUtils.WriteServerLog("Type 'Help' To See Available Commands");
 
             OWServer._Threading.GenerateThreads(1);
 
@@ -198,7 +198,7 @@ namespace Open_World_Server
                                 {
                                     SendData(target, "│SentTrade│Deal│");
 
-                                    OWServer._ServerUtils.WriteServerLog("Trade Done Between [" + target.username + "] And [" + client.username + "]");
+                                    ServerUtils.WriteServerLog("Trade Done Between [" + target.username + "] And [" + client.username + "]");
                                 }
 
                                 else if (encryptedData.StartsWith(OWServer._Encryption.EncryptString("TradeStatus│Reject│")))
@@ -234,7 +234,7 @@ namespace Open_World_Server
                                 {
                                     SendData(target, "│SentBarter│Deal│");
 
-                                    OWServer._ServerUtils.WriteServerLog("Barter Done Between [" + target.username + "] And [" + client.username + "]");
+                                    ServerUtils.WriteServerLog("Barter Done Between [" + target.username + "] And [" + client.username + "]");
                                 }
 
                                 else if (encryptedData.StartsWith(OWServer._Encryption.EncryptString("BarterStatus│Reject│")))
@@ -341,7 +341,7 @@ namespace Open_World_Server
             try { connectedClients.Remove(client); }
             catch { }
 
-            if (kickMode == "Normal") OWServer._ServerUtils.WriteServerLog("Player [" + client.username + "] Has Disconnected");
+            if (kickMode == "Normal") ServerUtils.WriteServerLog("Player [" + client.username + "] Has Disconnected");
             else if (kickMode == "Silent") { }
             else { }
 
@@ -352,8 +352,7 @@ namespace Open_World_Server
 
         public void CheckClientsConnection()
         {
-            OWServer._ServerUtils.WriteServerLog("Network Line Started");
-            OWServer._ServerUtils.WriteServerLog(Environment.NewLine);
+            ServerUtils.WriteServerLog("Network Line Started");
 
             while (true)
             {

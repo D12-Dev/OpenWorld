@@ -66,6 +66,12 @@ namespace Open_World_Server
           WARN_COLOR = ConsoleColor.Yellow,
           ERROR_COLOR = ConsoleColor.Red,
           MESSAGE_COLOR = ConsoleColor.Green;
+
+        // Setup Tracking
+        public static bool networkingDone = false;
+
+
+        public int vCursorCache = 0, hCursorCache = 0;
         // -- End Declarations --
 
         
@@ -81,8 +87,8 @@ namespace Open_World_Server
             logFolderPath = mainFolderPath + Path.DirectorySeparatorChar + "Logs";
 
             Console.ForegroundColor = MESSAGE_COLOR;
-            _ServerUtils.WriteServerLog("--------------\nServer Startup\n--------------\nWelcome to Open World - Multiplayer for RimWorld", MESSAGE_COLOR);
-            _ServerUtils.WriteServerLog($"Using Culture Info: '{CultureInfo.CurrentCulture}'");
+            ServerUtils.WriteServerLog("--------------\nServer Startup\n--------------\nWelcome to Open World - Multiplayer for RimWorld", MESSAGE_COLOR);
+            ServerUtils.WriteServerLog($"Using Culture Info: '{CultureInfo.CurrentCulture}'");
 
             _ServerUtils.SetupPaths();
             _ServerUtils.CheckForFiles();
@@ -91,11 +97,11 @@ namespace Open_World_Server
             while(true) ListenForCommands();
         }
         
+
         private static void ListenForCommands()
         {
             // Trim the leading and trailing white space off the commmand, if any, then pull the command word off to use in the switch.
-            Console.ForegroundColor = DEFAULT_COLOR;
-            Console.Write("Enter Command> ");
+            
             string command = Console.ReadLine().Trim(), commandWord = command.Split(" ")[0].ToLower();
             Dictionary<string, Action> simpleCommands = new Dictionary<string, Action>()
             {
@@ -134,10 +140,9 @@ namespace Open_World_Server
                 {"immunize", _CommandHandler.Immunize},
                 {"deimmunize", _CommandHandler.Deimmunize}
             };
-            Console.Clear();
             if (simpleCommands.ContainsKey(commandWord)) simpleCommands[commandWord]();
             else if (complexCommands.ContainsKey(commandWord)) complexCommands[commandWord](command);
-            else _ServerUtils.WriteServerLog($"Command \"{command}\" Not Found\n", WARN_COLOR);
+            else ServerUtils.WriteServerLog($"Command \"{command}\" Not Found\n", WARN_COLOR);
         }
     }
 }
