@@ -138,7 +138,7 @@ namespace Open_World_Server
             try { message = command.Remove(0, 4); }
             catch
             {
-                WriteColoredLog("Missing Parameters\n", ConsoleColor.Yellow);
+                WriteColoredLog("Missing Parameters\n", warnColor);
                 ListenForCommands();
             }
 
@@ -169,13 +169,13 @@ namespace Open_World_Server
 
                 if (string.IsNullOrWhiteSpace(text))
                 {
-                    WriteColoredLog("Missing Parameters\n", ConsoleColor.Yellow);
+                    WriteColoredLog("Missing Parameters\n", warnColor);
                     ListenForCommands();
                 }
             }
             catch
             {
-                WriteColoredLog("Missing Parameters\n", ConsoleColor.Yellow);
+                WriteColoredLog("Missing Parameters\n", warnColor);
                 ListenForCommands();
             }
 
@@ -188,8 +188,7 @@ namespace Open_World_Server
         }
         private void Notify(string command)
         {
-            string target = "";
-            string text = "";
+            string target = "", text = "";
             try
             {
                 command = command.Remove(0, 7);
@@ -198,155 +197,100 @@ namespace Open_World_Server
 
                 if (string.IsNullOrWhiteSpace(text))
                 {
-                    WriteColoredLog("Missing Parameters", ConsoleColor.Yellow);
-                    Console.WriteLine(Environment.NewLine);
+                    WriteColoredLog("Missing Parameters\n", warnColor);
                     ListenForCommands();
                 }
             }
             catch
             {
-                WriteColoredLog("Missing Parameters", ConsoleColor.Yellow);
-                Console.WriteLine(Environment.NewLine);
+                WriteColoredLog("Missing Parameters\n", warnColor);
                 ListenForCommands();
             }
             ServerClient targetClient = _Networking.connectedClients.Find(fetch => fetch.username == target);
             if (targetClient == null)
             {
-                WriteColoredLog($"Player {target} Not Found", ConsoleColor.Yellow);
-                Console.WriteLine(Environment.NewLine);
+                WriteColoredLog($"Player {target} Not Found\n", warnColor);
                 ListenForCommands();
             }
             else
             {
                 _Networking.SendData(targetClient, "Notification│" + text);
-
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("[{0}] | Sent Letter To [{1}]", DateTime.Now, targetClient.username);
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine(Environment.NewLine);
+                WriteColoredLog($"Sent Letter To [{targetClient.username}]\n", messageColor);
                 ListenForCommands();
             }
         }
         private void Settings()
         {
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("[{0}] | Server Settings:", DateTime.Now);
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine("[{0}] | Server Name: {1}", DateTime.Now, serverName);
-            Console.WriteLine("[{0}] | Server Description: {1}", DateTime.Now, serverDescription);
-            Console.WriteLine("[{0}] | Server Local IP: {1}", DateTime.Now, _Networking.localAddress);
-            Console.WriteLine("[{0}] | Server Port: {1}", DateTime.Now, _Networking.serverPort);
+            WriteColoredLog("Server Settings:", messageColor);
+            WriteColoredLog($"Server Name: {serverName}\nServer Description: {serverDescription}\nServer Local IP: {_Networking.localAddress}\nServer Port: {_Networking.serverPort}\n");
 
-            Console.WriteLine(Environment.NewLine);
+            WriteColoredLog("World Settings:", messageColor);
+            WriteColoredLog($"Globe Coverage: {globeCoverage}\nSeed: {seed}\nOverall Rainfall: {overallRainfall}\nOverall Temperature: {overallTemperature}\nOverall Population: {overallPopulation}\n");
 
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("[{0}] | World Settings:", DateTime.Now);
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine("[{0}] | Globe Coverage: {1}", DateTime.Now, globeCoverage);
-            Console.WriteLine("[{0}] | Seed: {1}", DateTime.Now, seed);
-            Console.WriteLine("[{0}] | Overall Rainfall: {1}", DateTime.Now, overallRainfall);
-            Console.WriteLine("[{0}] | Overall Temperature: {1}", DateTime.Now, overallTemperature);
-            Console.WriteLine("[{0}] | Overall Population: {1}", DateTime.Now, overallPopulation);
+            WriteColoredLog($"Server Mods: [{modList.Count}]", messageColor);
+            WriteColoredLog(modList.Count == 0 ? "No Mods Found\n" : string.Join("\n", modList.ToArray()) + "\n");
 
-            Console.WriteLine(Environment.NewLine);
-
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("[{0}] | Server Mods: [{1}]", DateTime.Now, modList.Count);
-            Console.ForegroundColor = ConsoleColor.White;
-
-            if (modList.Count() == 0) Console.WriteLine("[{0}] | No Mods Found", DateTime.Now);
-            else foreach (string mod in modList) Console.WriteLine("[{0}] | {1}", DateTime.Now, mod);
-
-            Console.WriteLine(Environment.NewLine);
-
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("[{0}] | Server Whitelisted Mods: [{1}]", DateTime.Now, whitelistedMods.Count);
-            Console.ForegroundColor = ConsoleColor.White;
-
-            if (whitelistedMods.Count == 0) Console.WriteLine("[{0}] | No Whitelisted Mods Found", DateTime.Now);
-            else foreach (string whitelistedMod in whitelistedMods) Console.WriteLine("[{0}] | {1}", DateTime.Now, whitelistedMod);
-
-            Console.WriteLine(Environment.NewLine);
+            WriteColoredLog($"Server WhiteListed Mods: [{modList.Count}]", messageColor);
+            WriteColoredLog(whitelistedMods.Count == 0 ? "No Mods Found\n" : string.Join("\n", whitelistedMods.ToArray()) + "\n");
         }
         private void Reload()
         {
             WriteColoredLog("Reloading All Current Mods", ConsoleColor.Green);
+            // TODO: Is this color change necessary?
             Console.ForegroundColor = ConsoleColor.White;
             _ServerUtils.CheckMods();
             _ServerUtils.CheckWhitelistedMods();
-            WriteColoredLog("Mods Have Been Reloaded", ConsoleColor.Green);
-            Console.WriteLine(Environment.NewLine);
+            WriteColoredLog("Mods Have Been Reloaded\n", ConsoleColor.Green);
 
-            WriteColoredLog("Reloading All Whitelisted Players", ConsoleColor.Green);
+            WriteColoredLog("Reloading All Whitelisted Players\n", ConsoleColor.Green);
+            // TODO: Is this color change necessary?
             Console.ForegroundColor = ConsoleColor.White;
             _ServerUtils.CheckForWhitelistedPlayers();
             WriteColoredLog("Whitelisted Players Have Been Reloaded", ConsoleColor.Green);
-            Console.WriteLine(Environment.NewLine);
         }
         private void Status()
         {
             WriteColoredLog("Server Status", ConsoleColor.Green);
             WriteColoredLog($"Version: {MainProgram._MainProgram.serverVersion}\n" +
                 "Connection: Online\n" +
-                $"Uptime: [{DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime()}]");
-            Console.WriteLine(Environment.NewLine);
+                $"Uptime: [{DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime()}]\n");
 
             WriteColoredLog("Mods:", ConsoleColor.Green);
             WriteColoredLog($"Mods: {_MainProgram.modList.Count()}\n" +
-                $"WhiteListed Mods: {_MainProgram.whitelistedMods.Count()}");
-            Console.WriteLine(Environment.NewLine);
+                $"WhiteListed Mods: {_MainProgram.whitelistedMods.Count()}\n");
 
             WriteColoredLog("Players", ConsoleColor.Green);
             WriteColoredLog($"Connected Players: {_Networking.connectedClients.Count()}\n" +
                 $"Saved Players: {_MainProgram.savedClients.Count()}\n" +
                 $"Saved Settlements: {_MainProgram.savedSettlements.Count()}\n" +
                 $"Whitelisted Players: {_MainProgram.whitelistedUsernames.Count()}\n" +
-                $"Max Players: {_MainProgram.maxPlayers}");
-            Console.WriteLine(Environment.NewLine);
+                $"Max Players: {_MainProgram.maxPlayers}\n");
 
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("[{0}] | Modlist Settings:", DateTime.Now);
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine("[{0}] | Using Modlist Check: [{1}]", DateTime.Now, _MainProgram.forceModlist);
-            Console.WriteLine("[{0}] | Using Modlist Config Check: [{1}]", DateTime.Now, _MainProgram.forceModlistConfigs);
-            Console.WriteLine("[{0}] | Using Mod Verification: [{1}]", DateTime.Now, _MainProgram.usingModVerification);
-            Console.WriteLine(Environment.NewLine);
+            WriteColoredLog("Modlist Settings", ConsoleColor.Green);
+            WriteColoredLog($"Using Modlist Check: {_MainProgram.forceModlist}\n" +
+                $"Using Modlist Config Check: {_MainProgram.forceModlistConfigs}\n" +
+                $"Using Mod Verification: {_MainProgram.usingModVerification}\n");
 
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("[{0}] | Chat Settings:", DateTime.Now);
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine("[{0}] | Using Chat: [{1}]", DateTime.Now, _MainProgram.usingChat);
-            Console.WriteLine("[{0}] | Using Profanity Filter: [{1}]", DateTime.Now, _MainProgram.usingProfanityFilter);
-            Console.WriteLine(Environment.NewLine);
+            WriteColoredLog("Chat Settings", ConsoleColor.Green);
+            WriteColoredLog($"Using Chat: {_MainProgram.usingChat}\n" +
+                $"Using Profanity Filter: {_MainProgram.usingProfanityFilter}\n");
 
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("[{0}] | Wealth Settings:", DateTime.Now);
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine("[{0}] | Using Wealth System: [{1}]", DateTime.Now, _MainProgram.usingWealthSystem);
-            Console.WriteLine("[{0}] | Warning Threshold: [{1}]", DateTime.Now, _MainProgram.warningWealthThreshold);
-            Console.WriteLine("[{0}] | Ban Threshold: [{1}]", DateTime.Now, _MainProgram.banWealthThreshold);
-            Console.WriteLine(Environment.NewLine);
+            WriteColoredLog("Wealth Settings", ConsoleColor.Green);
+            WriteColoredLog($"Using Wealth System: {_MainProgram.usingWealthSystem}\n" +
+                $"Warning Threshold: {_MainProgram.warningWealthThreshold}\n" +
+                $"Ban Threshold: {_MainProgram.banWealthThreshold}\n");
 
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("[{0}] | Idle Settings:", DateTime.Now);
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine("[{0}] | Using Idle System: [{1}]", DateTime.Now, _MainProgram.usingIdleTimer);
-            Console.WriteLine("[{0}] | Idle Threshold: [{1}]", DateTime.Now, _MainProgram.idleTimer);
-            Console.WriteLine(Environment.NewLine);
+            WriteColoredLog("Idle Settings", ConsoleColor.Green);
+            WriteColoredLog($"Using Idle System: {_MainProgram.usingIdleTimer}\n" +
+                $"Idle Threshold: {_MainProgram.idleTimer}\n");
 
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("[{0}] | Road Settings:", DateTime.Now);
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine("[{0}] | Using Road System: [{1}]", DateTime.Now, _MainProgram.usingRoadSystem);
-            Console.WriteLine("[{0}] | Aggressive Road Mode: [{1}]", DateTime.Now, _MainProgram.aggressiveRoadMode);
-            Console.WriteLine(Environment.NewLine);
+            WriteColoredLog("Road Settings", ConsoleColor.Green);
+            WriteColoredLog($"Using Road System: {_MainProgram.usingRoadSystem}\n" +
+                $"Aggressive Road Mode: {_MainProgram.aggressiveRoadMode}\n");
 
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("[{0}] | Miscellaneous Settings", DateTime.Now);
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine("[{0}] | Using Whitelist: [{1}]", DateTime.Now, _MainProgram.usingWhitelist);
-            Console.WriteLine("[{0}] | Allow Dev Mode: [{1}]", DateTime.Now, _MainProgram.allowDevMode);
-            Console.WriteLine(Environment.NewLine);
+            WriteColoredLog("Miscellaneous Settings", ConsoleColor.Green);
+            WriteColoredLog($"Using Whitelist: {_MainProgram.usingWhitelist}\n" +
+                $"Allow Dev Mode: {_MainProgram.allowDevMode}\n");
         }
         private void Invoke(string command)
         {
@@ -354,7 +298,6 @@ namespace Open_World_Server
             string clientID = "";
             string eventID = "";
             ServerClient target = null;
-
             try
             {
                 clientID = command.Split(' ')[1];
@@ -365,7 +308,6 @@ namespace Open_World_Server
                 WriteColoredLog("Missing Parameters\n", ConsoleColor.Yellow);
                 ListenForCommands();
             }
-
             foreach (ServerClient client in _Networking.connectedClients)
             {
                 if (client.username == clientID)
@@ -374,34 +316,27 @@ namespace Open_World_Server
                     break;
                 }
             }
-
             if (target == null)
             {
                 WriteColoredLog($"Player {clientID} Not Found\n", ConsoleColor.Yellow);
                 ListenForCommands();
             }
-
             _Networking.SendData(target, "ForcedEvent│" + eventID);
-
             WriteColoredLog($"Sent Event [{eventID}] to [{clientID}]\n", ConsoleColor.Green);
         }
         private void Plague(string command)
         {
-
             string eventID = "";
-
             try { eventID = command.Split(' ')[1]; }
             catch
             {
                 WriteColoredLog("Missing Parameters\n", warnColor);
                 ListenForCommands();
             }
-
             foreach (ServerClient client in _Networking.connectedClients)
             {
                 _Networking.SendData(client, "ForcedEvent│" + eventID);
             }
-
             WriteColoredLog($"Sent Event [{eventID}] to Every Player\n", ConsoleColor.Green);
         }
         private void EventList()
@@ -417,36 +352,31 @@ namespace Open_World_Server
         private void List()
         {
             WriteColoredLog($"Connected Players: [{_Networking.connectedClients.Count}]", messageColor);
-
             if (_Networking.connectedClients.Count() == 0) Console.WriteLine("[{0}] | No Players Connected", DateTime.Now);
             else foreach (ServerClient client in _Networking.connectedClients)
+            {
+                try { Console.WriteLine("[{0}] | " + client.username, DateTime.Now); }
+                catch
                 {
-                    try { Console.WriteLine("[{0}] | " + client.username, DateTime.Now); }
-                    catch
-                    {
-                        WriteColoredLog($"Error Processing Player With IP [{((IPEndPoint)client.tcp.Client.RemoteEndPoint).Address}]", errorColor);
-                    }
+                    WriteColoredLog($"Error Processing Player With IP [{((IPEndPoint)client.tcp.Client.RemoteEndPoint).Address}]", errorColor);
                 }
+            }
 
             WriteColoredLog($"\nSaved Players: [{_MainProgram.savedClients.Count}]", messageColor);
-
             if (_MainProgram.savedClients.Count() == 0) Console.WriteLine("[{0}] | No Players Saved", DateTime.Now);
             else foreach (ServerClient savedClient in _MainProgram.savedClients)
+            {
+                try { Console.WriteLine("[{0}] | " + savedClient.username, DateTime.Now); }
+                catch
                 {
-                    try { Console.WriteLine("[{0}] | " + savedClient.username, DateTime.Now); }
-                    catch
-                    {
 
-                        WriteColoredLog($"Error Processing Player With IP [{((IPEndPoint)savedClient.tcp.Client.RemoteEndPoint).Address}]", errorColor);
+                    WriteColoredLog($"Error Processing Player With IP [{((IPEndPoint)savedClient.tcp.Client.RemoteEndPoint).Address}]", errorColor);
 
-                    }
                 }
-
-            Console.WriteLine(Environment.NewLine);
+            }
         }
         private void Investigate(string command)
         {
-
             string clientID = "";
             try { clientID = command.Split(' ')[1]; }
             catch
@@ -455,46 +385,39 @@ namespace Open_World_Server
                 Console.WriteLine(Environment.NewLine);
                 ListenForCommands();
             }
-
+            bool found = false;
             foreach (ServerClient client in savedClients)
             {
                 if (client.username == clientID)
                 {
+                    found = true;
                     ServerClient clientToInvestigate = null;
-
                     bool isConnected = false;
                     string ip = "None";
-
                     if (_Networking.connectedClients.Find(fetch => fetch.username == client.username) != null)
                     {
                         clientToInvestigate = _Networking.connectedClients.Find(fetch => fetch.username == client.username);
                         isConnected = true;
                         ip = ((IPEndPoint)clientToInvestigate.tcp.Client.RemoteEndPoint).Address.ToString();
                     }
-
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("[{0}] | Player Details: ", DateTime.Now);
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.WriteLine("[{0}] | Username: [{1}]", DateTime.Now, client.username);
-                    Console.WriteLine("[{0}] | Password: [{1}]", DateTime.Now, client.password);
-                    Console.WriteLine("[{0}] | Admin: [{1}]", DateTime.Now, client.isAdmin);
-                    Console.WriteLine("[{0}] | Online: [{1}]", DateTime.Now, isConnected);
-                    Console.WriteLine("[{0}] | Connection IP: [{1}]", DateTime.Now, ip);
-                    Console.WriteLine("[{0}] | Home Tile ID: [{1}]", DateTime.Now, client.homeTileID);
-                    Console.WriteLine("[{0}] | Stored Gifts: [{1}]", DateTime.Now, client.giftString.Count());
-                    Console.WriteLine("[{0}] | Stored Trades: [{1}]", DateTime.Now, client.tradeString.Count());
-                    Console.WriteLine("[{0}] | Wealth Value: [{1}]", DateTime.Now, client.wealth);
-                    Console.WriteLine("[{0}] | Pawn Count: [{1}]", DateTime.Now, client.pawnCount);
-                    Console.WriteLine("[{0}] | Immunized: [{1}]", DateTime.Now, client.isImmunized);
-                    Console.WriteLine("[{0}] | Event Shielded: [{1}]", DateTime.Now, client.eventShielded);
-                    Console.WriteLine("[{0}] | In RTSE: [{1}]", DateTime.Now, client.inRTSE);
-                    Console.WriteLine(Environment.NewLine);
+                    WriteColoredLog("Player Details:", ConsoleColor.Green);
+                    WriteColoredLog($"Username: {client.username}\n" +
+                        $"Password: {client.password}\n" +
+                        $"Admin: {client.isAdmin}" +
+                        $"Online: {isConnected}" +
+                        $"Connection IP: {ip}" +
+                        $"Home Tile ID: {client.homeTileID}" +
+                        $"Stored Gifts: {client.giftString.Count()}" +
+                        $"Stored Trades: {client.tradeString.Count()}" +
+                        $"Wealth Value: {client.wealth}" +
+                        $"Pawn Count: {client.pawnCount}" +
+                        $"Immunized: {client.isImmunized}" +
+                        $"Event Shielded: {client.eventShielded}" +
+                        $"In RTSE: {client.inRTSE}\n");
                     ListenForCommands();
                 }
             }
-
-            WriteColoredLog($"Player {clientID} Not Found", ConsoleColor.Yellow);
-            Console.WriteLine(Environment.NewLine);
+            if (!found) WriteColoredLog($"Player {clientID} Not Found\n", ConsoleColor.Yellow);
         }
         private void Settlements()
         {
@@ -744,8 +667,8 @@ namespace Open_World_Server
         private void Protect(string command)
         {
             string clientID = "";
-            try 
-            { 
+            try
+            {
                 clientID = command.Split(' ')[1];
             }
             catch
@@ -770,9 +693,9 @@ namespace Open_World_Server
         private void Deprotect(string command)
         {
             string clientID = "";
-            try 
-            { 
-                clientID = command.Split(' ')[1]; 
+            try
+            {
+                clientID = command.Split(' ')[1];
             }
             catch
             {
@@ -846,7 +769,7 @@ namespace Open_World_Server
             foreach (ServerClient client in savedClients) if (client.isAdmin) adminList.Add(client.username);
 
             WriteColoredLog($"Server Administrators: [{adminList.Count}]", messageColor);
-            WriteColoredLog(adminList.Count == 0? "No Administrators Found\n" : string.Join("\n", adminList.ToArray())+"\n");
+            WriteColoredLog(adminList.Count == 0 ? "No Administrators Found\n" : string.Join("\n", adminList.ToArray()) + "\n");
         }
         private void WhiteList()
         {
