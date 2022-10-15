@@ -561,8 +561,7 @@ namespace Open_World_Server
             try { clientID = command.Split(' ')[1]; }
             catch
             {
-                WriteColoredLog("Missing Parameters", ConsoleColor.Yellow);
-                Console.WriteLine(Environment.NewLine);
+                WriteColoredLog("Missing Parameters\n", ConsoleColor.Yellow);
                 ListenForCommands();
             }
 
@@ -573,10 +572,7 @@ namespace Open_World_Server
                     bannedIPs.Add(((IPEndPoint)client.tcp.Client.RemoteEndPoint).Address.ToString(), client.username);
                     client.disconnectFlag = true;
                     SaveSystem.SaveBannedIPs(bannedIPs);
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    _ServerUtils.LogToConsole("Player [" + client.username + "] Has Been Banned");
-                    Console.ForegroundColor = ConsoleColor.White;
-                    _ServerUtils.LogToConsole(Environment.NewLine);
+                    WriteColoredLog($"Player {client.username} Has Been Unbanned\n", warnColor);
                     ListenForCommands();
                 }
             }
@@ -591,31 +587,24 @@ namespace Open_World_Server
             try { clientUsername = command.Split(' ')[1]; }
             catch
             {
-                WriteColoredLog("Missing Parameters", ConsoleColor.Yellow);
-                Console.WriteLine(Environment.NewLine);
+                WriteColoredLog("Missing Parameters\n", ConsoleColor.Yellow);
                 ListenForCommands();
             }
-
             foreach (KeyValuePair<string, string> pair in bannedIPs)
             {
                 if (pair.Value == clientUsername)
                 {
                     bannedIPs.Remove(pair.Key);
                     SaveSystem.SaveBannedIPs(bannedIPs);
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    _ServerUtils.LogToConsole("Player [" + clientUsername + "] Has Been Unbanned");
-                    Console.ForegroundColor = ConsoleColor.White;
-                    _ServerUtils.LogToConsole(Environment.NewLine);
+                    WriteColoredLog($"Player {clientUsername} Has Been Unbanned\n", messageColor);
                     ListenForCommands();
                 }
             }
-
             WriteColoredLog($"Player {clientUsername} Not Found", ConsoleColor.Yellow);
             Console.WriteLine(Environment.NewLine);
         }
         private void Promote(string command)
         {
-
             string clientID = "";
             try { clientID = command.Split(' ')[1]; }
             catch
@@ -624,7 +613,6 @@ namespace Open_World_Server
                 Console.WriteLine(Environment.NewLine);
                 ListenForCommands();
             }
-
             foreach (ServerClient client in _Networking.connectedClients)
             {
                 if (client.username == clientID)
@@ -636,7 +624,6 @@ namespace Open_World_Server
                         Console.ForegroundColor = ConsoleColor.White;
                         _ServerUtils.LogToConsole(Environment.NewLine);
                     }
-
                     else
                     {
                         client.isAdmin = true;
@@ -650,17 +637,13 @@ namespace Open_World_Server
                         Console.ForegroundColor = ConsoleColor.White;
                         _ServerUtils.LogToConsole(Environment.NewLine);
                     }
-
                     ListenForCommands();
                 }
             }
-
-            WriteColoredLog($"Player {clientID} Not Found", ConsoleColor.Yellow);
-            Console.WriteLine(Environment.NewLine);
+            WriteColoredLog($"Player {clientID} Not Found\n", ConsoleColor.Yellow);
         }
         private void Demote(string command)
         {
-
             string clientID = "";
             try { clientID = command.Split(' ')[1]; }
             catch
@@ -669,7 +652,6 @@ namespace Open_World_Server
                 Console.WriteLine(Environment.NewLine);
                 ListenForCommands();
             }
-
             foreach (ServerClient client in _Networking.connectedClients)
             {
                 if (client.username == clientID)
@@ -681,7 +663,6 @@ namespace Open_World_Server
                         Console.ForegroundColor = ConsoleColor.White;
                         _ServerUtils.LogToConsole(Environment.NewLine);
                     }
-
                     else
                     {
                         client.isAdmin = false;
@@ -695,7 +676,6 @@ namespace Open_World_Server
                         Console.ForegroundColor = ConsoleColor.White;
                         _ServerUtils.LogToConsole(Environment.NewLine);
                     }
-
                     ListenForCommands();
                 }
             }
@@ -713,7 +693,6 @@ namespace Open_World_Server
                 WriteColoredLog($"Missing Parameter(s)\nUsage: GiveItem [username] [itemID] [itemQuantity] [itemQuality]\n", warnColor);
                 ListenForCommands();
             }
-
             string itemID = "";
             try { itemID = command.Split(' ')[2]; }
             catch
@@ -721,7 +700,6 @@ namespace Open_World_Server
                 WriteColoredLog($"Missing Parameter(s)\nUsage: GiveItem [username] [itemID] [itemQuantity] [itemQuality]\n", warnColor);
                 ListenForCommands();
             }
-
             string itemQuantity = "";
             try { itemQuantity = command.Split(' ')[3]; }
             catch
@@ -729,7 +707,6 @@ namespace Open_World_Server
                 WriteColoredLog($"Missing Parameter(s)\nUsage: GiveItem [username] [itemID] [itemQuantity] [itemQuality]\n", warnColor);
                 ListenForCommands();
             }
-
             string itemQuality = "";
             try { itemQuality = command.Split(' ')[4]; }
             catch
@@ -737,7 +714,6 @@ namespace Open_World_Server
                 WriteColoredLog($"Missing Parameter(s)\nUsage: GiveItem [username] [itemID] [itemQuantity] [itemQuality]\n", warnColor);
                 ListenForCommands();
             }
-
             foreach (ServerClient client in _Networking.connectedClients)
             {
                 if (client.username == clientID)
@@ -761,7 +737,6 @@ namespace Open_World_Server
                 WriteColoredLog($"Missing Parameter(s)\nUsage: Giveitemall [itemID] [itemQuantity] [itemQuality]\n", warnColor);
                 ListenForCommands();
             }
-
             string itemQuantity = "";
             try { itemQuantity = command.Split(' ')[2]; }
             catch
@@ -769,7 +744,6 @@ namespace Open_World_Server
                 WriteColoredLog($"Missing Parameter(s)\nUsage: Giveitemall [itemID] [itemQuantity] [itemQuality]\n", warnColor);
                 ListenForCommands();
             }
-
             string itemQuality = "";
             try { itemQuality = command.Split(' ')[3]; }
             catch
@@ -781,16 +755,17 @@ namespace Open_World_Server
             foreach (ServerClient client in _Networking.connectedClients)
             {
                 _Networking.SendData(client, "GiftedItems│" + itemID + "┼" + itemQuantity + "┼" + itemQuality + "┼");
-
                 WriteColoredLog($"Item Has Neen Gifted To All Players\n", messageColor);
                 ListenForCommands();
             }
         }
         private void Protect(string command)
         {
-
             string clientID = "";
-            try { clientID = command.Split(' ')[1]; }
+            try 
+            { 
+                clientID = command.Split(' ')[1];
+            }
             catch
             {
                 WriteColoredLog("Missing Parameters\n", warnColor);
@@ -812,15 +787,16 @@ namespace Open_World_Server
         }
         private void Deprotect(string command)
         {
-
             string clientID = "";
-            try { clientID = command.Split(' ')[1]; }
+            try 
+            { 
+                clientID = command.Split(' ')[1]; 
+            }
             catch
             {
                 WriteColoredLog("Missing Parameters\n", warnColor);
                 ListenForCommands();
             }
-
             foreach (ServerClient client in _Networking.connectedClients)
             {
                 if (client.username == clientID)
@@ -835,7 +811,6 @@ namespace Open_World_Server
         }
         private void Immunize(string command)
         {
-
             string clientID = "";
             try { clientID = command.Split(' ')[1]; }
             catch
@@ -860,13 +835,11 @@ namespace Open_World_Server
         }
         private void Deimmunize(string command)
         {
-
             string clientID = "";
             try { clientID = command.Split(' ')[1]; }
             catch
             {
-                WriteColoredLog("Missing Parameters", ConsoleColor.Yellow);
-                Console.WriteLine(Environment.NewLine);
+                WriteColoredLog("Missing Parameters\n", ConsoleColor.Yellow);
                 ListenForCommands();
             }
 
@@ -888,10 +861,7 @@ namespace Open_World_Server
         {
             adminList.Clear();
 
-            foreach (ServerClient client in savedClients)
-            {
-                if (client.isAdmin) adminList.Add(client.username);
-            }
+            foreach (ServerClient client in savedClients) if (client.isAdmin) adminList.Add(client.username);
 
             WriteColoredLog($"Server Administrators: [{adminList.Count}]", messageColor);
             WriteColoredLog(adminList.Count == 0? "No Administrators Found\n" : string.Join("\n", adminList.ToArray())+"\n");
