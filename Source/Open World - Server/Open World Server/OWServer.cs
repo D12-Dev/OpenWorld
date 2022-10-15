@@ -66,8 +66,6 @@ namespace Open_World_Server
           WARN_COLOR = ConsoleColor.Yellow,
           ERROR_COLOR = ConsoleColor.Red,
           MESSAGE_COLOR = ConsoleColor.Green;
-
-
         // -- End Declarations --
 
         

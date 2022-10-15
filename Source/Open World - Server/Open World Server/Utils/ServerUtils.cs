@@ -897,20 +897,12 @@ namespace Open_World_Server
 
         public bool ParseClientUsername(ServerClient client)
         {
-            if (string.IsNullOrWhiteSpace(client.username))
+            if (string.IsNullOrWhiteSpace(client.username) || (!client.username.All(character => Char.IsLetterOrDigit(character) || character == '_' || character == '-')))
             {
                 OWServer._Networking.SendData(client, "Disconnect│Corrupted");
                 client.disconnectFlag = true;
                 return false;
             }
-
-            if (!client.username.All(character => Char.IsLetterOrDigit(character) || character == '_' || character == '-'))
-            {
-                OWServer._Networking.SendData(client, "Disconnect│Corrupted");
-                client.disconnectFlag = true;
-                return false;
-            }
-
             else return true;
         }
         public void WriteServerLog(string output, ConsoleColor color = OWServer.DEFAULT_COLOR)

@@ -11,10 +11,7 @@ namespace Open_World_Server
             string folderPath = OWServer.playersFolderPath;
             string filePath = folderPath + Path.DirectorySeparatorChar + client.username + ".data";
 
-            if (!Directory.Exists(folderPath))
-            {
-                Directory.CreateDirectory(folderPath);
-            }
+            if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
 
             BinaryFormatter formatter = new BinaryFormatter();
 
