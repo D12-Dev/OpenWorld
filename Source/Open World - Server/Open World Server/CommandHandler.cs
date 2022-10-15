@@ -111,33 +111,16 @@ namespace Open_World_Server
             }
             ServerUtils.WriteServerLog("Notification sent to all connected players.\n", messageColor);
         }
-        public void Notify(string command)
+        public void Notify(string[] args)
         {
-            string target = "", text = "";
-            try
-            {
-                command = command.Remove(0, 7);
-                target = command.Split(' ')[0];
-                text = command.Replace(target + " ", "");
-
-                if (string.IsNullOrWhiteSpace(text))
-                {
-                    ServerUtils.WriteServerLog("Missing Parameters\n", warnColor);
-                }
-            }
-            catch
-            {
-                ServerUtils.WriteServerLog("Missing Parameters\n", warnColor);
-            }
-            ServerClient targetClient = OWServer._Networking.connectedClients.Find(fetch => fetch.username == target);
-            if (targetClient == null)
-            {
-                ServerUtils.WriteServerLog($"Player {target} Not Found\n", warnColor);
-            }
+            string target = args[0], message = String.Join(' ', args.TakeLast(args.Length-1).ToArray());
+            if (string.IsNullOrWhiteSpace(target) || string.IsNullOrWhiteSpace(message)) ServerUtils.WriteServerLog("Missing Parameter(s)\nCorrect Usage: \"notify [targer] [message]\" where [target] is a player's username and [message] is one or more characters, including spaces.\n", warnColor);
+            ServerClient targetClient;
+            if ((targetClient = OWServer._Networking.connectedClients.Where(x => x.username == target).SingleOrDefault()) == null) ServerUtils.WriteServerLog($"Player {target} was not found.\n", warnColor);
             else
             {
-                OWServer._Networking.SendData(targetClient, "Notification│" + text);
-                ServerUtils.WriteServerLog($"Sent Letter To [{targetClient.username}]\n", messageColor);
+                OWServer._Networking.SendData(targetClient, "Notification│" + message);
+                ServerUtils.WriteServerLog($"Notification sent to player {targetClient.username}.\n", messageColor);
             }
         }
         public void Settings()
