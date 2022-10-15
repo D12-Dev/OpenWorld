@@ -295,51 +295,39 @@ namespace Open_World_Server
         private void Reload()
         {
             Console.Clear();
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("[{0}] | Reloading All Current Mods", DateTime.Now);
+            WriteColoredLog("Reloading All Current Mods", ConsoleColor.Green);
             Console.ForegroundColor = ConsoleColor.White;
             _ServerUtils.CheckMods();
             _ServerUtils.CheckWhitelistedMods();
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("[{0}] | Mods Have Been Reloaded", DateTime.Now);
-            Console.ForegroundColor = ConsoleColor.White;
+            WriteColoredLog("Mods Have Been Reloaded", ConsoleColor.Green);
             Console.WriteLine(Environment.NewLine);
 
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("[{0}] | Reloading All Whitelisted Players", DateTime.Now);
+            WriteColoredLog("Reloading All Whitelisted Players", ConsoleColor.Green);
             Console.ForegroundColor = ConsoleColor.White;
             _ServerUtils.CheckForWhitelistedPlayers();
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("[{0}] | Whitelisted Players Have Been Reloaded", DateTime.Now);
-            Console.ForegroundColor = ConsoleColor.White;
+            WriteColoredLog("Whitelisted Players Have Been Reloaded", ConsoleColor.Green);
             Console.WriteLine(Environment.NewLine);
         }
         private void Status()
         {
             Console.Clear();
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("[{0}] | Server Status", DateTime.Now);
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine("[{0}] | Version: {1}", DateTime.Now, MainProgram._MainProgram.serverVersion);
-            Console.WriteLine("[{0}] | Connection: Online", DateTime.Now);
-            Console.WriteLine("[{0}] | Uptime: [{1}]", DateTime.Now, DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime());
+            WriteColoredLog("Server Status", ConsoleColor.Green);
+            WriteColoredLog($"Version: {MainProgram._MainProgram.serverVersion}\n" +
+                "Connection: Online\n" +
+                $"Uptime: [{DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime()}]");
             Console.WriteLine(Environment.NewLine);
 
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("[{0}] | Mods:", DateTime.Now);
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine("[{0}] | Mods: [{1}]", DateTime.Now, _MainProgram.modList.Count());
-            Console.WriteLine("[{0}] | Whitelisted Mods: [{1}]", DateTime.Now, _MainProgram.whitelistedMods.Count());
+            WriteColoredLog("Mods:", ConsoleColor.Green);
+            WriteColoredLog($"Mods: {_MainProgram.modList.Count()}\n" +
+                $"WhiteListed Mods: {_MainProgram.whitelistedMods.Count()}");
             Console.WriteLine(Environment.NewLine);
 
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("[{0}] | Players:", DateTime.Now);
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine("[{0}] | Connected Players: [{1}]", DateTime.Now, _Networking.connectedClients.Count());
-            Console.WriteLine("[{0}] | Saved Players: [{1}]", DateTime.Now, _MainProgram.savedClients.Count());
-            Console.WriteLine("[{0}] | Saved Settlements: [{1}]", DateTime.Now, _MainProgram.savedSettlements.Count());
-            Console.WriteLine("[{0}] | Whitelisted Players: [{1}]", DateTime.Now, _MainProgram.whitelistedUsernames.Count());
-            Console.WriteLine("[{0}] | Max Players: [{1}]", DateTime.Now, _MainProgram.maxPlayers);
+            WriteColoredLog("Players", ConsoleColor.Green);
+            WriteColoredLog($"Connected Players: {_Networking.connectedClients.Count()}\n" +
+                $"Saved Players: {_MainProgram.savedClients.Count()}\n" +
+                $"Saved Settlements: {_MainProgram.savedSettlements.Count()}\n" +
+                $"Whitelisted Players: {_MainProgram.whitelistedUsernames.Count()}\n" +
+                $"Max Players: {_MainProgram.maxPlayers}");
             Console.WriteLine(Environment.NewLine);
 
             Console.ForegroundColor = ConsoleColor.Green;
