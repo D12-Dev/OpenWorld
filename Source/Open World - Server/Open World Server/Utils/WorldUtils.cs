@@ -14,7 +14,7 @@ namespace Open_World_Server
             {
                 client.homeTileID = dataSplit[0];
 
-                foreach(ServerClient sc in MainProgram._MainProgram.savedClients)
+                foreach(ServerClient sc in MainProgram.savedClients)
                 {
                     if (sc.username == client.username)
                     {
@@ -38,7 +38,7 @@ namespace Open_World_Server
                 MainProgram._Networking.SendData(sc, dataString);
             }
 
-            MainProgram._MainProgram.savedSettlements.Add(client.homeTileID, new List<string> { client.username });
+            MainProgram.savedSettlements.Add(client.homeTileID, new List<string> { client.username });
 
             MainProgram._ServerUtils.LogToConsole("Settlement With ID [" + dataSplit[0] + "] And Owner [" + dataSplit[1] + "] Has Been Added");
         }
@@ -49,7 +49,7 @@ namespace Open_World_Server
             {
                 client.homeTileID = null;
 
-                foreach (ServerClient sc in MainProgram._MainProgram.savedClients)
+                foreach (ServerClient sc in MainProgram.savedClients)
                 {
                     if (sc.username == client.username)
                     {
@@ -75,7 +75,7 @@ namespace Open_World_Server
                     MainProgram._Networking.SendData(sc, dataString);
                 }
 
-                MainProgram._MainProgram.savedSettlements.Remove(tile);
+                MainProgram.savedSettlements.Remove(tile);
 
                 MainProgram._ServerUtils.LogToConsole("Settlement With ID [" + tile + "] Has Been Deleted");
             }
@@ -83,7 +83,7 @@ namespace Open_World_Server
 
         public void CheckForTileDisponibility(ServerClient client, string tileID)
         {
-            foreach (ServerClient savedClient in MainProgram._MainProgram.savedClients)
+            foreach (ServerClient savedClient in MainProgram.savedClients)
             {
                 if (savedClient.username == client.username)
                 {
@@ -91,7 +91,7 @@ namespace Open_World_Server
 
                     else
                     {
-                        foreach (KeyValuePair<string, List<string>> pair in MainProgram._MainProgram.savedSettlements)
+                        foreach (KeyValuePair<string, List<string>> pair in MainProgram.savedSettlements)
                         {
                             if (pair.Value[0] == client.username)
                             {

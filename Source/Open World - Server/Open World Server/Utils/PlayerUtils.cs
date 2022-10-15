@@ -9,7 +9,7 @@ namespace Open_World_Server
     {
         public void SaveNewPlayerFile(string username, string password)
         {
-            foreach (ServerClient savedClient in MainProgram._MainProgram.savedClients)
+            foreach (ServerClient savedClient in MainProgram.savedClients)
             {
                 if (savedClient.username == username)
                 {
@@ -26,13 +26,13 @@ namespace Open_World_Server
             dummy.password = password;
             dummy.homeTileID = null;
 
-            MainProgram._MainProgram.savedClients.Add(dummy);
+            MainProgram.savedClients.Add(dummy);
             SaveSystem.SaveUserData(dummy);
         }
 
         public void GiveSavedDataToPlayer(ServerClient client)
         {
-            foreach (ServerClient savedClient in MainProgram._MainProgram.savedClients)
+            foreach (ServerClient savedClient in MainProgram.savedClients)
             {
                 if (savedClient.username == client.username)
                 {
@@ -49,23 +49,23 @@ namespace Open_World_Server
 
         public void CheckSavedPlayers()
         {
-            if (!Directory.Exists(MainProgram._MainProgram.playersFolderPath))
+            if (!Directory.Exists(MainProgram.playersFolderPath))
             {
-                Directory.CreateDirectory(MainProgram._MainProgram.playersFolderPath);
+                Directory.CreateDirectory(MainProgram.playersFolderPath);
                 MainProgram._ServerUtils.LogToConsole("No Players Folder Found, Generating");
                 return;
             }
 
             else
             {
-                string[] playerFiles = Directory.GetFiles(MainProgram._MainProgram.playersFolderPath);
+                string[] playerFiles = Directory.GetFiles(MainProgram.playersFolderPath);
 
                 foreach (string file in playerFiles)
                 {
-                    if (MainProgram._MainProgram.usingIdleTimer)
+                    if (MainProgram.usingIdleTimer)
                     {
                         FileInfo fi = new FileInfo(file);
-                        if (fi.LastAccessTime < DateTime.Now.AddDays(-MainProgram._MainProgram.idleTimer))
+                        if (fi.LastAccessTime < DateTime.Now.AddDays(-MainProgram.idleTimer))
                         {
                             fi.Delete();
                             continue;
@@ -75,10 +75,10 @@ namespace Open_World_Server
                     MainDataHolder data = SaveSystem.LoadUserData(Path.GetFileNameWithoutExtension(file));
                     {
                         ServerClient dummy = data.serverclient;
-                        MainProgram._MainProgram.savedClients.Add(dummy);
+                        MainProgram.savedClients.Add(dummy);
                         if (!string.IsNullOrWhiteSpace(dummy.homeTileID))
                         {
-                            try { MainProgram._MainProgram.savedSettlements.Add(dummy.homeTileID, new List<string>() { dummy.username }); }
+                            try { MainProgram.savedSettlements.Add(dummy.homeTileID, new List<string>() { dummy.username }); }
                             catch 
                             {
                                 Console.ForegroundColor = ConsoleColor.Red;
@@ -89,38 +89,38 @@ namespace Open_World_Server
                     }
                 }
 
-                if (MainProgram._MainProgram.savedClients.Count == 0) MainProgram._ServerUtils.LogToConsole("No Saved Players Found, Ignoring");
-                else MainProgram._ServerUtils.LogToConsole("Loaded [" + MainProgram._MainProgram.savedClients.Count + "] Player Files");
+                if (MainProgram.savedClients.Count == 0) MainProgram._ServerUtils.LogToConsole("No Saved Players Found, Ignoring");
+                else MainProgram._ServerUtils.LogToConsole("Loaded [" + MainProgram.savedClients.Count + "] Player Files");
             }
         }
 
         public void CheckForPlayerWealth(ServerClient client)
         {
-            if (MainProgram._MainProgram.usingWealthSystem == false) return;
-            if (MainProgram._MainProgram.banWealthThreshold == 0 && MainProgram._MainProgram.warningWealthThreshold == 0) return;
+            if (MainProgram.usingWealthSystem == false) return;
+            if (MainProgram.banWealthThreshold == 0 && MainProgram.warningWealthThreshold == 0) return;
             if (client.isAdmin) return;
 
-            int wealthToCompare = (int) MainProgram._MainProgram.savedClients.Find(fetch => fetch.username == client.username).wealth;
+            int wealthToCompare = (int) MainProgram.savedClients.Find(fetch => fetch.username == client.username).wealth;
 
-            if (client.wealth - wealthToCompare > MainProgram._MainProgram.banWealthThreshold && MainProgram._MainProgram.banWealthThreshold > 0)
+            if (client.wealth - wealthToCompare > MainProgram.banWealthThreshold && MainProgram.banWealthThreshold > 0)
             {
                 SaveSystem.SaveUserData(client);
-                MainProgram._MainProgram.savedClients.Find(fetch => fetch.username == client.username).wealth = client.wealth;
-                MainProgram._MainProgram.savedClients.Find(fetch => fetch.username == client.username).pawnCount = client.pawnCount;
+                MainProgram.savedClients.Find(fetch => fetch.username == client.username).wealth = client.wealth;
+                MainProgram.savedClients.Find(fetch => fetch.username == client.username).pawnCount = client.pawnCount;
 
-                MainProgram._MainProgram.bannedIPs.Add(((IPEndPoint)client.tcp.Client.RemoteEndPoint).Address.ToString(), client.username);
+                MainProgram.bannedIPs.Add(((IPEndPoint)client.tcp.Client.RemoteEndPoint).Address.ToString(), client.username);
                 client.disconnectFlag = true;
-                SaveSystem.SaveBannedIPs(MainProgram._MainProgram.bannedIPs);
+                SaveSystem.SaveBannedIPs(MainProgram.bannedIPs);
 
                 Console.ForegroundColor = ConsoleColor.Red;
                 MainProgram._ServerUtils.LogToConsole("Player [" + client.username + "]'s Wealth Triggered Alarm [" + wealthToCompare + " > " + (int)client.wealth + "], Banning");
                 Console.ForegroundColor = ConsoleColor.White;
             }
-            else if (client.wealth - wealthToCompare > MainProgram._MainProgram.warningWealthThreshold && MainProgram._MainProgram.warningWealthThreshold > 0)
+            else if (client.wealth - wealthToCompare > MainProgram.warningWealthThreshold && MainProgram.warningWealthThreshold > 0)
             {
                 SaveSystem.SaveUserData(client);
-                MainProgram._MainProgram.savedClients.Find(fetch => fetch.username == client.username).wealth = client.wealth;
-                MainProgram._MainProgram.savedClients.Find(fetch => fetch.username == client.username).pawnCount = client.pawnCount;
+                MainProgram.savedClients.Find(fetch => fetch.username == client.username).wealth = client.wealth;
+                MainProgram.savedClients.Find(fetch => fetch.username == client.username).pawnCount = client.pawnCount;
 
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 MainProgram._ServerUtils.LogToConsole("Player [" + client.username + "]'s Wealth Triggered Warning [" + wealthToCompare + " > " + (int) client.wealth + "]");
@@ -129,8 +129,8 @@ namespace Open_World_Server
             else
             {
                 SaveSystem.SaveUserData(client);
-                MainProgram._MainProgram.savedClients.Find(fetch => fetch.username == client.username).wealth = client.wealth;
-                MainProgram._MainProgram.savedClients.Find(fetch => fetch.username == client.username).pawnCount = client.pawnCount;
+                MainProgram.savedClients.Find(fetch => fetch.username == client.username).wealth = client.wealth;
+                MainProgram.savedClients.Find(fetch => fetch.username == client.username).pawnCount = client.pawnCount;
             }
         }
 
@@ -248,7 +248,7 @@ namespace Open_World_Server
 
             dataToSend = dataToSend.Replace("GiftedItems│", "");
 
-            foreach(ServerClient sc in MainProgram._MainProgram.savedClients)
+            foreach(ServerClient sc in MainProgram.savedClients)
             {
                 if (sc.homeTileID == tileToSend)
                 {
