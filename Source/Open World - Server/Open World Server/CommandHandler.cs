@@ -84,7 +84,6 @@ namespace Open_World_Server
                         ServerUtils.WriteServerLog($"Failed to send chat data to client {sc.username}.", errorColor);
                     }
                 }
-
             }
         }
         public void NotifyAll(string[] args)
@@ -108,20 +107,25 @@ namespace Open_World_Server
                         ServerUtils.WriteServerLog($"Failed to send notification data to client {sc.username}.", errorColor);
                     }
                 }
+                ServerUtils.WriteServerLog("Notification sent to all connected players.\n", messageColor);
             }
-            ServerUtils.WriteServerLog("Notification sent to all connected players.\n", messageColor);
         }
         public void Notify(string[] args)
         {
-            string target = args[0], message = String.Join(' ', args.TakeLast(args.Length-1).ToArray());
-            if (string.IsNullOrWhiteSpace(target) || string.IsNullOrWhiteSpace(message)) ServerUtils.WriteServerLog("Missing Parameter(s)\nCorrect Usage: \"notify [targer] [message]\" where [target] is a player's username and [message] is one or more characters, including spaces.\n", warnColor);
-            ServerClient targetClient;
-            if ((targetClient = OWServer._Networking.connectedClients.Where(x => x.username == target).SingleOrDefault()) == null) ServerUtils.WriteServerLog($"Player {target} was not found.\n", warnColor);
+            string target = "", message = "";
+
+            if (args.Length < 2 || string.IsNullOrWhiteSpace(target = args[0]) || string.IsNullOrWhiteSpace(message = String.Join(' ', args.TakeLast(args.Length - 1).ToArray()))) ServerUtils.WriteServerLog("Missing Parameter(s)\nCorrect Usage: \"notify [target] [message]\" where [target] is a player's username and [message] is one or more characters, including spaces.\n", warnColor);
             else
             {
-                OWServer._Networking.SendData(targetClient, "Notification│" + message);
-                ServerUtils.WriteServerLog($"Notification sent to player {targetClient.username}.\n", messageColor);
+                ServerClient targetClient;
+                if ((targetClient = OWServer._Networking.connectedClients.Where(x => x.username == target).SingleOrDefault()) == null) ServerUtils.WriteServerLog($"Player {target} was not found.\n", warnColor);
+                else
+                {
+                    OWServer._Networking.SendData(targetClient, "Notification│" + message);
+                    ServerUtils.WriteServerLog($"Notification sent to player {targetClient.username}.\n", messageColor);
+                }
             }
+            
         }
         public void Settings()
         {
