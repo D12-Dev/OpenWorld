@@ -12,7 +12,7 @@ namespace Open_World_Server
     [System.Serializable]
     public class MainProgram
     {
-        //Instances
+        // Instances
         public static MainProgram _MainProgram = new MainProgram();
         public static Threading _Threading = new Threading();
         public static Networking _Networking = new Networking();
@@ -21,61 +21,54 @@ namespace Open_World_Server
         public static PlayerUtils _PlayerUtils = new PlayerUtils();
         public static WorldUtils _WorldUtils = new WorldUtils();
 
-        //Paths
-        public string mainFolderPath;
-        public string serverSettingsPath;
-        public string worldSettingsPath;
-        public string playersFolderPath;
-        public string modsFolderPath;
-        public string whitelistedModsFolderPath;
-        public string whitelistedUsersPath;
-        public string logFolderPath;
+        // Paths
+        public string mainFolderPath, serverSettingsPath, worldSettingsPath, playersFolderPath, modsFolderPath, whitelistedModsFolderPath, whitelistedUsersPath, logFolderPath;
 
-        //Player Parameters
+        // Player Parameters
         public List<ServerClient> savedClients = new List<ServerClient>();
         public Dictionary<string, List<string>> savedSettlements = new Dictionary<string, List<string>>();
 
-        //Server Parameters
-        public string serverName = "";
-        public string serverDescription = "";
-        public string serverVersion = "v1.4.0";
-        public int maxPlayers = 300;
-        public int warningWealthThreshold = 10000;
-        public int banWealthThreshold = 100000;
-        public int idleTimer = 7;
-        public bool usingIdleTimer = false;
-        public bool allowDevMode = false;
-        public bool usingWhitelist = false;
-        public bool usingWealthSystem = false;
-        public bool usingRoadSystem = false;
-        public bool aggressiveRoadMode = false;
-        public bool forceModlist = false;
-        public bool forceModlistConfigs = false;
-        public bool usingModVerification = false;
-        public bool usingChat = false;
-        public bool usingProfanityFilter = false;
-        public List<string> whitelistedUsernames = new List<string>();
-        public List<string> adminList = new List<string>();
-        public List<string> modList = new List<string>();
-        public List<string> whitelistedMods = new List<string>();
-        public List<string> chatCache = new List<string>();
+        // Server Parameters
+        public string serverName = "",
+            serverDescription = "",
+            serverVersion = "v1.4.0";
+        public int maxPlayers = 300,
+            warningWealthThreshold = 10000,
+            banWealthThreshold = 100000,
+            idleTimer = 7;
+        public bool usingIdleTimer = false,
+            allowDevMode = false,
+            usingWhitelist = false,
+            usingWealthSystem = false,
+            usingRoadSystem = false,
+            aggressiveRoadMode = false,
+            forceModlist = false,
+            forceModlistConfigs = false,
+            usingModVerification = false,
+            usingChat = false,
+            usingProfanityFilter = false;
+        public List<string> whitelistedUsernames = new List<string>(),
+            adminList = new List<string>(),
+            modList = new List<string>(),
+            whitelistedMods = new List<string>(),
+            chatCache = new List<string>();
         public Dictionary<string, string> bannedIPs = new Dictionary<string, string>();
 
-        //World Parameters
+        // World Parameters
         public float globeCoverage;
         public string seed;
-        public int overallRainfall;
-        public int overallTemperature;
-        public int overallPopulation;
+        public int overallRainfall, overallTemperature, overallPopulation;
 
-        private const ConsoleColor defaultColor = ConsoleColor.White;
-        private const ConsoleColor warnColor = ConsoleColor.Yellow;
-        private const ConsoleColor errorColor = ConsoleColor.Red;
-        private const ConsoleColor messageColor = ConsoleColor.Green;
+        // Console Colours
+        private const ConsoleColor defaultColor = ConsoleColor.White,
+            warnColor = ConsoleColor.Yellow,
+            errorColor = ConsoleColor.Red,
+            messageColor = ConsoleColor.Green;
+
         private void WriteColoredLog(string output, ConsoleColor color = defaultColor)
         {
             Console.ForegroundColor = color;
-            foreach (string line in output.Split("\n")) Console.WriteLine(string.IsNullOrWhiteSpace(line)?"\n":$"[{DateTime.Now}] | {line}");
+            foreach (string line in output.Split("\n")) Console.WriteLine(string.IsNullOrWhiteSpace(line) ? "\n" : $"[{DateTime.Now}] | {line}");
         }
         static void Main()
         {
