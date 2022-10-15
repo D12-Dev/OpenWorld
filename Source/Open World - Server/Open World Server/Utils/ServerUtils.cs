@@ -830,6 +830,7 @@ namespace Open_World_Server
 
         public bool CompareConnectingClientVersion(ServerClient client, string clientVersion)
         {
+            bool allowToConnect = false;
             string latestVersion = "";
 
             try
@@ -840,16 +841,18 @@ namespace Open_World_Server
                 latestVersion = latestVersion.Remove(0, 1);
                 latestVersion = latestVersion.Remove(latestVersion.Count() - 1, 1);
             }
-            catch { return true; }
-
-            if (clientVersion == latestVersion) return true;
+            catch {
+                OWServer._ServerUtils.WriteServerLog($"Player {client.username} tried to connect, but the latest version number could not be retrieved. Allowing user to connect.", OWServer.WARN_COLOR);
+                allowToConnect = true; 
+            }
+            if (clientVersion == latestVersion) allowToConnect = true;
             else
             {
                 OWServer._Networking.SendData(client, "Disconnect│Version");
                 client.disconnectFlag = true;
-                WriteServerLog("Player [" + client.username + "] Tried To Join But Is Using Other Version");
-                return false;
+                WriteServerLog($"Player {client.username} tried to connect, but a version mismatch was detected. Disallowing connection.");
             }
+            return allowToConnect;
         }
 
         public bool CompareClientIPWithBans(ServerClient client)
