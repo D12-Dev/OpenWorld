@@ -929,10 +929,7 @@ namespace Open_World_Server
                     client.isImmunized = true;
                     _MainProgram.savedClients.Find(fetch => fetch.username == client.username).isImmunized = true;
                     SaveSystem.SaveUserData(client);
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("[{0}] | Player [{1}] Has Been Inmmunized", DateTime.Now, client.username);
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.WriteLine(Environment.NewLine);
+                    WriteColoredLog($"Player [{client.username}] Has Been Immunized\n", messageColor);
                     ListenForCommands();
                 }
             }
@@ -960,10 +957,7 @@ namespace Open_World_Server
                     client.isImmunized = false;
                     _MainProgram.savedClients.Find(fetch => fetch.username == client.username).isImmunized = false;
                     SaveSystem.SaveUserData(client);
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("[{0}] | Player [{1}] Has Been Deinmmunized", DateTime.Now, client.username);
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.WriteLine(Environment.NewLine);
+                    WriteColoredLog($"Player [{client.username}] Has Been Deimmunized\n", messageColor);
                     ListenForCommands();
                 }
             }
