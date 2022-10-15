@@ -68,6 +68,12 @@ namespace Open_World_Server
         public int overallTemperature;
         public int overallPopulation;
 
+        private const ConsoleColor defaultColor = ConsoleColor.White;
+        private void WriteColoredLog(string output, ConsoleColor color = defaultColor)
+        {
+            Console.ForegroundColor = color;
+            foreach (string line in output.Split("\n")) Console.WriteLine($"[{DateTime.Now}] | {line}");
+        }
         static void Main()
         {
             CultureInfo.CurrentCulture = new CultureInfo("en-US", false);
@@ -93,64 +99,58 @@ namespace Open_World_Server
         {
             Console.ForegroundColor = ConsoleColor.White;
 
-            string command = Console.ReadLine();
+            // Trim the leading and trailing white space off the commmand, if any, then pull the command word off to use in the switch.
+            string command = Console.ReadLine().Trim(), commandWord = command.Split(" ")[0].ToLower();
+
 
             if (command == "Help" || command == "help")
             {
                 Console.Clear();
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("[{0}] | List Of Available Commands:", DateTime.Now);
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine("[{0}] | Help - Displays Help Menu", DateTime.Now);
-                Console.WriteLine("[{0}] | Settings - Displays Settings Menu", DateTime.Now);
-                Console.WriteLine("[{0}] | Reload - Reloads All Available Settings Into The Server", DateTime.Now);
-                Console.WriteLine("[{0}] | Status - Shows A General Overview Menu", DateTime.Now);
-                Console.WriteLine("[{0}] | Settlements - Displays Settlements Menu", DateTime.Now);
-                Console.WriteLine("[{0}] | List - Displays Player List Menu", DateTime.Now);
-                Console.WriteLine("[{0}] | Whitelist - Shows All Whitelisted Players", DateTime.Now);
-                Console.WriteLine("[{0}] | Clear - Clears The Console", DateTime.Now);
-                Console.WriteLine("[{0}] | Exit - Closes The Server", DateTime.Now);
+                WriteColoredLog("List Of Available Commands:", ConsoleColor.Green);
+                WriteColoredLog("Help - Displays Help Menu\n" +
+                    "Settings - Displays Settings Menu\n" +
+                    "Reload - Reloads All Available Settings Into The Server\n" +
+                    "Status - Shows A General Overview Menu\n" +
+                    "Settlements - Displays Settlements Menu\n" +
+                    "List - Displays Player List Menu\n" +
+                    "Whitelist - Shows All Whitelisted Players\n" +
+                    "Clear - Clears The Console\n" +
+                    "Exit - Closes The Server");
                 Console.WriteLine(Environment.NewLine);
 
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("[{0}] | Communication:", DateTime.Now);
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine("[{0}] | Say - Send A Chat Message", DateTime.Now);
-                Console.WriteLine("[{0}] | Broadcast - Send A Letter To Every Player Connected", DateTime.Now);
-                Console.WriteLine("[{0}] | Notify - Send A Letter To X Player", DateTime.Now);
-                Console.WriteLine("[{0}] | Chat - Displays Chat Menu", DateTime.Now);
+                WriteColoredLog("Communication:", ConsoleColor.Green);
+                WriteColoredLog("Say - Send A Chat Message\n" +
+                    "Broadcast - Send A Letter To Every Player Connected\n" +
+                    "Notify - Send A Letter To X Player\n" +
+                    "Chat - Displays Chat Menu");
                 Console.WriteLine(Environment.NewLine);
 
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("[{0}] | Interaction:", DateTime.Now);
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine("[{0}] | Invoke - Invokes An Event To X Player", DateTime.Now);
-                Console.WriteLine("[{0}] | Plague - Invokes An Event To All Connected Players", DateTime.Now);
-                Console.WriteLine("[{0}] | Eventlist - Shows All Available Events", DateTime.Now);
-                Console.WriteLine("[{0}] | GiveItem - Gives An Item To X Player", DateTime.Now);
-                Console.WriteLine("[{0}] | GiveItemAll - Gives An Item To All Players", DateTime.Now);
-                Console.WriteLine("[{0}] | Protect - Protects A Player From Any Event Temporarily", DateTime.Now);
-                Console.WriteLine("[{0}] | Deprotect - Disables All Protections Given To X Player", DateTime.Now);
-                Console.WriteLine("[{0}] | Immunize - Protects A Player From Any Event Permanently", DateTime.Now);
-                Console.WriteLine("[{0}] | Deimmunize - Disables The Immunity Given To X Player", DateTime.Now);
+                WriteColoredLog("Interaction:", ConsoleColor.Green);
+                WriteColoredLog("Invoke - Invokes An Event To X Player\n" +
+                    "Plague - Invokes An Event To All Connected Players\n" +
+                    "Eventlist - Shows All Available Events\n" +
+                    "GiveItem - Gives An Item To X Player\n" +
+                    "GiveItemAll - Gives An Item To All Players\n" +
+                    "Protect - Protects A Player From Any Event Temporarily\n" +
+                    "Deprotect - Disables All Protections Given To X Player\n" +
+                    "Immunize - Protects A Player From Any Event Permanently\n" +
+                    "Deimmunize - Disables The Immunity Given To X Player");
                 Console.WriteLine(Environment.NewLine);
 
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("[{0}] | Admin Control:", DateTime.Now);
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine("[{0}] | Investigate - Displays All Data About X Player", DateTime.Now);
-                Console.WriteLine("[{0}] | Promote - Promotes X Player To Admin", DateTime.Now);
-                Console.WriteLine("[{0}] | Demote - Demotes X Player", DateTime.Now);
-                Console.WriteLine("[{0}] | Adminlist - Shows All Server Admins", DateTime.Now);
-                Console.WriteLine("[{0}] | Kick - Kicks X Player", DateTime.Now);
-                Console.WriteLine("[{0}] | Ban - Bans X Player", DateTime.Now);
-                Console.WriteLine("[{0}] | Pardon - Pardons X Player", DateTime.Now);
-                Console.WriteLine("[{0}] | Banlist - Shows All Banned Players", DateTime.Now);
-                Console.WriteLine("[{0}] | Wipe - Deletes Every Player Data In The Server", DateTime.Now);
+                WriteColoredLog("Admin Control:", ConsoleColor.Green);
+                WriteColoredLog("Investigate - Displays All Data About X Player\n" +
+                    "Promote - Promotes X Player To Admin\n" +
+                    "Demote - Demotes X Player\n" +
+                    "Adminlist - Shows All Server Admins\n" +
+                    "Kick - Kicks X Player\n" +
+                    "Ban - Bans X Player\n" +
+                    "Pardon - Pardons X Player\n" +
+                    "Banlist - Shows All Banned Players\n" +
+                    "Wipe - Deletes Every Player Data In The Server");
                 Console.WriteLine(Environment.NewLine);
             }
 
-            else if (command.StartsWith("Say ") || command.StartsWith("say "))
+            else if (command.TrimStart().ToLower().StartsWith("say "))
             {
                 string message = "";
                 try { message = command.Remove(0, 4); }
