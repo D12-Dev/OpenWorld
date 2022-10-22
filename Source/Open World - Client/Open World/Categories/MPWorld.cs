@@ -114,8 +114,8 @@ namespace OpenWorld
 				if (dummySettlement != null) continue;
 				else
 				{
-					Find.WorldObjects.Remove(settlement);
-					Log.Message("Removing old settlement");
+					Settlement settlementToRemove = Find.WorldObjects.Settlements.Find(fetch => fetch.Tile == settlement.Tile);
+					Find.WorldObjects.Remove(settlementToRemove);
 				}
 			}
 
@@ -133,8 +133,6 @@ namespace OpenWorld
 					newSettlement.Tile = settlement.Tile;
 					newSettlement.Name = settlement.Name + "'s Settlement";
 					Find.WorldObjects.Add(newSettlement);
-
-					Log.Message("Adding new settlement");
 				}
 			}
 		}

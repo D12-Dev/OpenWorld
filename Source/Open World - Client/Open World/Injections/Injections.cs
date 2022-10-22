@@ -57,10 +57,18 @@ namespace OpenWorld
 
 			Vector2 buttonLocation = new Vector2(rect.x, rect.y);
 			Vector2 buttonSize = new Vector2(170f, 45f);
-			if (Widgets.ButtonText(new Rect(buttonLocation.x, buttonLocation.y, buttonSize.x, buttonSize.y), "Multiplayer"))
+			if (Widgets.ButtonText(new Rect(buttonLocation.x, buttonLocation.y, buttonSize.x, buttonSize.y), ""))
 			{
 				Find.WindowStack.Add(new Dialog_MPMultiplayerType());
 			}
+
+			Vector2 buttonLocation2 = new Vector2(rect.x, rect.y + buttonSize.y + 7.5f);
+			if (Widgets.ButtonText(new Rect(buttonLocation2.x, buttonLocation2.y, buttonSize.x, buttonSize.y), ""))
+			{
+				Main._ParametersCache.isGeneratingNewOnlineGame = false;
+				Find.WindowStack.Add(new Page_SelectScenario());
+			}
+
 			return true;
 		}
 
@@ -75,11 +83,10 @@ namespace OpenWorld
 			{
 				//Do nothing since it's a dummy
 			}
-			return;
 		}
 	}
 
-	//Inject Multiplayer Joining At Storyteller Selection
+	//Inject Multiplayer Joining At Create World Selection
 	[HarmonyPatch(typeof(Page_CreateWorldParams), "DoWindowContents")]
 	public static class InjectMultiplayerJoinAtWorldParams
 	{
