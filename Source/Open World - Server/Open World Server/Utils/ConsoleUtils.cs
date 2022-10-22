@@ -3,10 +3,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace Open_World_Server
+namespace OpenWorldServer
 {
     public static class ConsoleUtils
     {
+        public static void UpdateTitle()
+        {
+            Console.Title = Server.serverName + " " + Server.serverVersion + " / " + Server._Networking.localAddress.ToString() + " / " + Server._Networking.connectedClients.Count + " Of " + Server.maxPlayers + " Connected Players";
+        }
+
         public static void LogToConsole(string data)
         {
             string dataToLog = "";
@@ -28,12 +33,12 @@ namespace Open_World_Server
         public static void WriteWithTime(string str)
         {
             if (string.IsNullOrWhiteSpace(str)) Console.WriteLine();
-            else Console.WriteLine(DateTime.Now + " | " + str);
+            else Console.WriteLine("[" + DateTime.Now + "] | " + str);
         }
 
         public static void WriteToLog(string data, string logMode)
         {
-            string pathToday = MainProgram.logFolderPath + Path.DirectorySeparatorChar + DateTime.Today.Month + "-" + DateTime.Today.Day + "-" + DateTime.Today.Year;
+            string pathToday = Server.logFolderPath + Path.DirectorySeparatorChar + DateTime.Today.Month + "-" + DateTime.Today.Day + "-" + DateTime.Today.Year;
             if (!Directory.Exists(pathToday)) Directory.CreateDirectory(pathToday);
 
             string logName;
@@ -48,6 +53,21 @@ namespace Open_World_Server
 
             try { File.AppendAllText(pathToday + Path.DirectorySeparatorChar + logName, data + Environment.NewLine); }
             catch { }
+        }
+
+        public static void DisplayNetworkStatus()
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("");
+            LogToConsole("Network Check:");
+
+            Console.ForegroundColor = ConsoleColor.White;
+            LogToConsole("Server Started");
+            LogToConsole("Type 'Help' To See Available Commands");
+            LogToConsole("Network Line Started");
+
+            LogToConsole(Environment.NewLine);
+            Console.ForegroundColor = ConsoleColor.White;
         }
     }
 }

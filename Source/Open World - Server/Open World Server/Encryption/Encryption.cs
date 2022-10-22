@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Open_World_Server
+namespace OpenWorldServer
 {
     public class Encryption
     {

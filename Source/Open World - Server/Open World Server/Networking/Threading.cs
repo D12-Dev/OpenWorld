@@ -1,15 +1,14 @@
 ﻿using System.Threading;
 
-namespace Open_World_Server
+namespace OpenWorldServer
 {
-    public class Threading
+    public static class Threading
     {
-        public void GenerateThreads(int threadID)
+        public static void GenerateThreads(int threadID)
         {
-            //Open up server for clients
             if (threadID == 0)
             {
-                Thread NetworkingThread = new Thread(new ThreadStart(MainProgram._Networking.ReadyServer));
+                Thread NetworkingThread = new Thread(new ThreadStart(Server._Networking.ReadyServer));
                 NetworkingThread.IsBackground = true;
                 NetworkingThread.Name = "Networking Thread";
                 NetworkingThread.Start();
@@ -17,7 +16,7 @@ namespace Open_World_Server
 
             else if (threadID == 1)
             {
-                Thread CheckThread = new Thread(() => MainProgram._Networking.CheckClientsConnection());
+                Thread CheckThread = new Thread(() => Server._Networking.CheckClientsConnection());
                 CheckThread.IsBackground = true;
                 CheckThread.Name = "Check Thread";
                 CheckThread.Start();
@@ -26,9 +25,9 @@ namespace Open_World_Server
             else return;
         }
 
-        public void GenerateClientThread(ServerClient client)
+        public static void GenerateClientThread(ServerClient client)
         {
-            Thread ClientThread = new Thread(() => MainProgram._Networking.ListenToClient(client));
+            Thread ClientThread = new Thread(() => Server._Networking.ListenToClient(client));
             ClientThread.IsBackground = true;
             ClientThread.Name = "User Thread " + client.username;
             ClientThread.Start();

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Open_World_Server
+namespace OpenWorldServer
 {
     [System.Serializable]
     public class MainDataHolder

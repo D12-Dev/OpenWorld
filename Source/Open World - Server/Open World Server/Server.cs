@@ -7,16 +7,14 @@ using System.Net;
 using System.IO;
 using System.Threading;
 
-namespace Open_World_Server
+namespace OpenWorldServer
 {
     [System.Serializable]
-    public static class MainProgram
+    public static class Server
     {
         //Instances
-        public static Threading _Threading = new Threading();
         public static Networking _Networking = new Networking();
         public static Encryption _Encryption = new Encryption();
-        public static ServerUtils _ServerUtils = new ServerUtils();
         public static PlayerUtils _PlayerUtils = new PlayerUtils();
         public static WorldUtils _WorldUtils = new WorldUtils();
 
@@ -25,8 +23,9 @@ namespace Open_World_Server
         public static string serverSettingsPath;
         public static string worldSettingsPath;
         public static string playersFolderPath;
-        public static string modsFolderPath;
+        public static string enforcedModsFolderPath;
         public static string whitelistedModsFolderPath;
+        public static string blacklistedModsFolderPath;
         public static string whitelistedUsersPath;
         public static string logFolderPath;
 
@@ -37,7 +36,7 @@ namespace Open_World_Server
         //Server Parameters
         public static string serverName = "";
         public static string serverDescription = "";
-        public static string serverVersion = "v1.4.0";
+        public static string serverVersion = "v1.4.1 Unstable";
         public static int maxPlayers = 300;
         public static int warningWealthThreshold = 10000;
         public static int banWealthThreshold = 100000;
@@ -55,8 +54,9 @@ namespace Open_World_Server
         public static bool usingProfanityFilter = false;
         public static List<string> whitelistedUsernames = new List<string>();
         public static List<string> adminList = new List<string>();
-        public static List<string> modList = new List<string>();
+        public static List<string> enforcedMods = new List<string>();
         public static List<string> whitelistedMods = new List<string>();
+        public static List<string> blacklistedMods = new List<string>();
         public static List<string> chatCache = new List<string>();
         public static Dictionary<string, string> bannedIPs = new Dictionary<string, string>();
 
@@ -69,22 +69,18 @@ namespace Open_World_Server
 
         static void Main()
         {
-            CultureInfo.CurrentCulture = new CultureInfo("en-US", false);
-            CultureInfo.CurrentUICulture = new CultureInfo("en-US", false);
-            CultureInfo.DefaultThreadCurrentCulture = new CultureInfo("en-US", false);
-            CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("en-US", false);
+            ServerUtils.SetPaths();
+            ServerUtils.SetCulture();
 
-            mainFolderPath = AppDomain.CurrentDomain.BaseDirectory;
-            logFolderPath = mainFolderPath + Path.DirectorySeparatorChar + "Logs";
-            
-            Console.ForegroundColor = ConsoleColor.Green;
-            ConsoleUtils.LogToConsole("Server Startup:");
-            ConsoleUtils.LogToConsole("Using Culture Info: [" + CultureInfo.CurrentCulture + "]");
+            ServerUtils.CheckServerVersion();
+            ServerUtils.CheckSettingsFile();
+            ServerUtils.CheckAllAvailableMods(true);
+            ServerUtils.CheckWorldFile();
 
-            _ServerUtils.SetupPaths();
-            _ServerUtils.CheckForFiles();
+            PlayerUtils.CheckAllAvailablePlayers(true);
 
-            _Threading.GenerateThreads(0);
+            Threading.GenerateThreads(0);
+
             while (true) ListenForCommands();
         }
 
@@ -102,6 +98,7 @@ namespace Open_World_Server
             {
                 {"help", SimpleCommands.HelpCommand},
                 {"settings", SimpleCommands.SettingsCommand},
+                {"modlist", SimpleCommands.ModListCommand},
                 {"reload", SimpleCommands.ReloadCommand},
                 {"status", SimpleCommands.StatusCommand},
                 {"eventlist", SimpleCommands.EventListCommand},

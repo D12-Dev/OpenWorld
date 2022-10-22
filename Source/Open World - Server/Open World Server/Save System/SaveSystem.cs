@@ -2,13 +2,13 @@
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
-namespace Open_World_Server
+namespace OpenWorldServer
 {
     public class SaveSystem
     {
         public static void SaveUserData(ServerClient client)
         {
-            string folderPath = MainProgram.playersFolderPath;
+            string folderPath = Server.playersFolderPath;
             string filePath = folderPath + Path.DirectorySeparatorChar + client.username + ".data";
 
             if (!Directory.Exists(folderPath))
@@ -29,7 +29,7 @@ namespace Open_World_Server
 
         public static MainDataHolder LoadUserData(string username)
         {
-            string path = MainProgram.playersFolderPath + Path.DirectorySeparatorChar + username + ".data";
+            string path = Server.playersFolderPath + Path.DirectorySeparatorChar + username + ".data";
 
             BinaryFormatter formatter = new BinaryFormatter();
 
@@ -44,7 +44,7 @@ namespace Open_World_Server
 
         public static void SaveBannedIPs(Dictionary<string, string> IPs)
         {
-            string folderPath = MainProgram.mainFolderPath;
+            string folderPath = Server.mainFolderPath;
             string filepath = folderPath + Path.DirectorySeparatorChar + "Banned IPs.data";
 
             BinaryFormatter formatter = new BinaryFormatter();
@@ -60,7 +60,7 @@ namespace Open_World_Server
 
         public static BanDataHolder LoadBannedIPs()
         {
-            string path = MainProgram.mainFolderPath + Path.DirectorySeparatorChar + "Banned IPs.data";
+            string path = Server.mainFolderPath + Path.DirectorySeparatorChar + "Banned IPs.data";
 
             BinaryFormatter formatter = new BinaryFormatter();
 

@@ -1,19 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 
-namespace Open_World_Server
+namespace OpenWorldServer
 {
     public class PlayerUtils
     {
-        public void SaveNewPlayerFile(string username, string password)
+        public static void SaveNewPlayerFile(string username, string password)
         {
-            foreach (ServerClient savedClient in MainProgram.savedClients)
+            foreach (ServerClient savedClient in Server.savedClients)
             {
                 if (savedClient.username == username)
                 {
-                    if (!string.IsNullOrWhiteSpace(savedClient.homeTileID)) MainProgram._WorldUtils.RemoveSettlement(savedClient, savedClient.homeTileID);
+                    if (!string.IsNullOrWhiteSpace(savedClient.homeTileID)) Server._WorldUtils.RemoveSettlement(savedClient, savedClient.homeTileID);
                     savedClient.wealth = 0;
                     savedClient.pawnCount = 0;
                     SaveSystem.SaveUserData(savedClient);
@@ -26,13 +27,13 @@ namespace Open_World_Server
             dummy.password = password;
             dummy.homeTileID = null;
 
-            MainProgram.savedClients.Add(dummy);
+            Server.savedClients.Add(dummy);
             SaveSystem.SaveUserData(dummy);
         }
 
-        public void GiveSavedDataToPlayer(ServerClient client)
+        public static void GiveSavedDataToPlayer(ServerClient client)
         {
-            foreach (ServerClient savedClient in MainProgram.savedClients)
+            foreach (ServerClient savedClient in Server.savedClients)
             {
                 if (savedClient.username == client.username)
                 {
@@ -47,25 +48,38 @@ namespace Open_World_Server
             }
         }
 
-        public void CheckSavedPlayers()
+        public static void CheckAllAvailablePlayers(bool newLine)
         {
-            if (!Directory.Exists(MainProgram.playersFolderPath))
+            if (newLine) Console.WriteLine("");
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            ConsoleUtils.LogToConsole("Player Check:");
+            Console.ForegroundColor = ConsoleColor.White;
+
+            CheckSavedPlayers();
+            CheckForBannedPlayers();
+            CheckForWhitelistedPlayers();
+        }
+
+        private static void CheckSavedPlayers()
+        {
+            if (!Directory.Exists(Server.playersFolderPath))
             {
-                Directory.CreateDirectory(MainProgram.playersFolderPath);
+                Directory.CreateDirectory(Server.playersFolderPath);
                 ConsoleUtils.LogToConsole("No Players Folder Found, Generating");
                 return;
             }
 
             else
             {
-                string[] playerFiles = Directory.GetFiles(MainProgram.playersFolderPath);
+                string[] playerFiles = Directory.GetFiles(Server.playersFolderPath);
 
                 foreach (string file in playerFiles)
                 {
-                    if (MainProgram.usingIdleTimer)
+                    if (Server.usingIdleTimer)
                     {
                         FileInfo fi = new FileInfo(file);
-                        if (fi.LastAccessTime < DateTime.Now.AddDays(-MainProgram.idleTimer))
+                        if (fi.LastAccessTime < DateTime.Now.AddDays(-Server.idleTimer))
                         {
                             fi.Delete();
                             continue;
@@ -75,10 +89,10 @@ namespace Open_World_Server
                     MainDataHolder data = SaveSystem.LoadUserData(Path.GetFileNameWithoutExtension(file));
                     {
                         ServerClient dummy = data.serverclient;
-                        MainProgram.savedClients.Add(dummy);
+                        Server.savedClients.Add(dummy);
                         if (!string.IsNullOrWhiteSpace(dummy.homeTileID))
                         {
-                            try { MainProgram.savedSettlements.Add(dummy.homeTileID, new List<string>() { dummy.username }); }
+                            try { Server.savedSettlements.Add(dummy.homeTileID, new List<string>() { dummy.username }); }
                             catch 
                             {
                                 Console.ForegroundColor = ConsoleColor.Red;
@@ -89,38 +103,81 @@ namespace Open_World_Server
                     }
                 }
 
-                if (MainProgram.savedClients.Count == 0) ConsoleUtils.LogToConsole("No Saved Players Found, Ignoring");
-                else ConsoleUtils.LogToConsole("Loaded [" + MainProgram.savedClients.Count + "] Player Files");
+                if (Server.savedClients.Count == 0) ConsoleUtils.LogToConsole("No Saved Players Found, Ignoring");
+                else ConsoleUtils.LogToConsole("Loaded [" + Server.savedClients.Count + "] Player Files");
             }
         }
 
-        public void CheckForPlayerWealth(ServerClient client)
+        private static void CheckForBannedPlayers()
         {
-            if (MainProgram.usingWealthSystem == false) return;
-            if (MainProgram.banWealthThreshold == 0 && MainProgram.warningWealthThreshold == 0) return;
+            if (!File.Exists(Server.mainFolderPath + Path.DirectorySeparatorChar + "Banned IPs.data"))
+            {
+                ConsoleUtils.LogToConsole("No Bans File Found, Ignoring");
+                return;
+            }
+
+            BanDataHolder list = SaveSystem.LoadBannedIPs();
+            {
+                Server.bannedIPs = list.bannedIPs;
+            }
+
+            if (Server.bannedIPs.Count == 0) ConsoleUtils.LogToConsole("No Banned Players Found, Ignoring");
+            else ConsoleUtils.LogToConsole("Loaded [" + Server.bannedIPs.Count + "] Banned Players");
+        }
+
+        private static void CheckForWhitelistedPlayers()
+        {
+            Server.whitelistedUsernames.Clear();
+
+            if (!File.Exists(Server.whitelistedUsersPath))
+            {
+                File.Create(Server.whitelistedUsersPath);
+
+                ConsoleUtils.LogToConsole("No Whitelisted Players File Found, Generating");
+            }
+
+            else
+            {
+                if (File.ReadAllLines(Server.whitelistedUsersPath).Count() == 0) ConsoleUtils.LogToConsole("No Whitelisted Players Found, Ignoring");
+                else
+                {
+                    foreach (string str in File.ReadAllLines(Server.whitelistedUsersPath))
+                    {
+                        Server.whitelistedUsernames.Add(str);
+                    }
+
+                    ConsoleUtils.LogToConsole("Loaded [" + Server.whitelistedUsernames.Count + "] Whitelisted Players");
+                }
+            }
+        }
+
+        public static void CheckForPlayerWealth(ServerClient client)
+        {
+            if (Server.usingWealthSystem == false) return;
+            if (Server.banWealthThreshold == 0 && Server.warningWealthThreshold == 0) return;
             if (client.isAdmin) return;
 
-            int wealthToCompare = (int) MainProgram.savedClients.Find(fetch => fetch.username == client.username).wealth;
+            int wealthToCompare = (int) Server.savedClients.Find(fetch => fetch.username == client.username).wealth;
 
-            if (client.wealth - wealthToCompare > MainProgram.banWealthThreshold && MainProgram.banWealthThreshold > 0)
+            if (client.wealth - wealthToCompare > Server.banWealthThreshold && Server.banWealthThreshold > 0)
             {
                 SaveSystem.SaveUserData(client);
-                MainProgram.savedClients.Find(fetch => fetch.username == client.username).wealth = client.wealth;
-                MainProgram.savedClients.Find(fetch => fetch.username == client.username).pawnCount = client.pawnCount;
+                Server.savedClients.Find(fetch => fetch.username == client.username).wealth = client.wealth;
+                Server.savedClients.Find(fetch => fetch.username == client.username).pawnCount = client.pawnCount;
 
-                MainProgram.bannedIPs.Add(((IPEndPoint)client.tcp.Client.RemoteEndPoint).Address.ToString(), client.username);
+                Server.bannedIPs.Add(((IPEndPoint)client.tcp.Client.RemoteEndPoint).Address.ToString(), client.username);
                 client.disconnectFlag = true;
-                SaveSystem.SaveBannedIPs(MainProgram.bannedIPs);
+                SaveSystem.SaveBannedIPs(Server.bannedIPs);
 
                 Console.ForegroundColor = ConsoleColor.Red;
                 ConsoleUtils.LogToConsole("Player [" + client.username + "]'s Wealth Triggered Alarm [" + wealthToCompare + " > " + (int)client.wealth + "], Banning");
                 Console.ForegroundColor = ConsoleColor.White;
             }
-            else if (client.wealth - wealthToCompare > MainProgram.warningWealthThreshold && MainProgram.warningWealthThreshold > 0)
+            else if (client.wealth - wealthToCompare > Server.warningWealthThreshold && Server.warningWealthThreshold > 0)
             {
                 SaveSystem.SaveUserData(client);
-                MainProgram.savedClients.Find(fetch => fetch.username == client.username).wealth = client.wealth;
-                MainProgram.savedClients.Find(fetch => fetch.username == client.username).pawnCount = client.pawnCount;
+                Server.savedClients.Find(fetch => fetch.username == client.username).wealth = client.wealth;
+                Server.savedClients.Find(fetch => fetch.username == client.username).pawnCount = client.pawnCount;
 
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 ConsoleUtils.LogToConsole("Player [" + client.username + "]'s Wealth Triggered Warning [" + wealthToCompare + " > " + (int) client.wealth + "]");
@@ -129,14 +186,14 @@ namespace Open_World_Server
             else
             {
                 SaveSystem.SaveUserData(client);
-                MainProgram.savedClients.Find(fetch => fetch.username == client.username).wealth = client.wealth;
-                MainProgram.savedClients.Find(fetch => fetch.username == client.username).pawnCount = client.pawnCount;
+                Server.savedClients.Find(fetch => fetch.username == client.username).wealth = client.wealth;
+                Server.savedClients.Find(fetch => fetch.username == client.username).pawnCount = client.pawnCount;
             }
         }
 
-        public bool CheckForConnectedPlayers(string tileID)
+        public static bool CheckForConnectedPlayers(string tileID)
         {
-            foreach (ServerClient client in MainProgram._Networking.connectedClients)
+            foreach (ServerClient client in Server._Networking.connectedClients)
             {
                 if (client.homeTileID == tileID) return true;
             }
@@ -144,9 +201,9 @@ namespace Open_World_Server
             return false;
         }
 
-        public bool CheckForPlayerShield(string tileID)
+        public static bool CheckForPlayerShield(string tileID)
         {
-            foreach (ServerClient client in MainProgram._Networking.connectedClients)
+            foreach (ServerClient client in Server._Networking.connectedClients)
             {
                 if (client.homeTileID == tileID && !client.eventShielded && !client.isImmunized)
                 {
@@ -158,9 +215,9 @@ namespace Open_World_Server
             return false;
         }
 
-        public bool CheckForPvpAvailability(string tileID)
+        public static bool CheckForPvpAvailability(string tileID)
         {
-            foreach (ServerClient client in MainProgram._Networking.connectedClients)
+            foreach (ServerClient client in Server._Networking.connectedClients)
             {
                 if (client.homeTileID == tileID && !client.inRTSE && !client.isImmunized)
                 {
@@ -172,9 +229,9 @@ namespace Open_World_Server
             return false;
         }
 
-        public string GetSpyData(string tileID, ServerClient origin)
+        public static string GetSpyData(string tileID, ServerClient origin)
         {
-            foreach (ServerClient client in MainProgram._Networking.connectedClients)
+            foreach (ServerClient client in Server._Networking.connectedClients)
             {
                 if (client.homeTileID == tileID)
                 {
@@ -188,7 +245,7 @@ namespace Open_World_Server
 
                     Random rnd = new Random();
                     int chance = rnd.Next(0, 2);
-                    if (chance == 1) MainProgram._Networking.SendData(client, "Spy│" + origin.username);
+                    if (chance == 1) Server._Networking.SendData(client, "Spy│" + origin.username);
 
                     ConsoleUtils.LogToConsole("Spy Done Between [" + origin.username + "] And [" + client.username + "]");
 
@@ -199,22 +256,22 @@ namespace Open_World_Server
             return "";
         }
 
-        public void SendEventToPlayer(ServerClient invoker, string data)
+        public static void SendEventToPlayer(ServerClient invoker, string data)
         {
             string dataToSend = "ForcedEvent│" + data.Split('│')[1];
 
-            foreach (ServerClient sc in MainProgram._Networking.connectedClients)
+            foreach (ServerClient sc in Server._Networking.connectedClients)
             {
                 if (sc.homeTileID == data.Split('│')[2])
                 {
                     ConsoleUtils.LogToConsole("Player [" + invoker.username + "] Has Sent Forced Event [" + data.Split('│')[1] + "] To [" + sc.username + "]");
-                    MainProgram._Networking.SendData(sc, dataToSend);
+                    Server._Networking.SendData(sc, dataToSend);
                     break;
                 }
             }
         }
 
-        public void SendGiftToPlayer(ServerClient invoker, string data)
+        public static void SendGiftToPlayer(ServerClient invoker, string data)
         {
             string tileToSend = data.Split('│')[1];
             string dataToSend = "GiftedItems│" + data.Split('│')[2];
@@ -225,22 +282,22 @@ namespace Open_World_Server
 
                 if (!string.IsNullOrWhiteSpace(sendMode) && sendMode == "Pod")
                 {
-                    foreach (ServerClient sc in MainProgram._Networking.connectedClients)
+                    foreach (ServerClient sc in Server._Networking.connectedClients)
                     {
                         if (sc == invoker) continue;
                         if (sc.homeTileID == tileToSend) continue;
 
-                        MainProgram._Networking.SendData(sc, "│RenderTransportPod│" + invoker.homeTileID + "│" + tileToSend + "│");
+                        Server._Networking.SendData(sc, "│RenderTransportPod│" + invoker.homeTileID + "│" + tileToSend + "│");
                     }
                 }
             }
             catch { }
 
-            foreach (ServerClient sc in MainProgram._Networking.connectedClients)
+            foreach (ServerClient sc in Server._Networking.connectedClients)
             {
                 if (sc.homeTileID == tileToSend)
                 {
-                    MainProgram._Networking.SendData(sc, dataToSend);
+                    Server._Networking.SendData(sc, dataToSend);
                     ConsoleUtils.LogToConsole("Gift Done Between [" + invoker.username + "] And [" + sc.username + "]");
                     return;
                 }
@@ -248,7 +305,7 @@ namespace Open_World_Server
 
             dataToSend = dataToSend.Replace("GiftedItems│", "");
 
-            foreach(ServerClient sc in MainProgram.savedClients)
+            foreach(ServerClient sc in Server.savedClients)
             {
                 if (sc.homeTileID == tileToSend)
                 {
@@ -260,29 +317,29 @@ namespace Open_World_Server
             }
         }
 
-        public void SendTradeRequestToPlayer(ServerClient invoker, string data)
+        public static void SendTradeRequestToPlayer(ServerClient invoker, string data)
         {
             string dataToSend = "TradeRequest│" + invoker.username + "│" + data.Split('│')[2] + "│" + data.Split('│')[3];
 
-            foreach (ServerClient sc in MainProgram._Networking.connectedClients)
+            foreach (ServerClient sc in Server._Networking.connectedClients)
             {
                 if (sc.homeTileID == data.Split('│')[1])
                 {
-                    MainProgram._Networking.SendData(sc, dataToSend);
+                    Server._Networking.SendData(sc, dataToSend);
                     return;
                 }
             }
         }
 
-        public void SendBarterRequestToPlayer(ServerClient invoker, string data)
+        public static void SendBarterRequestToPlayer(ServerClient invoker, string data)
         {
             string dataToSend = "BarterRequest│" + invoker.homeTileID + "│" + data.Split('│')[2];
 
-            foreach (ServerClient sc in MainProgram._Networking.connectedClients)
+            foreach (ServerClient sc in Server._Networking.connectedClients)
             {
                 if (sc.homeTileID == data.Split('│')[1])
                 {
-                    MainProgram._Networking.SendData(sc, dataToSend);
+                    Server._Networking.SendData(sc, dataToSend);
                     return;
                 }
             }

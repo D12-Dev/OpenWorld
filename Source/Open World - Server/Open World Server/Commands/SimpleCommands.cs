@@ -5,7 +5,7 @@ using System.Net;
 using System.Text;
 using System.Threading;
 
-namespace Open_World_Server
+namespace OpenWorldServer
 {
     public static class SimpleCommands
     {
@@ -21,14 +21,15 @@ namespace Open_World_Server
 
             ConsoleUtils.WriteWithTime("Help - Displays Help Menu");
             ConsoleUtils.WriteWithTime("Settings - Displays Settings Menu");
+            ConsoleUtils.WriteWithTime("Modlist - Displays Mods Menu");
             ConsoleUtils.WriteWithTime("Reload - Reloads All Available Settings Into The Server");
             ConsoleUtils.WriteWithTime("Status - Shows A General Overview Menu");
             ConsoleUtils.WriteWithTime("Settlements - Displays Settlements Menu");
             ConsoleUtils.WriteWithTime("List - Displays Player List Menu");
             ConsoleUtils.WriteWithTime("Whitelist - Shows All Whitelisted Players");
             ConsoleUtils.WriteWithTime("Clear - Clears The Console");
-            ConsoleUtils.WriteWithTime("Exit - Exit - Closes The Server");
-            ConsoleUtils.WriteWithTime("");
+            ConsoleUtils.WriteWithTime("Exit - Closes The Server");
+            Console.WriteLine("");
 
             Console.ForegroundColor = ConsoleColor.Green;
             ConsoleUtils.WriteWithTime("Communication:");
@@ -38,7 +39,7 @@ namespace Open_World_Server
             ConsoleUtils.WriteWithTime("Broadcast - Send A Letter To Every Player Connected");
             ConsoleUtils.WriteWithTime("Notify - Send A Letter To X Player");
             ConsoleUtils.WriteWithTime("Chat - Displays Chat Menu");
-            ConsoleUtils.WriteWithTime("");
+            Console.WriteLine("");
 
             Console.ForegroundColor = ConsoleColor.Green;
             ConsoleUtils.WriteWithTime("Interaction:");
@@ -53,7 +54,7 @@ namespace Open_World_Server
             ConsoleUtils.WriteWithTime("Deprotect - Disables All Protections Given To X Player");
             ConsoleUtils.WriteWithTime("Immunize - Protects A Player From Any Event Permanently");
             ConsoleUtils.WriteWithTime("Deimmunize - Disables The Immunity Given To X Player");
-            ConsoleUtils.WriteWithTime("");
+            Console.WriteLine("");
 
             Console.ForegroundColor = ConsoleColor.Green;
             ConsoleUtils.WriteWithTime("Admin Control:");
@@ -69,7 +70,7 @@ namespace Open_World_Server
             ConsoleUtils.WriteWithTime("Banlist - Shows All Banned Players");
             ConsoleUtils.WriteWithTime("Wipe - Deletes Every Player Data In The Server");
 
-            ConsoleUtils.WriteWithTime("");
+            Console.WriteLine("");
         }
 
         public static void SettingsCommand()
@@ -80,39 +81,51 @@ namespace Open_World_Server
             ConsoleUtils.WriteWithTime("Server Settings:");
             Console.ForegroundColor = ConsoleColor.White;
 
-            ConsoleUtils.WriteWithTime("Server Name: " + MainProgram.serverName);
-            ConsoleUtils.WriteWithTime("Server Description: " + MainProgram.serverDescription);
-            ConsoleUtils.WriteWithTime("Server Local IP: " + MainProgram._Networking.localAddress);
-            ConsoleUtils.WriteWithTime("Server Port: " + MainProgram._Networking.serverPort);
-            ConsoleUtils.WriteWithTime("");
+            ConsoleUtils.WriteWithTime("Server Name: " + Server.serverName);
+            ConsoleUtils.WriteWithTime("Server Description: " + Server.serverDescription);
+            ConsoleUtils.WriteWithTime("Server Local IP: " + Server._Networking.localAddress);
+            ConsoleUtils.WriteWithTime("Server Port: " + Server._Networking.serverPort);
+            Console.WriteLine("");
 
             Console.ForegroundColor = ConsoleColor.Green;
             ConsoleUtils.WriteWithTime("World Settings:");
             Console.ForegroundColor = ConsoleColor.White;
 
-            ConsoleUtils.WriteWithTime("Globe Coverage: " + MainProgram.globeCoverage);
-            ConsoleUtils.WriteWithTime("Seed: " + MainProgram.seed);
-            ConsoleUtils.WriteWithTime("Overall Rainfall: " + MainProgram.overallRainfall);
-            ConsoleUtils.WriteWithTime("Overall Temperature: " + MainProgram.overallTemperature);
-            ConsoleUtils.WriteWithTime("Overall Population: " + MainProgram.overallPopulation);
-            ConsoleUtils.WriteWithTime("");
+            ConsoleUtils.WriteWithTime("Globe Coverage: " + Server.globeCoverage);
+            ConsoleUtils.WriteWithTime("Seed: " + Server.seed);
+            ConsoleUtils.WriteWithTime("Overall Rainfall: " + Server.overallRainfall);
+            ConsoleUtils.WriteWithTime("Overall Temperature: " + Server.overallTemperature);
+            ConsoleUtils.WriteWithTime("Overall Population: " + Server.overallPopulation);
+            Console.WriteLine("");
+        }
+
+        public static void ModListCommand()
+        {
+            Console.Clear();
 
             Console.ForegroundColor = ConsoleColor.Green;
-            ConsoleUtils.WriteWithTime("Server Mods: " + MainProgram.modList.Count);
+            ConsoleUtils.WriteWithTime("Server Enforced Mods: " + Server.enforcedMods.Count);
             Console.ForegroundColor = ConsoleColor.White;
 
-            if (MainProgram.modList.Count == 0) ConsoleUtils.WriteWithTime("No Mods Found");
-            else foreach (string mod in MainProgram.modList) ConsoleUtils.WriteWithTime(mod);
-            ConsoleUtils.WriteWithTime("");
+            if (Server.enforcedMods.Count == 0) ConsoleUtils.WriteWithTime("No Enforced Mods Found");
+            else foreach (string mod in Server.enforcedMods) ConsoleUtils.WriteWithTime(mod);
+            Console.WriteLine("");
 
             Console.ForegroundColor = ConsoleColor.Green;
-            ConsoleUtils.WriteWithTime("Server Whitelisted Mods: " + MainProgram.whitelistedMods.Count);
+            ConsoleUtils.WriteWithTime("Server Whitelisted Mods: " + Server.whitelistedMods.Count);
             Console.ForegroundColor = ConsoleColor.White;
 
-            if (MainProgram.whitelistedMods.Count == 0) ConsoleUtils.WriteWithTime("No Whitelisted Mods Found");
-            else foreach (string whitelistedMod in MainProgram.whitelistedMods) ConsoleUtils.WriteWithTime(whitelistedMod);
+            if (Server.whitelistedMods.Count == 0) ConsoleUtils.WriteWithTime("No Whitelisted Mods Found");
+            else foreach (string whitelistedMod in Server.whitelistedMods) ConsoleUtils.WriteWithTime(whitelistedMod);
+            Console.WriteLine("");
 
-            ConsoleUtils.WriteWithTime("");
+            Console.ForegroundColor = ConsoleColor.Green;
+            ConsoleUtils.WriteWithTime("Server Blacklisted Mods: " + Server.blacklistedMods.Count);
+            Console.ForegroundColor = ConsoleColor.White;
+
+            if (Server.whitelistedMods.Count == 0) ConsoleUtils.WriteWithTime("No Blacklisted Mods Found");
+            else foreach (string blacklistedMod in Server.blacklistedMods) ConsoleUtils.WriteWithTime(blacklistedMod);
+            Console.WriteLine("");
         }
 
         //Check this one
@@ -120,14 +133,14 @@ namespace Open_World_Server
         {
             List<ServerClient> clientsToKick = new List<ServerClient>();
 
-            foreach (ServerClient sc in MainProgram._Networking.connectedClients)
+            foreach (ServerClient sc in Server._Networking.connectedClients)
             {
                 clientsToKick.Add(sc);
             }
 
             foreach (ServerClient sc in clientsToKick)
             {
-                MainProgram._Networking.SendData(sc, "Disconnect│Closing");
+                Server._Networking.SendData(sc, "Disconnect│Closing");
                 sc.disconnectFlag = true;
             }
 
@@ -143,26 +156,15 @@ namespace Open_World_Server
         {
             Console.Clear();
 
-            Console.ForegroundColor = ConsoleColor.Green;
-            ConsoleUtils.WriteWithTime("Reloading All Current Mods");
-
-            MainProgram._ServerUtils.CheckMods();
-            MainProgram._ServerUtils.CheckWhitelistedMods();
-
+            ServerUtils.CheckAllAvailableMods(false);
             Console.ForegroundColor = ConsoleColor.Green;
             ConsoleUtils.WriteWithTime("Mods Have Been Reloaded");
-            ConsoleUtils.WriteWithTime("");
+            Console.WriteLine("");
 
-            Console.ForegroundColor = ConsoleColor.Green;
-            ConsoleUtils.WriteWithTime("Reloading All Whitelisted Players");
-
-            Console.ForegroundColor = ConsoleColor.Green;
-            MainProgram._ServerUtils.CheckForWhitelistedPlayers();
-
+            PlayerUtils.CheckAllAvailablePlayers(false);
             Console.ForegroundColor = ConsoleColor.Green;
             ConsoleUtils.WriteWithTime("Whitelisted Players Have Been Reloaded");
-
-            ConsoleUtils.WriteWithTime("");
+            Console.WriteLine("");
         }
 
         public static void StatusCommand()
@@ -173,80 +175,81 @@ namespace Open_World_Server
             ConsoleUtils.WriteWithTime("Server Status");
             Console.ForegroundColor = ConsoleColor.White;
 
-            ConsoleUtils.WriteWithTime("Version: " + MainProgram.serverVersion);
+            ConsoleUtils.WriteWithTime("Version: " + Server.serverVersion);
             ConsoleUtils.WriteWithTime("Connection: Online");
             ConsoleUtils.WriteWithTime("Uptime: " + (DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime()));
-            ConsoleUtils.WriteWithTime("");
+            Console.WriteLine("");
 
             Console.ForegroundColor = ConsoleColor.Green;
             ConsoleUtils.WriteWithTime("Mods:");
             Console.ForegroundColor = ConsoleColor.White;
 
-            ConsoleUtils.WriteWithTime("Mods: " + MainProgram.modList.Count);
-            ConsoleUtils.WriteWithTime("Whitelisted Mods: " + MainProgram.whitelistedMods.Count);
-            ConsoleUtils.WriteWithTime("");
+            ConsoleUtils.WriteWithTime("Enforced Mods: " + Server.enforcedMods.Count);
+            ConsoleUtils.WriteWithTime("Whitelisted Mods: " + Server.whitelistedMods.Count);
+            ConsoleUtils.WriteWithTime("Blacklisted Mods: " + Server.blacklistedMods.Count);
+            Console.WriteLine("");
 
             Console.ForegroundColor = ConsoleColor.Green;
             ConsoleUtils.WriteWithTime("Players:");
             Console.ForegroundColor = ConsoleColor.White;
 
-            ConsoleUtils.WriteWithTime("Connected Players: " + MainProgram._Networking.connectedClients.Count);
-            ConsoleUtils.WriteWithTime("Saved Players: " + MainProgram.savedClients.Count);
-            ConsoleUtils.WriteWithTime("Saved Settlements: " + MainProgram.savedSettlements.Count);
-            ConsoleUtils.WriteWithTime("Whitelisted Players: " + MainProgram.whitelistedUsernames.Count);
-            ConsoleUtils.WriteWithTime("Max Players: " + MainProgram.maxPlayers);
-            ConsoleUtils.WriteWithTime("");
+            ConsoleUtils.WriteWithTime("Connected Players: " + Server._Networking.connectedClients.Count);
+            ConsoleUtils.WriteWithTime("Saved Players: " + Server.savedClients.Count);
+            ConsoleUtils.WriteWithTime("Saved Settlements: " + Server.savedSettlements.Count);
+            ConsoleUtils.WriteWithTime("Whitelisted Players: " + Server.whitelistedUsernames.Count);
+            ConsoleUtils.WriteWithTime("Max Players: " + Server.maxPlayers);
+            Console.WriteLine("");
 
             Console.ForegroundColor = ConsoleColor.Green;
             ConsoleUtils.WriteWithTime("Modlist Settings:");
             Console.ForegroundColor = ConsoleColor.White;
 
-            ConsoleUtils.WriteWithTime("Using Modlist Check: " + MainProgram.forceModlist);
-            ConsoleUtils.WriteWithTime("Using Modlist Config Check: " + MainProgram.forceModlistConfigs);
-            ConsoleUtils.WriteWithTime("Using Mod Verification: " + MainProgram.usingModVerification);
-            ConsoleUtils.WriteWithTime("");
+            ConsoleUtils.WriteWithTime("Using Modlist Check: " + Server.forceModlist);
+            ConsoleUtils.WriteWithTime("Using Modlist Config Check: " + Server.forceModlistConfigs);
+            ConsoleUtils.WriteWithTime("Using Mod Verification: " + Server.usingModVerification);
+            Console.WriteLine("");
 
             Console.ForegroundColor = ConsoleColor.Green;
             ConsoleUtils.WriteWithTime("Chat Settings:");
             Console.ForegroundColor = ConsoleColor.White;
 
-            ConsoleUtils.WriteWithTime("Using Chat: " + MainProgram.usingChat);
-            ConsoleUtils.WriteWithTime("Using Profanity Filter: " + MainProgram.usingProfanityFilter);
-            ConsoleUtils.WriteWithTime("");
+            ConsoleUtils.WriteWithTime("Using Chat: " + Server.usingChat);
+            ConsoleUtils.WriteWithTime("Using Profanity Filter: " + Server.usingProfanityFilter);
+            Console.WriteLine("");
 
             Console.ForegroundColor = ConsoleColor.Green;
             ConsoleUtils.WriteWithTime("Wealth Settings:");
             Console.ForegroundColor = ConsoleColor.White;
 
-            ConsoleUtils.WriteWithTime("Using Wealth System: " + MainProgram.usingWealthSystem);
-            ConsoleUtils.WriteWithTime("Warning Threshold: " + MainProgram.warningWealthThreshold);
-            ConsoleUtils.WriteWithTime("Ban Threshold: " + MainProgram.banWealthThreshold);
-            ConsoleUtils.WriteWithTime("");
+            ConsoleUtils.WriteWithTime("Using Wealth System: " + Server.usingWealthSystem);
+            ConsoleUtils.WriteWithTime("Warning Threshold: " + Server.warningWealthThreshold);
+            ConsoleUtils.WriteWithTime("Ban Threshold: " + Server.banWealthThreshold);
+            Console.WriteLine("");
 
             Console.ForegroundColor = ConsoleColor.Green;
             ConsoleUtils.WriteWithTime("Idle Settings:");
             Console.ForegroundColor = ConsoleColor.White;
 
-            ConsoleUtils.WriteWithTime("Using Idle System: " + MainProgram.usingIdleTimer);
-            ConsoleUtils.WriteWithTime("Idle Threshold: " + MainProgram.idleTimer);
-            ConsoleUtils.WriteWithTime("");
+            ConsoleUtils.WriteWithTime("Using Idle System: " + Server.usingIdleTimer);
+            ConsoleUtils.WriteWithTime("Idle Threshold: " + Server.idleTimer);
+            Console.WriteLine("");
 
             Console.ForegroundColor = ConsoleColor.Green;
             ConsoleUtils.WriteWithTime("Road Settings:");
             Console.ForegroundColor = ConsoleColor.White;
 
-            ConsoleUtils.WriteWithTime("Using Road System: " + MainProgram.usingRoadSystem);
-            ConsoleUtils.WriteWithTime("Aggressive Road Mode: " + MainProgram.aggressiveRoadMode);
-            ConsoleUtils.WriteWithTime("");
+            ConsoleUtils.WriteWithTime("Using Road System: " + Server.usingRoadSystem);
+            ConsoleUtils.WriteWithTime("Aggressive Road Mode: " + Server.aggressiveRoadMode);
+            Console.WriteLine("");
 
             Console.ForegroundColor = ConsoleColor.Green;
             ConsoleUtils.WriteWithTime("Miscellaneous Settings");
             Console.ForegroundColor = ConsoleColor.White;
 
-            ConsoleUtils.WriteWithTime("Using Whitelist: " + MainProgram.usingWhitelist);
-            ConsoleUtils.WriteWithTime("Allow Dev Mode: " + MainProgram.allowDevMode);
+            ConsoleUtils.WriteWithTime("Using Whitelist: " + Server.usingWhitelist);
+            ConsoleUtils.WriteWithTime("Allow Dev Mode: " + Server.allowDevMode);
 
-            ConsoleUtils.WriteWithTime("");
+            Console.WriteLine("");
         }
 
         //Administration
@@ -256,13 +259,13 @@ namespace Open_World_Server
             Console.Clear();
 
             Console.ForegroundColor = ConsoleColor.Green;
-            ConsoleUtils.WriteWithTime("Whitelisted Players: " + MainProgram.whitelistedUsernames.Count);
+            ConsoleUtils.WriteWithTime("Whitelisted Players: " + Server.whitelistedUsernames.Count);
             Console.ForegroundColor = ConsoleColor.White;
 
-            if (MainProgram.whitelistedUsernames.Count == 0) ConsoleUtils.WriteWithTime("No Whitelisted Players Found");
-            else foreach (string str in MainProgram.whitelistedUsernames) ConsoleUtils.WriteWithTime("" + str);
+            if (Server.whitelistedUsernames.Count == 0) ConsoleUtils.WriteWithTime("No Whitelisted Players Found");
+            else foreach (string str in Server.whitelistedUsernames) ConsoleUtils.WriteWithTime("" + str);
 
-            ConsoleUtils.WriteWithTime("");
+            Console.WriteLine("");
         }
 
         //Check this one
@@ -270,21 +273,21 @@ namespace Open_World_Server
         {
             Console.Clear();
 
-            MainProgram.adminList.Clear();
+            Server.adminList.Clear();
 
-            foreach (ServerClient client in MainProgram.savedClients)
+            foreach (ServerClient client in Server.savedClients)
             {
-                if (client.isAdmin) MainProgram.adminList.Add(client.username);
+                if (client.isAdmin) Server.adminList.Add(client.username);
             }
 
             Console.ForegroundColor = ConsoleColor.Green;
-            ConsoleUtils.WriteWithTime("Server Administrators: " + MainProgram.adminList.Count);
+            ConsoleUtils.WriteWithTime("Server Administrators: " + Server.adminList.Count);
             Console.ForegroundColor = ConsoleColor.White;
 
-            if (MainProgram.adminList.Count == 0) ConsoleUtils.WriteWithTime("No Administrators Found");
-            else foreach (string str in MainProgram.adminList) ConsoleUtils.WriteWithTime("" + str);
+            if (Server.adminList.Count == 0) ConsoleUtils.WriteWithTime("No Administrators Found");
+            else foreach (string str in Server.adminList) ConsoleUtils.WriteWithTime("" + str);
 
-            ConsoleUtils.WriteWithTime("");
+            Console.WriteLine("");
         }
 
         public static void BanListCommand()
@@ -292,16 +295,16 @@ namespace Open_World_Server
             Console.Clear();
 
             Console.ForegroundColor = ConsoleColor.Green;
-            ConsoleUtils.WriteWithTime("Banned players: " + MainProgram.bannedIPs.Count);
+            ConsoleUtils.WriteWithTime("Banned players: " + Server.bannedIPs.Count);
             Console.ForegroundColor = ConsoleColor.White;
 
-            if (MainProgram.bannedIPs.Count == 0) ConsoleUtils.WriteWithTime("No Banned Players");
-            else foreach (KeyValuePair<string, string> pair in MainProgram.bannedIPs)
+            if (Server.bannedIPs.Count == 0) ConsoleUtils.WriteWithTime("No Banned Players");
+            else foreach (KeyValuePair<string, string> pair in Server.bannedIPs)
                 {
                     ConsoleUtils.WriteWithTime("[" + pair.Value + "] - [" + pair.Key + "]");
                 }
 
-            ConsoleUtils.WriteWithTime("");
+            Console.WriteLine("");
         }
 
         public static void WipeCommand()
@@ -316,14 +319,14 @@ namespace Open_World_Server
 
             if (response == "Y")
             {
-                foreach (ServerClient client in MainProgram._Networking.connectedClients)
+                foreach (ServerClient client in Server._Networking.connectedClients)
                 {
                     client.disconnectFlag = true;
                 }
 
                 Thread.Sleep(1000);
 
-                foreach (ServerClient client in MainProgram.savedClients)
+                foreach (ServerClient client in Server.savedClients)
                 {
                     client.wealth = 0;
                     client.pawnCount = 0;
@@ -346,40 +349,40 @@ namespace Open_World_Server
             Console.Clear();
 
             Console.ForegroundColor = ConsoleColor.Green;
-            ConsoleUtils.WriteWithTime("Connected Players: " + MainProgram._Networking.connectedClients.Count);
+            ConsoleUtils.WriteWithTime("Connected Players: " + Server._Networking.connectedClients.Count);
             Console.ForegroundColor = ConsoleColor.White;
 
-            if (MainProgram._Networking.connectedClients.Count == 0) ConsoleUtils.WriteWithTime("No Players Connected");
-            else foreach (ServerClient client in MainProgram._Networking.connectedClients)
+            if (Server._Networking.connectedClients.Count == 0) ConsoleUtils.WriteWithTime("No Players Connected");
+            else foreach (ServerClient client in Server._Networking.connectedClients)
+            {
+                try { ConsoleUtils.WriteWithTime("" + client.username); }
+                catch
                 {
-                    try { ConsoleUtils.WriteWithTime("" + client.username); }
-                    catch
-                    {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        ConsoleUtils.WriteWithTime("Error Processing Player With IP " + ((IPEndPoint)client.tcp.Client.RemoteEndPoint).Address.ToString());
-                        Console.ForegroundColor = ConsoleColor.White;
-                    }
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    ConsoleUtils.WriteWithTime("Error Processing Player With IP " + ((IPEndPoint)client.tcp.Client.RemoteEndPoint).Address.ToString());
+                    Console.ForegroundColor = ConsoleColor.White;
                 }
+            }
 
-            ConsoleUtils.WriteWithTime("");
+            Console.WriteLine("");
 
             Console.ForegroundColor = ConsoleColor.Green;
-            ConsoleUtils.WriteWithTime("Saved Players: " + MainProgram.savedClients.Count);
+            ConsoleUtils.WriteWithTime("Saved Players: " + Server.savedClients.Count);
             Console.ForegroundColor = ConsoleColor.White;
 
-            if (MainProgram.savedClients.Count == 0) ConsoleUtils.WriteWithTime("No Players Saved");
-            else foreach (ServerClient savedClient in MainProgram.savedClients)
+            if (Server.savedClients.Count == 0) ConsoleUtils.WriteWithTime("No Players Saved");
+            else foreach (ServerClient savedClient in Server.savedClients)
+            {
+                try { ConsoleUtils.WriteWithTime("" + savedClient.username); }
+                catch
                 {
-                    try { ConsoleUtils.WriteWithTime("" + savedClient.username); }
-                    catch
-                    {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        ConsoleUtils.WriteWithTime("Error Processing Player With IP " + ((IPEndPoint)savedClient.tcp.Client.RemoteEndPoint).Address.ToString());
-                        Console.ForegroundColor = ConsoleColor.White;
-                    }
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    ConsoleUtils.WriteWithTime("Error Processing Player With IP " + ((IPEndPoint)savedClient.tcp.Client.RemoteEndPoint).Address.ToString());
+                    Console.ForegroundColor = ConsoleColor.White;
                 }
+            }
 
-            ConsoleUtils.WriteWithTime("");
+            Console.WriteLine("");
         }
 
         public static void SettlementsCommand()
@@ -387,16 +390,16 @@ namespace Open_World_Server
             Console.Clear();
 
             Console.ForegroundColor = ConsoleColor.Green;
-            ConsoleUtils.WriteWithTime("Server Settlements: " + MainProgram.savedSettlements.Count);
+            ConsoleUtils.WriteWithTime("Server Settlements: " + Server.savedSettlements.Count);
             Console.ForegroundColor = ConsoleColor.White;
 
-            if (MainProgram.savedSettlements.Count == 0) ConsoleUtils.WriteWithTime("No Active Settlements");
-            else foreach (KeyValuePair<string, List<string>> pair in MainProgram.savedSettlements)
+            if (Server.savedSettlements.Count == 0) ConsoleUtils.WriteWithTime("No Active Settlements");
+            else foreach (KeyValuePair<string, List<string>> pair in Server.savedSettlements)
                 {
                     ConsoleUtils.WriteWithTime("[" + pair.Key + "] - [" + pair.Value[0] + "]");
                 }
 
-            ConsoleUtils.WriteWithTime("");
+            Console.WriteLine("");
         }
 
         public static void ChatCommand()
@@ -407,13 +410,13 @@ namespace Open_World_Server
             ConsoleUtils.WriteWithTime("Server Chat:");
             Console.ForegroundColor = ConsoleColor.White;
 
-            if (MainProgram.chatCache.Count == 0) ConsoleUtils.WriteWithTime("No Chat Messages");
-            else foreach (string message in MainProgram.chatCache)
+            if (Server.chatCache.Count == 0) ConsoleUtils.WriteWithTime("No Chat Messages");
+            else foreach (string message in Server.chatCache)
                 {
                     ConsoleUtils.WriteWithTime(message);
                 }
 
-            ConsoleUtils.WriteWithTime("");
+            Console.WriteLine("");
         }
 
         public static void EventListCommand()
@@ -434,7 +437,7 @@ namespace Open_World_Server
             ConsoleUtils.WriteWithTime("GiveQuest");
             ConsoleUtils.WriteWithTime("TraderCaravan");
 
-            ConsoleUtils.WriteWithTime("");
+            Console.WriteLine("");
         }
 
         //Unknown
@@ -447,7 +450,7 @@ namespace Open_World_Server
             ConsoleUtils.WriteWithTime("Command [" + command + "] Not Found");
             Console.ForegroundColor = ConsoleColor.White;
 
-            ConsoleUtils.WriteWithTime("");
+            Console.WriteLine("");
         }
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Net.Sockets;
 
-namespace Open_World_Server
+namespace OpenWorldServer
 {
     [System.Serializable]
     public class ServerClient

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 
-namespace Open_World_Server
+namespace OpenWorldServer
 {
     public class WorldUtils
     {
@@ -14,7 +14,7 @@ namespace Open_World_Server
             {
                 client.homeTileID = dataSplit[0];
 
-                foreach(ServerClient sc in MainProgram.savedClients)
+                foreach(ServerClient sc in Server.savedClients)
                 {
                     if (sc.username == client.username)
                     {
@@ -28,17 +28,17 @@ namespace Open_World_Server
 
             string dataString = "AddSettlement│" + dataSplit[0] + "│" + dataSplit[1];
 
-            foreach (ServerClient sc in MainProgram._Networking.connectedClients)
+            foreach (ServerClient sc in Server._Networking.connectedClients)
             {
                 if (client != null)
                 {
                     if (sc.username == client.username) continue;
                 }
 
-                MainProgram._Networking.SendData(sc, dataString);
+                Server._Networking.SendData(sc, dataString);
             }
 
-            MainProgram.savedSettlements.Add(client.homeTileID, new List<string> { client.username });
+            Server.savedSettlements.Add(client.homeTileID, new List<string> { client.username });
 
             ConsoleUtils.LogToConsole("Settlement With ID [" + dataSplit[0] + "] And Owner [" + dataSplit[1] + "] Has Been Added");
         }
@@ -49,7 +49,7 @@ namespace Open_World_Server
             {
                 client.homeTileID = null;
 
-                foreach (ServerClient sc in MainProgram.savedClients)
+                foreach (ServerClient sc in Server.savedClients)
                 {
                     if (sc.username == client.username)
                     {
@@ -65,17 +65,17 @@ namespace Open_World_Server
             {
                 string dataString = "RemoveSettlement│" + tile;
 
-                foreach (ServerClient sc in MainProgram._Networking.connectedClients)
+                foreach (ServerClient sc in Server._Networking.connectedClients)
                 {
                     if (client != null)
                     {
                         if (sc.username == client.username) continue;
                     }
 
-                    MainProgram._Networking.SendData(sc, dataString);
+                    Server._Networking.SendData(sc, dataString);
                 }
 
-                MainProgram.savedSettlements.Remove(tile);
+                Server.savedSettlements.Remove(tile);
 
                 ConsoleUtils.LogToConsole("Settlement With ID [" + tile + "] Has Been Deleted");
             }
@@ -83,7 +83,7 @@ namespace Open_World_Server
 
         public void CheckForTileDisponibility(ServerClient client, string tileID)
         {
-            foreach (ServerClient savedClient in MainProgram.savedClients)
+            foreach (ServerClient savedClient in Server.savedClients)
             {
                 if (savedClient.username == client.username)
                 {
@@ -91,7 +91,7 @@ namespace Open_World_Server
 
                     else
                     {
-                        foreach (KeyValuePair<string, List<string>> pair in MainProgram.savedSettlements)
+                        foreach (KeyValuePair<string, List<string>> pair in Server.savedSettlements)
                         {
                             if (pair.Value[0] == client.username)
                             {
@@ -109,7 +109,7 @@ namespace Open_World_Server
                 {
                     if (savedClient.homeTileID == tileID)
                     {
-                        MainProgram._Networking.SendData(client, "Disconnect│Corrupted");
+                        Server._Networking.SendData(client, "Disconnect│Corrupted");
 
                         Console.ForegroundColor = ConsoleColor.Red;
                         ConsoleUtils.LogToConsole("Player [" + client.username + "] Tried To Claim Used Tile! [" + tileID + "]");
