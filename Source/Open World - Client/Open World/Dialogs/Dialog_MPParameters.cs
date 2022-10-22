@@ -137,47 +137,35 @@ namespace OpenWorld
             if (Widgets.ButtonText(new Rect(new Vector2(rect.x, rect.yMax - buttonY), new Vector2(buttonX, buttonY)), "Join"))
             {
                 if (Networking.isTryingToConnect) return;
-                if (string.IsNullOrWhiteSpace(Main._ParametersCache.ipText))
-                {
-                    Find.WindowStack.Add(new Dialog_MPMissingLogin());
-                    return;
-                }
-                if (string.IsNullOrWhiteSpace(Main._ParametersCache.portText))
-                {
-                    Find.WindowStack.Add(new Dialog_MPMissingLogin());
-                    return;
-                }
-                if (string.IsNullOrWhiteSpace(Main._ParametersCache.usernameText))
-                {
-                    Find.WindowStack.Add(new Dialog_MPMissingLogin());
-                    return;
-                }
-                if (string.IsNullOrWhiteSpace(passwordText))
-                {
-                    Find.WindowStack.Add(new Dialog_MPMissingLogin());
-                    return;
-                }
-                if (string.IsNullOrWhiteSpace(passwordConfirmText))
-                {
-                    Find.WindowStack.Add(new Dialog_MPMissingLogin());
-                    return;
-                }
-                if (passwordText != passwordConfirmText)
+
+                bool isMissingInfo = false;
+
+                if (string.IsNullOrWhiteSpace(Main._ParametersCache.ipText)) isMissingInfo = true;
+                if (string.IsNullOrWhiteSpace(Main._ParametersCache.portText)) isMissingInfo = true;
+                if (string.IsNullOrWhiteSpace(Main._ParametersCache.usernameText)) isMissingInfo = true;
+                if (string.IsNullOrWhiteSpace(passwordText)) isMissingInfo = true;
+                if (string.IsNullOrWhiteSpace(passwordConfirmText)) isMissingInfo = true;
+                if (passwordText != passwordConfirmText) isMissingInfo = true;
+
+                if (isMissingInfo)
                 {
                     Find.WindowStack.Add(new Dialog_MPMissingLogin());
                     return;
                 }
 
-                Networking.ip = Main._ParametersCache.ipText;
-                Networking.port = Main._ParametersCache.portText;
-                Networking.username = Main._ParametersCache.usernameText;
-                Networking.password = passwordText;
+                else
+                {
+                    Networking.ip = Main._ParametersCache.ipText;
+                    Networking.port = Main._ParametersCache.portText;
+                    Networking.username = Main._ParametersCache.usernameText;
+                    Networking.password = passwordText;
 
-                SaveSystem.SaveData(Main._ParametersCache);
+                    SaveSystem.SaveData(Main._ParametersCache);
 
-                Threading.GenerateThreads(0);
+                    Threading.GenerateThreads(0);
 
-                __instance = this;
+                    __instance = this;
+                }
             }
 
             if (Widgets.ButtonText(new Rect(new Vector2(rect.xMax - buttonX, rect.yMax - buttonY), new Vector2(buttonX, buttonY)), "Cancel"))

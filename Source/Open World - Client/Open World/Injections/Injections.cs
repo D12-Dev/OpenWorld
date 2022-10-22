@@ -46,62 +46,87 @@ namespace OpenWorld
 		}
 	}
 
-	//Render Multiplayer Button In New Game Page
-	[HarmonyPatch(typeof(Page_CreateWorldParams), "DoWindowContents")]
-	public static class CreateMultiplayerButtonPatchNG
+	//Render Multiplayer Button In Main Menu
+	[HarmonyPatch(typeof(MainMenuDrawer), "DoMainMenuControls")]
+	public static class InjectMultiplayerButtonOnMainScreen
 	{
 		[HarmonyPrefix]
-		public static bool DrawMultiplayerButtonBack(Page_CreateWorldParams __instance, Rect rect)
+		public static bool PreInjectToMainScreen(Rect rect)
 		{
 			if (!(Current.ProgramState == ProgramState.Entry)) return true;
 
+			Vector2 buttonLocation = new Vector2(rect.x, rect.y);
+			Vector2 buttonSize = new Vector2(170f, 45f);
+			if (Widgets.ButtonText(new Rect(buttonLocation.x, buttonLocation.y, buttonSize.x, buttonSize.y), "Multiplayer"))
+			{
+				Find.WindowStack.Add(new Dialog_MPMultiplayerType());
+			}
+			return true;
+		}
+
+		[HarmonyPostfix]
+		public static void PostInjectToMainScreen(Rect rect)
+		{
+			if (!(Current.ProgramState == ProgramState.Entry)) return;
+
+			Vector2 buttonLocation = new Vector2(rect.x, rect.y);
+			Vector2 buttonSize = new Vector2(170f, 45f);
+			if (Widgets.ButtonText(new Rect(buttonLocation.x, buttonLocation.y, buttonSize.x, buttonSize.y), "Multiplayer"))
+			{
+				//Do nothing since it's a dummy
+			}
+			return;
+		}
+	}
+
+	//Inject Multiplayer Joining At Storyteller Selection
+	[HarmonyPatch(typeof(Page_CreateWorldParams), "DoWindowContents")]
+	public static class InjectMultiplayerJoinAtWorldParams
+	{
+		[HarmonyPrefix]
+		public static bool PreInjectToWorldParams(Rect rect, Page_CreateWorldParams __instance)
+		{
+			if (!Main._ParametersCache.isGeneratingNewOnlineGame) return true;
+			if (!(Current.ProgramState == ProgramState.Entry)) return true;
+
 			Vector2 buttonSize = new Vector2(150f, 38f);
-			if (Widgets.ButtonText(new Rect(0, rect.height - buttonSize.y, buttonSize.x, buttonSize.y), "Multiplayer"))
+			Vector2 buttonLocation = new Vector2(rect.xMax - buttonSize.x, rect.yMax - buttonSize.y);
+			if (Widgets.ButtonText(new Rect(buttonLocation.x, buttonLocation.y, buttonSize.x, buttonSize.y), ""))
 			{
 				Main._ParametersCache.__createWorldParams = __instance;
+				Find.WindowStack.Add(new Dialog_MPParameters());
+			}
 
-				Dialog_MPParameters mpDialog = new Dialog_MPParameters();
-
-				Find.WindowStack.Add(mpDialog);
-
-				Main._ParametersCache.isLoadingExistingGame = false;
+			Vector2 buttonLocation2 = new Vector2(rect.xMin, rect.yMax - buttonSize.y);
+			if (Widgets.ButtonText(new Rect(buttonLocation2.x, buttonLocation2.y, buttonSize.x, buttonSize.y), ""))
+			{
+				Main._ParametersCache.isGeneratingNewOnlineGame = false;
+				__instance.Close();
 			}
 
 			return true;
 		}
 
 		[HarmonyPostfix]
-		public static void DrawMultiplayerButtonFront(Page_CreateWorldParams __instance, Rect rect)
+		public static void PostInjectToWorldParams(Rect rect)
 		{
+			if (!Main._ParametersCache.isGeneratingNewOnlineGame) return;
 			if (!(Current.ProgramState == ProgramState.Entry)) return;
 
 			Vector2 buttonSize = new Vector2(150f, 38f);
-			if (Widgets.ButtonText(new Rect(0, rect.height - buttonSize.y, buttonSize.x, buttonSize.y), "Multiplayer"))
+			Vector2 buttonLocation = new Vector2(rect.xMax - buttonSize.x, rect.yMax - buttonSize.y);
+			if (Widgets.ButtonText(new Rect(buttonLocation.x, buttonLocation.y, buttonSize.x, buttonSize.y), "Join"))
 			{
-				//Do Nothing Since It's A Dummy.
+				//Do nothing since it's a dummy
 			}
-		}
-	}
 
-	//Render Multiplayer Button In Load Game Page
-	[HarmonyPatch(typeof(Dialog_FileList), "DoWindowContents")]
-	public static class CreateMultiplayerButtonPatchLG
-	{
-		[HarmonyPostfix]
-		public static void DrawMultiplayerButton(Dialog_SaveFileList_Load __instance, Rect inRect)
-		{
-			if (!(__instance is Dialog_SaveFileList_Load)) return;
-			if (!(Current.ProgramState == ProgramState.Entry)) return;
-
-			Vector2 buttonSize = new Vector2(150f, 38f);
-			if (Widgets.ButtonText(new Rect(0, inRect.height - buttonSize.y, buttonSize.x, buttonSize.y), "Multiplayer"))
+			Vector2 buttonLocation2 = new Vector2(rect.xMin, rect.yMax - buttonSize.y);
+			if (Widgets.ButtonText(new Rect(buttonLocation2.x, buttonLocation2.y, buttonSize.x, buttonSize.y), "Close"))
 			{
-				Dialog_MPParameters mpDialog = new Dialog_MPParameters();
-
-				Find.WindowStack.Add(mpDialog);
-
-				Main._ParametersCache.isLoadingExistingGame = true;
+				//Do nothing since it's a dummy
 			}
+
+			return;
 		}
 	}
 

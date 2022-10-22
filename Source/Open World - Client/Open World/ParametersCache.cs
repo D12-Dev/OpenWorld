@@ -28,6 +28,7 @@ namespace OpenWorld
         public string modIdentifier = "OpenWorld";
         public string connectedServerIdentifier = "";
         public bool isLoadingExistingGame = false;
+        public bool isGeneratingNewOnlineGame = false;
         public bool isPlayingOnline = false;
         public bool isAdmin = false;
         public int roadMode = 0;
@@ -85,7 +86,7 @@ namespace OpenWorld
         public string receiveGiftsData;
         public string serverStatusString;
         public string transferMode;
-        public string versionCode = "6G";
+        public string versionCode = "Going 1.4";
 
         //RTS
         public bool isInRTS;

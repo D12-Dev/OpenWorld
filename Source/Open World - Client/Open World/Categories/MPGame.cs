@@ -20,6 +20,7 @@ namespace OpenWorld
 			Find.GameInitData.permadeath = true;
 
 			Main._ParametersCache.isPlayingOnline = true;
+			Main._ParametersCache.isGeneratingNewOnlineGame = false;
 
 			Main._MPGame.DisableDevOptions();
 
@@ -48,29 +49,26 @@ namespace OpenWorld
 
 		public void LoadMultiplayerGame()
 		{
-			if (Main._ParametersCache.isLoadingExistingGame)
+			try
 			{
-				try
+				string saveName = Main._ParametersCache.onlineFileSaveName + " - " + Main._ParametersCache.connectedServerIdentifier + " - " + Main._ParametersCache.usernameText;
+
+				Main._ParametersCache.isPlayingOnline = true;
+
+				Main._MPGame.DisableDevOptions();
+
+				LongEventHandler.QueueLongEvent(delegate
 				{
-					string saveName = Main._ParametersCache.onlineFileSaveName + " - " + Main._ParametersCache.connectedServerIdentifier + " - " + Main._ParametersCache.usernameText;
-
-					Main._ParametersCache.isPlayingOnline = true;
-
-					Main._MPGame.DisableDevOptions();
-
-					LongEventHandler.QueueLongEvent(delegate
-					{
-						MemoryUtility.ClearAllMapsAndWorld();
-						Current.Game = new Game();
-						Current.Game.InitData = new GameInitData();
-						Current.Game.InitData.gameToLoad = saveName;
-						Current.Game.InitData.permadeathChosen = true;
-						Current.Game.InitData.permadeath = true;
-					}, "Play", "LoadingLongEvent", doAsynchronously: true, null);
-				}
-
-				catch { Networking.DisconnectFromServer(); }
+					MemoryUtility.ClearAllMapsAndWorld();
+					Current.Game = new Game();
+					Current.Game.InitData = new GameInitData();
+					Current.Game.InitData.gameToLoad = saveName;
+					Current.Game.InitData.permadeathChosen = true;
+					Current.Game.InitData.permadeath = true;
+				}, "Play", "LoadingLongEvent", doAsynchronously: true, null);
 			}
+
+			catch { Networking.DisconnectFromServer(); }
 		}
 
 		public string GetCompactedModList()

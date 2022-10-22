@@ -111,11 +111,7 @@ namespace OpenWorld
 				Settlement dummySettlement = null;
 				dummySettlement = serverSettlements.Find(fetch => fetch.Tile == settlement.Tile);
 
-				if (dummySettlement != null)
-				{
-					Log.Message("Old settlement still valid");
-					continue;
-				}
+				if (dummySettlement != null) continue;
 				else
 				{
 					Find.WorldObjects.Remove(settlement);
@@ -129,11 +125,7 @@ namespace OpenWorld
 				Settlement dummySettlement = null;
 				dummySettlement = existingSettlements.Find(fetch => fetch.Tile == settlement.Tile);
 
-				if (dummySettlement != null)
-				{
-					Log.Message("New settlement already placed");
-					continue;
-				}
+				if (dummySettlement != null) continue;
 				else
 				{
 					Settlement newSettlement = (Settlement)WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
