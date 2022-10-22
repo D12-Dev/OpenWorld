@@ -83,8 +83,8 @@ namespace OpenWorldServer
 
             ConsoleUtils.WriteWithTime("Server Name: " + Server.serverName);
             ConsoleUtils.WriteWithTime("Server Description: " + Server.serverDescription);
-            ConsoleUtils.WriteWithTime("Server Local IP: " + Server._Networking.localAddress);
-            ConsoleUtils.WriteWithTime("Server Port: " + Server._Networking.serverPort);
+            ConsoleUtils.WriteWithTime("Server Local IP: " + Networking.localAddress);
+            ConsoleUtils.WriteWithTime("Server Port: " + Networking.serverPort);
             Console.WriteLine("");
 
             Console.ForegroundColor = ConsoleColor.Green;
@@ -133,14 +133,14 @@ namespace OpenWorldServer
         {
             List<ServerClient> clientsToKick = new List<ServerClient>();
 
-            foreach (ServerClient sc in Server._Networking.connectedClients)
+            foreach (ServerClient sc in Networking.connectedClients)
             {
                 clientsToKick.Add(sc);
             }
 
             foreach (ServerClient sc in clientsToKick)
             {
-                Server._Networking.SendData(sc, "Disconnect│Closing");
+                Networking.SendData(sc, "Disconnect│Closing");
                 sc.disconnectFlag = true;
             }
 
@@ -163,7 +163,7 @@ namespace OpenWorldServer
 
             PlayerUtils.CheckAllAvailablePlayers(false);
             Console.ForegroundColor = ConsoleColor.Green;
-            ConsoleUtils.WriteWithTime("Whitelisted Players Have Been Reloaded");
+            ConsoleUtils.WriteWithTime("Players Have Been Reloaded");
             Console.WriteLine("");
         }
 
@@ -193,7 +193,7 @@ namespace OpenWorldServer
             ConsoleUtils.WriteWithTime("Players:");
             Console.ForegroundColor = ConsoleColor.White;
 
-            ConsoleUtils.WriteWithTime("Connected Players: " + Server._Networking.connectedClients.Count);
+            ConsoleUtils.WriteWithTime("Connected Players: " + Networking.connectedClients.Count);
             ConsoleUtils.WriteWithTime("Saved Players: " + Server.savedClients.Count);
             ConsoleUtils.WriteWithTime("Saved Settlements: " + Server.savedSettlements.Count);
             ConsoleUtils.WriteWithTime("Whitelisted Players: " + Server.whitelistedUsernames.Count);
@@ -319,7 +319,7 @@ namespace OpenWorldServer
 
             if (response == "Y")
             {
-                foreach (ServerClient client in Server._Networking.connectedClients)
+                foreach (ServerClient client in Networking.connectedClients)
                 {
                     client.disconnectFlag = true;
                 }
@@ -349,11 +349,11 @@ namespace OpenWorldServer
             Console.Clear();
 
             Console.ForegroundColor = ConsoleColor.Green;
-            ConsoleUtils.WriteWithTime("Connected Players: " + Server._Networking.connectedClients.Count);
+            ConsoleUtils.WriteWithTime("Connected Players: " + Networking.connectedClients.Count);
             Console.ForegroundColor = ConsoleColor.White;
 
-            if (Server._Networking.connectedClients.Count == 0) ConsoleUtils.WriteWithTime("No Players Connected");
-            else foreach (ServerClient client in Server._Networking.connectedClients)
+            if (Networking.connectedClients.Count == 0) ConsoleUtils.WriteWithTime("No Players Connected");
+            else foreach (ServerClient client in Networking.connectedClients)
             {
                 try { ConsoleUtils.WriteWithTime("" + client.username); }
                 catch

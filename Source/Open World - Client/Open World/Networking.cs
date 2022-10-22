@@ -43,7 +43,7 @@ namespace OpenWorld
 
                 Dialog_MPParameters.__instance.Close();
 
-                Main._Threading.GenerateThreads(1);
+                //Main._Threading.GenerateThreads(1);
                 ListenToServer();
             }
 

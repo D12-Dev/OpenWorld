@@ -4,9 +4,9 @@ using System.Threading;
 
 namespace OpenWorldServer
 {
-    public class WorldUtils
+    public static class WorldUtils
     {
-        public void AddSettlement(ServerClient? client, string data)
+        public static void AddSettlement(ServerClient? client, string data)
         {
             string[] dataSplit = data.Split(' ');
 
@@ -28,14 +28,14 @@ namespace OpenWorldServer
 
             string dataString = "AddSettlement│" + dataSplit[0] + "│" + dataSplit[1];
 
-            foreach (ServerClient sc in Server._Networking.connectedClients)
+            foreach (ServerClient sc in Networking.connectedClients)
             {
                 if (client != null)
                 {
                     if (sc.username == client.username) continue;
                 }
 
-                Server._Networking.SendData(sc, dataString);
+                Networking.SendData(sc, dataString);
             }
 
             Server.savedSettlements.Add(client.homeTileID, new List<string> { client.username });
@@ -43,7 +43,7 @@ namespace OpenWorldServer
             ConsoleUtils.LogToConsole("Settlement With ID [" + dataSplit[0] + "] And Owner [" + dataSplit[1] + "] Has Been Added");
         }
 
-        public void RemoveSettlement(ServerClient? client, string tile)
+        public static void RemoveSettlement(ServerClient? client, string tile)
         {
             if (client != null)
             {
@@ -65,14 +65,14 @@ namespace OpenWorldServer
             {
                 string dataString = "RemoveSettlement│" + tile;
 
-                foreach (ServerClient sc in Server._Networking.connectedClients)
+                foreach (ServerClient sc in Networking.connectedClients)
                 {
                     if (client != null)
                     {
                         if (sc.username == client.username) continue;
                     }
 
-                    Server._Networking.SendData(sc, dataString);
+                    Networking.SendData(sc, dataString);
                 }
 
                 Server.savedSettlements.Remove(tile);
@@ -81,7 +81,7 @@ namespace OpenWorldServer
             }
         }
 
-        public void CheckForTileDisponibility(ServerClient client, string tileID)
+        public static void CheckForTileDisponibility(ServerClient client, string tileID)
         {
             foreach (ServerClient savedClient in Server.savedClients)
             {
@@ -109,7 +109,7 @@ namespace OpenWorldServer
                 {
                     if (savedClient.homeTileID == tileID)
                     {
-                        Server._Networking.SendData(client, "Disconnect│Corrupted");
+                        Networking.SendData(client, "Disconnect│Corrupted");
 
                         Console.ForegroundColor = ConsoleColor.Red;
                         ConsoleUtils.LogToConsole("Player [" + client.username + "] Tried To Claim Used Tile! [" + tileID + "]");

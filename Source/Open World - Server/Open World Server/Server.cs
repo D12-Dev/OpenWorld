@@ -1,23 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Diagnostics;
-using System.Globalization;
-using System.Net;
-using System.IO;
-using System.Threading;
 
 namespace OpenWorldServer
 {
     [System.Serializable]
     public static class Server
     {
-        //Instances
-        public static Networking _Networking = new Networking();
-        public static Encryption _Encryption = new Encryption();
-        public static PlayerUtils _PlayerUtils = new PlayerUtils();
-        public static WorldUtils _WorldUtils = new WorldUtils();
-
         //Paths
         public static string mainFolderPath;
         public static string serverSettingsPath;
@@ -33,14 +21,18 @@ namespace OpenWorldServer
         public static List<ServerClient> savedClients = new List<ServerClient>();
         public static Dictionary<string, List<string>> savedSettlements = new Dictionary<string, List<string>>();
 
-        //Server Parameters
+        //Server Details
         public static string serverName = "";
         public static string serverDescription = "";
         public static string serverVersion = "v1.4.1 Unstable";
+
+        //Server Variables
         public static int maxPlayers = 300;
         public static int warningWealthThreshold = 10000;
         public static int banWealthThreshold = 100000;
         public static int idleTimer = 7;
+
+        //Server Booleans
         public static bool usingIdleTimer = false;
         public static bool allowDevMode = false;
         public static bool usingWhitelist = false;
@@ -52,11 +44,15 @@ namespace OpenWorldServer
         public static bool usingModVerification = false;
         public static bool usingChat = false;
         public static bool usingProfanityFilter = false;
-        public static List<string> whitelistedUsernames = new List<string>();
-        public static List<string> adminList = new List<string>();
+
+        //Server Mods
         public static List<string> enforcedMods = new List<string>();
         public static List<string> whitelistedMods = new List<string>();
         public static List<string> blacklistedMods = new List<string>();
+
+        //Server Lists
+        public static List<string> whitelistedUsernames = new List<string>();
+        public static List<string> adminList = new List<string>();
         public static List<string> chatCache = new List<string>();
         public static Dictionary<string, string> bannedIPs = new Dictionary<string, string>();
 

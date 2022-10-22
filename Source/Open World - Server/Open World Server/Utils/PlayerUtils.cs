@@ -6,7 +6,7 @@ using System.Net;
 
 namespace OpenWorldServer
 {
-    public class PlayerUtils
+    public static class PlayerUtils
     {
         public static void SaveNewPlayerFile(string username, string password)
         {
@@ -14,7 +14,7 @@ namespace OpenWorldServer
             {
                 if (savedClient.username == username)
                 {
-                    if (!string.IsNullOrWhiteSpace(savedClient.homeTileID)) Server._WorldUtils.RemoveSettlement(savedClient, savedClient.homeTileID);
+                    if (!string.IsNullOrWhiteSpace(savedClient.homeTileID)) WorldUtils.RemoveSettlement(savedClient, savedClient.homeTileID);
                     savedClient.wealth = 0;
                     savedClient.pawnCount = 0;
                     SaveSystem.SaveUserData(savedClient);
@@ -63,6 +63,8 @@ namespace OpenWorldServer
 
         private static void CheckSavedPlayers()
         {
+            Server.savedClients.Clear();
+
             if (!Directory.Exists(Server.playersFolderPath))
             {
                 Directory.CreateDirectory(Server.playersFolderPath);
@@ -110,6 +112,8 @@ namespace OpenWorldServer
 
         private static void CheckForBannedPlayers()
         {
+            Server.bannedIPs.Clear();
+
             if (!File.Exists(Server.mainFolderPath + Path.DirectorySeparatorChar + "Banned IPs.data"))
             {
                 ConsoleUtils.LogToConsole("No Bans File Found, Ignoring");
@@ -193,7 +197,7 @@ namespace OpenWorldServer
 
         public static bool CheckForConnectedPlayers(string tileID)
         {
-            foreach (ServerClient client in Server._Networking.connectedClients)
+            foreach (ServerClient client in Networking.connectedClients)
             {
                 if (client.homeTileID == tileID) return true;
             }
@@ -203,7 +207,7 @@ namespace OpenWorldServer
 
         public static bool CheckForPlayerShield(string tileID)
         {
-            foreach (ServerClient client in Server._Networking.connectedClients)
+            foreach (ServerClient client in Networking.connectedClients)
             {
                 if (client.homeTileID == tileID && !client.eventShielded && !client.isImmunized)
                 {
@@ -217,7 +221,7 @@ namespace OpenWorldServer
 
         public static bool CheckForPvpAvailability(string tileID)
         {
-            foreach (ServerClient client in Server._Networking.connectedClients)
+            foreach (ServerClient client in Networking.connectedClients)
             {
                 if (client.homeTileID == tileID && !client.inRTSE && !client.isImmunized)
                 {
@@ -231,7 +235,7 @@ namespace OpenWorldServer
 
         public static string GetSpyData(string tileID, ServerClient origin)
         {
-            foreach (ServerClient client in Server._Networking.connectedClients)
+            foreach (ServerClient client in Networking.connectedClients)
             {
                 if (client.homeTileID == tileID)
                 {
@@ -245,7 +249,7 @@ namespace OpenWorldServer
 
                     Random rnd = new Random();
                     int chance = rnd.Next(0, 2);
-                    if (chance == 1) Server._Networking.SendData(client, "Spy│" + origin.username);
+                    if (chance == 1) Networking.SendData(client, "Spy│" + origin.username);
 
                     ConsoleUtils.LogToConsole("Spy Done Between [" + origin.username + "] And [" + client.username + "]");
 
@@ -260,12 +264,12 @@ namespace OpenWorldServer
         {
             string dataToSend = "ForcedEvent│" + data.Split('│')[1];
 
-            foreach (ServerClient sc in Server._Networking.connectedClients)
+            foreach (ServerClient sc in Networking.connectedClients)
             {
                 if (sc.homeTileID == data.Split('│')[2])
                 {
                     ConsoleUtils.LogToConsole("Player [" + invoker.username + "] Has Sent Forced Event [" + data.Split('│')[1] + "] To [" + sc.username + "]");
-                    Server._Networking.SendData(sc, dataToSend);
+                    Networking.SendData(sc, dataToSend);
                     break;
                 }
             }
@@ -282,22 +286,22 @@ namespace OpenWorldServer
 
                 if (!string.IsNullOrWhiteSpace(sendMode) && sendMode == "Pod")
                 {
-                    foreach (ServerClient sc in Server._Networking.connectedClients)
+                    foreach (ServerClient sc in Networking.connectedClients)
                     {
                         if (sc == invoker) continue;
                         if (sc.homeTileID == tileToSend) continue;
 
-                        Server._Networking.SendData(sc, "│RenderTransportPod│" + invoker.homeTileID + "│" + tileToSend + "│");
+                        Networking.SendData(sc, "│RenderTransportPod│" + invoker.homeTileID + "│" + tileToSend + "│");
                     }
                 }
             }
             catch { }
 
-            foreach (ServerClient sc in Server._Networking.connectedClients)
+            foreach (ServerClient sc in Networking.connectedClients)
             {
                 if (sc.homeTileID == tileToSend)
                 {
-                    Server._Networking.SendData(sc, dataToSend);
+                    Networking.SendData(sc, dataToSend);
                     ConsoleUtils.LogToConsole("Gift Done Between [" + invoker.username + "] And [" + sc.username + "]");
                     return;
                 }
@@ -321,11 +325,11 @@ namespace OpenWorldServer
         {
             string dataToSend = "TradeRequest│" + invoker.username + "│" + data.Split('│')[2] + "│" + data.Split('│')[3];
 
-            foreach (ServerClient sc in Server._Networking.connectedClients)
+            foreach (ServerClient sc in Networking.connectedClients)
             {
                 if (sc.homeTileID == data.Split('│')[1])
                 {
-                    Server._Networking.SendData(sc, dataToSend);
+                    Networking.SendData(sc, dataToSend);
                     return;
                 }
             }
@@ -335,11 +339,11 @@ namespace OpenWorldServer
         {
             string dataToSend = "BarterRequest│" + invoker.homeTileID + "│" + data.Split('│')[2];
 
-            foreach (ServerClient sc in Server._Networking.connectedClients)
+            foreach (ServerClient sc in Networking.connectedClients)
             {
                 if (sc.homeTileID == data.Split('│')[1])
                 {
-                    Server._Networking.SendData(sc, dataToSend);
+                    Networking.SendData(sc, dataToSend);
                     return;
                 }
             }

@@ -8,16 +8,16 @@ using System.Threading;
 
 namespace OpenWorldServer
 {
-    public class Networking
+    public static class Networking
     {
-        private TcpListener server;
-        public IPAddress localAddress;
-        public int serverPort = 0;
+        private static TcpListener server;
+        public static IPAddress localAddress;
+        public static int serverPort = 0;
 
-        public List<ServerClient> connectedClients = new List<ServerClient>();
-        public List<ServerClient> disconnectedClients = new List<ServerClient>();
+        public static List<ServerClient> connectedClients = new List<ServerClient>();
+        public static List<ServerClient> disconnectedClients = new List<ServerClient>();
 
-        public void ReadyServer()
+        public static void ReadyServer()
         {
             server = new TcpListener(localAddress, serverPort);
             server.Start();
@@ -29,12 +29,12 @@ namespace OpenWorldServer
             ListenForIncomingUsers();
         }
 
-        private void ListenForIncomingUsers()
+        private static void ListenForIncomingUsers()
         {
             server.BeginAcceptTcpClient(AcceptClients, server);
         }
 
-        private void AcceptClients(IAsyncResult ar)
+        private static void AcceptClients(IAsyncResult ar)
         {
             TcpListener listener = (TcpListener)ar.AsyncState;
 
@@ -47,7 +47,7 @@ namespace OpenWorldServer
             ListenForIncomingUsers();
         }
 
-        public void ListenToClient(ServerClient client)
+        public static void ListenToClient(ServerClient client)
         {
             NetworkStream s = client.tcp.GetStream();
             StreamWriter sw = new StreamWriter(s);
@@ -68,23 +68,23 @@ namespace OpenWorldServer
                     else if (!client.disconnectFlag && s.DataAvailable)
                     {
                         string encryptedData = sr.ReadLine();
-                        string data = Server._Encryption.DecryptString(encryptedData);
+                        string data = Encryption.DecryptString(encryptedData);
                         Debug.WriteLine(data);
                         
                         if (encryptedData != null)
                         {
-                            if (encryptedData.StartsWith(Server._Encryption.EncryptString("Connect│")))
+                            if (encryptedData.StartsWith(Encryption.EncryptString("Connect│")))
                             {
                                 JoiningsUtils.LoginProcedures(client, data);
                             }
 
-                            else if (encryptedData.StartsWith(Server._Encryption.EncryptString("ChatMessage│")))
+                            else if (encryptedData.StartsWith(Encryption.EncryptString("ChatMessage│")))
                             {
                                 ServerUtils.SendChatMessage(client, data);
                                 continue;
                             }
 
-                            else if (encryptedData.StartsWith(Server._Encryption.EncryptString("NewSettlementID│")))
+                            else if (encryptedData.StartsWith(Encryption.EncryptString("NewSettlementID│")))
                             {
                                 try
                                 {
@@ -95,25 +95,25 @@ namespace OpenWorldServer
                                 }
                                 catch { }
 
-                                Server._WorldUtils.CheckForTileDisponibility(client, data.Split('│')[1]);
+                                WorldUtils.CheckForTileDisponibility(client, data.Split('│')[1]);
                                 continue;
                             }
 
-                            else if (encryptedData.StartsWith(Server._Encryption.EncryptString("AbandonSettlementID│")))
+                            else if (encryptedData.StartsWith(Encryption.EncryptString("AbandonSettlementID│")))
                             {
                                 if (client.homeTileID != data.Split('│')[1] || string.IsNullOrWhiteSpace(client.homeTileID)) continue;
-                                else Server._WorldUtils.RemoveSettlement(client, data.Split('│')[1]);
+                                else WorldUtils.RemoveSettlement(client, data.Split('│')[1]);
                                 continue;
                             }
 
-                            else if (encryptedData == Server._Encryption.EncryptString("│NoSettlementInLoad│"))
+                            else if (encryptedData == Encryption.EncryptString("│NoSettlementInLoad│"))
                             {
                                 if (string.IsNullOrWhiteSpace(client.homeTileID)) continue;
-                                else Server._WorldUtils.RemoveSettlement(client, client.homeTileID);
+                                else WorldUtils.RemoveSettlement(client, client.homeTileID);
                                 continue;
                             }
 
-                            else if (encryptedData.StartsWith(Server._Encryption.EncryptString("ForceEvent│")))
+                            else if (encryptedData.StartsWith(Encryption.EncryptString("ForceEvent│")))
                             {
                                 string dataToSend = "";
 
@@ -135,13 +135,13 @@ namespace OpenWorldServer
                                 continue;
                             }
 
-                            else if (encryptedData.StartsWith(Server._Encryption.EncryptString("SendGiftTo│")))
+                            else if (encryptedData.StartsWith(Encryption.EncryptString("SendGiftTo│")))
                             {
                                 PlayerUtils.SendGiftToPlayer(client, data);
                                 continue;
                             }
 
-                            else if (encryptedData.StartsWith(Server._Encryption.EncryptString("SendTradeTo│")))
+                            else if (encryptedData.StartsWith(Encryption.EncryptString("SendTradeTo│")))
                             {
                                 string dataToSend = "";
 
@@ -158,7 +158,7 @@ namespace OpenWorldServer
                                 continue;
                             }
 
-                            else if (encryptedData.StartsWith(Server._Encryption.EncryptString("SendBarterTo│")))
+                            else if (encryptedData.StartsWith(Encryption.EncryptString("SendBarterTo│")))
                             {
                                 string dataToSend = "";
 
@@ -175,7 +175,7 @@ namespace OpenWorldServer
                                 continue;
                             }
 
-                            else if (encryptedData.StartsWith(Server._Encryption.EncryptString("TradeStatus│")))
+                            else if (encryptedData.StartsWith(Encryption.EncryptString("TradeStatus│")))
                             {
                                 string username = data.Split('│')[2];
                                 ServerClient target = null;
@@ -191,14 +191,14 @@ namespace OpenWorldServer
 
                                 if (target == null) return;
                                 
-                                if (encryptedData.StartsWith(Server._Encryption.EncryptString("TradeStatus│Deal│")))
+                                if (encryptedData.StartsWith(Encryption.EncryptString("TradeStatus│Deal│")))
                                 {
                                     SendData(target, "│SentTrade│Deal│");
 
                                     ConsoleUtils.LogToConsole("Trade Done Between [" + target.username + "] And [" + client.username + "]");
                                 }
 
-                                else if (encryptedData.StartsWith(Server._Encryption.EncryptString("TradeStatus│Reject│")))
+                                else if (encryptedData.StartsWith(Encryption.EncryptString("TradeStatus│Reject│")))
                                 {
                                     SendData(target, "│SentTrade│Reject│");
                                 }
@@ -206,7 +206,7 @@ namespace OpenWorldServer
                                 continue;
                             }
 
-                            else if (encryptedData.StartsWith(Server._Encryption.EncryptString("BarterStatus│")))
+                            else if (encryptedData.StartsWith(Encryption.EncryptString("BarterStatus│")))
                             {
                                 string username = data.Split('│')[2];
                                 ServerClient target = null;
@@ -227,19 +227,19 @@ namespace OpenWorldServer
 
                                 if (target == null) return;
 
-                                if (encryptedData.StartsWith(Server._Encryption.EncryptString("BarterStatus│Deal│")))
+                                if (encryptedData.StartsWith(Encryption.EncryptString("BarterStatus│Deal│")))
                                 {
                                     SendData(target, "│SentBarter│Deal│");
 
                                     ConsoleUtils.LogToConsole("Barter Done Between [" + target.username + "] And [" + client.username + "]");
                                 }
 
-                                else if (encryptedData.StartsWith(Server._Encryption.EncryptString("BarterStatus│Reject│")))
+                                else if (encryptedData.StartsWith(Encryption.EncryptString("BarterStatus│Reject│")))
                                 {
                                     SendData(target, "│SentBarter│Reject│");
                                 }
 
-                                else if (encryptedData.StartsWith(Server._Encryption.EncryptString("BarterStatus│Rebarter│")))
+                                else if (encryptedData.StartsWith(Encryption.EncryptString("BarterStatus│Rebarter│")))
                                 {
                                     SendData(target, "│SentBarter│Rebarter│" + client.username + "│" + data.Split('│')[3]);
                                 }
@@ -247,7 +247,7 @@ namespace OpenWorldServer
                                 continue;
                             }
 
-                            else if (encryptedData.StartsWith(Server._Encryption.EncryptString("GetSpyInfo│")))
+                            else if (encryptedData.StartsWith(Encryption.EncryptString("GetSpyInfo│")))
                             {
                                 string dataToSend = "";
 
@@ -262,7 +262,7 @@ namespace OpenWorldServer
                                 continue;
                             }
 
-                            else if (encryptedData.StartsWith(Server._Encryption.EncryptString("Raid│")))
+                            else if (encryptedData.StartsWith(Encryption.EncryptString("Raid│")))
                             {
                                 if (data.StartsWith("Raid│TryRaid│"))
                                 {
@@ -300,7 +300,7 @@ namespace OpenWorldServer
                                 continue;
                             }
 
-                            else if (encryptedData.StartsWith(Server._Encryption.EncryptString("RTSBuffer│")))
+                            else if (encryptedData.StartsWith(Encryption.EncryptString("RTSBuffer│")))
                             {
                                 SendData(client.inRtsActionWith, data);
                             }
@@ -316,21 +316,21 @@ namespace OpenWorldServer
             }
         }
 
-        public void SendData(ServerClient client, string data)
+        public static void SendData(ServerClient client, string data)
         {
             try
             {
                 NetworkStream s = client.tcp.GetStream();
                 StreamWriter sw = new StreamWriter(s);
 
-                sw.WriteLine(Server._Encryption.EncryptString(data));
+                sw.WriteLine(Encryption.EncryptString(data));
                 sw.Flush();
             }
 
             catch { }
         }
 
-        public void KickClients(ServerClient client, string kickMode)
+        public static void KickClients(ServerClient client, string kickMode)
         {
             try { client.tcp.Close(); }
             catch { }
@@ -347,7 +347,7 @@ namespace OpenWorldServer
             ConsoleUtils.UpdateTitle();
         }
 
-        public void CheckClientsConnection()
+        public static void CheckClientsConnection()
         {
             ConsoleUtils.DisplayNetworkStatus();
 

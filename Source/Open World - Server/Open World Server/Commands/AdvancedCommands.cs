@@ -30,9 +30,9 @@ namespace OpenWorldServer
 
                 Server.chatCache.Add("[" + DateTime.Now + "]" + " │ " + messageForConsole);
 
-                foreach (ServerClient sc in Server._Networking.connectedClients)
+                foreach (ServerClient sc in Networking.connectedClients)
                 {
-                    Server._Networking.SendData(sc, "ChatMessage│SERVER│" + commandData);
+                    Networking.SendData(sc, "ChatMessage│SERVER│" + commandData);
                 }
             }
         }
@@ -48,9 +48,9 @@ namespace OpenWorldServer
 
             else
             {
-                foreach (ServerClient sc in Server._Networking.connectedClients)
+                foreach (ServerClient sc in Networking.connectedClients)
                 {
-                    Server._Networking.SendData(sc, "Notification│" + commandData);
+                    Networking.SendData(sc, "Notification│" + commandData);
                 }
 
                 Console.ForegroundColor = ConsoleColor.Green;
@@ -78,7 +78,7 @@ namespace OpenWorldServer
 
             else
             {
-                ServerClient targetClient = Server._Networking.connectedClients.Find(fetch => fetch.username == clientID);
+                ServerClient targetClient = Networking.connectedClients.Find(fetch => fetch.username == clientID);
 
                 if (targetClient == null)
                 {
@@ -89,7 +89,7 @@ namespace OpenWorldServer
 
                 else
                 {
-                    Server._Networking.SendData(targetClient, "Notification│" + text);
+                    Networking.SendData(targetClient, "Notification│" + text);
 
                     Console.ForegroundColor = ConsoleColor.Green;
                     ConsoleUtils.WriteWithTime("Sent Letter To [" + targetClient.username + "]");
@@ -126,7 +126,7 @@ namespace OpenWorldServer
             
             else
             {
-                ServerClient targetClient = Server._Networking.connectedClients.Find(fetch => fetch.username == clientID);
+                ServerClient targetClient = Networking.connectedClients.Find(fetch => fetch.username == clientID);
 
                 if (targetClient == null)
                 {
@@ -137,7 +137,7 @@ namespace OpenWorldServer
 
                 else
                 {
-                    Server._Networking.SendData(targetClient, "GiftedItems│" + itemID + "┼" + itemQuantity + "┼" + itemQuality + "┼");
+                    Networking.SendData(targetClient, "GiftedItems│" + itemID + "┼" + itemQuantity + "┼" + itemQuality + "┼");
 
                     Console.ForegroundColor = ConsoleColor.Green;
                     ConsoleUtils.WriteWithTime("Item Has Neen Gifted To Player [" + targetClient.username + "]");
@@ -170,9 +170,9 @@ namespace OpenWorldServer
 
             else
             {
-                foreach (ServerClient client in Server._Networking.connectedClients)
+                foreach (ServerClient client in Networking.connectedClients)
                 {
-                    Server._Networking.SendData(client, "GiftedItems│" + itemID + "┼" + itemQuantity + "┼" + itemQuality + "┼");
+                    Networking.SendData(client, "GiftedItems│" + itemID + "┼" + itemQuantity + "┼" + itemQuality + "┼");
 
                     Console.ForegroundColor = ConsoleColor.Green;
                     ConsoleUtils.WriteWithTime("Item Has Neen Gifted To All Players");
@@ -198,7 +198,7 @@ namespace OpenWorldServer
 
             else
             {
-                ServerClient targetClient = Server._Networking.connectedClients.Find(fetch => fetch.username == clientID);
+                ServerClient targetClient = Networking.connectedClients.Find(fetch => fetch.username == clientID);
 
                 if (targetClient == null)
                 {
@@ -235,7 +235,7 @@ namespace OpenWorldServer
 
             else
             {
-                ServerClient targetClient = Server._Networking.connectedClients.Find(fetch => fetch.username == clientID);
+                ServerClient targetClient = Networking.connectedClients.Find(fetch => fetch.username == clientID);
 
                 if (targetClient == null)
                 {
@@ -272,7 +272,7 @@ namespace OpenWorldServer
 
             else
             {
-                ServerClient targetClient = Server._Networking.connectedClients.Find(fetch => fetch.username == clientID);
+                ServerClient targetClient = Networking.connectedClients.Find(fetch => fetch.username == clientID);
 
                 if (targetClient == null)
                 {
@@ -308,7 +308,7 @@ namespace OpenWorldServer
 
             else
             {
-                ServerClient targetClient = Server._Networking.connectedClients.Find(fetch => fetch.username == clientID);
+                ServerClient targetClient = Networking.connectedClients.Find(fetch => fetch.username == clientID);
 
                 if (targetClient == null)
                 {
@@ -353,7 +353,7 @@ namespace OpenWorldServer
 
             else
             {
-                ServerClient targetClient = Server._Networking.connectedClients.Find(fetch => fetch.username == clientID);
+                ServerClient targetClient = Networking.connectedClients.Find(fetch => fetch.username == clientID);
 
                 if (targetClient == null)
                 {
@@ -364,7 +364,7 @@ namespace OpenWorldServer
 
                 else
                 {
-                    Server._Networking.SendData(target, "ForcedEvent│" + eventID);
+                    Networking.SendData(target, "ForcedEvent│" + eventID);
 
                     Console.ForegroundColor = ConsoleColor.Green;
                     ConsoleUtils.WriteWithTime("Sent Event [" + eventID + "] to [" + targetClient.username + "]");
@@ -386,9 +386,9 @@ namespace OpenWorldServer
                 Console.WriteLine();
             }
 
-            foreach (ServerClient client in Server._Networking.connectedClients)
+            foreach (ServerClient client in Networking.connectedClients)
             {
-                Server._Networking.SendData(client, "ForcedEvent│" + eventID);
+                Networking.SendData(client, "ForcedEvent│" + eventID);
             }
 
             Console.ForegroundColor = ConsoleColor.Green;
@@ -413,7 +413,7 @@ namespace OpenWorldServer
 
             else
             {
-                ServerClient targetClient = Server._Networking.connectedClients.Find(fetch => fetch.username == clientID);
+                ServerClient targetClient = Networking.connectedClients.Find(fetch => fetch.username == clientID);
 
                 if (targetClient == null)
                 {
@@ -437,7 +437,7 @@ namespace OpenWorldServer
                         Server.savedClients.Find(fetch => fetch.username == clientID).isAdmin = true;
                         SaveSystem.SaveUserData(targetClient);
 
-                        Server._Networking.SendData(targetClient, "│Promote│");
+                        Networking.SendData(targetClient, "│Promote│");
 
                         Console.ForegroundColor = ConsoleColor.Green;
                         ConsoleUtils.LogToConsole("Player [" + targetClient.username + "] Has Been Promoted");
@@ -462,7 +462,7 @@ namespace OpenWorldServer
 
             else
             {
-                ServerClient targetClient = Server._Networking.connectedClients.Find(fetch => fetch.username == clientID);
+                ServerClient targetClient = Networking.connectedClients.Find(fetch => fetch.username == clientID);
 
                 if (targetClient == null)
                 {
@@ -486,7 +486,7 @@ namespace OpenWorldServer
                         Server.savedClients.Find(fetch => fetch.username == targetClient.username).isAdmin = false;
                         SaveSystem.SaveUserData(targetClient);
 
-                        Server._Networking.SendData(targetClient, "│Demote│");
+                        Networking.SendData(targetClient, "│Demote│");
 
                         Console.ForegroundColor = ConsoleColor.Green;
                         ConsoleUtils.LogToConsole("Player [" + targetClient.username + "] Has Been Demoted");
@@ -513,7 +513,7 @@ namespace OpenWorldServer
 
             else
             {
-                ServerClient targetClient = Server._Networking.connectedClients.Find(fetch => fetch.username == clientID);
+                ServerClient targetClient = Networking.connectedClients.Find(fetch => fetch.username == clientID);
 
                 if (targetClient == null)
                 {
@@ -527,9 +527,9 @@ namespace OpenWorldServer
                     bool isConnected = false;
                     string ip = "None";
 
-                    if (Server._Networking.connectedClients.Find(fetch => fetch.username == targetClient.username) != null)
+                    if (Networking.connectedClients.Find(fetch => fetch.username == targetClient.username) != null)
                     {
-                        clientToInvestigate = Server._Networking.connectedClients.Find(fetch => fetch.username == targetClient.username);
+                        clientToInvestigate = Networking.connectedClients.Find(fetch => fetch.username == targetClient.username);
                         isConnected = true;
                         ip = ((IPEndPoint)clientToInvestigate.tcp.Client.RemoteEndPoint).Address.ToString();
                     }
@@ -572,7 +572,7 @@ namespace OpenWorldServer
 
             else
             {
-                ServerClient targetClient = Server._Networking.connectedClients.Find(fetch => fetch.username == clientID);
+                ServerClient targetClient = Networking.connectedClients.Find(fetch => fetch.username == clientID);
 
                 if (targetClient == null)
                 {
@@ -644,7 +644,7 @@ namespace OpenWorldServer
 
             else
             {
-                ServerClient targetClient = Server._Networking.connectedClients.Find(fetch => fetch.username == clientID);
+                ServerClient targetClient = Networking.connectedClients.Find(fetch => fetch.username == clientID);
 
                 if (targetClient == null)
                 {

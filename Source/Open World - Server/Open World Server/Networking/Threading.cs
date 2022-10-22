@@ -8,7 +8,7 @@ namespace OpenWorldServer
         {
             if (threadID == 0)
             {
-                Thread NetworkingThread = new Thread(new ThreadStart(Server._Networking.ReadyServer));
+                Thread NetworkingThread = new Thread(new ThreadStart(Networking.ReadyServer));
                 NetworkingThread.IsBackground = true;
                 NetworkingThread.Name = "Networking Thread";
                 NetworkingThread.Start();
@@ -16,7 +16,7 @@ namespace OpenWorldServer
 
             else if (threadID == 1)
             {
-                Thread CheckThread = new Thread(() => Server._Networking.CheckClientsConnection());
+                Thread CheckThread = new Thread(() => Networking.CheckClientsConnection());
                 CheckThread.IsBackground = true;
                 CheckThread.Name = "Check Thread";
                 CheckThread.Start();
@@ -27,7 +27,7 @@ namespace OpenWorldServer
 
         public static void GenerateClientThread(ServerClient client)
         {
-            Thread ClientThread = new Thread(() => Server._Networking.ListenToClient(client));
+            Thread ClientThread = new Thread(() => Networking.ListenToClient(client));
             ClientThread.IsBackground = true;
             ClientThread.Name = "User Thread " + client.username;
             ClientThread.Start();

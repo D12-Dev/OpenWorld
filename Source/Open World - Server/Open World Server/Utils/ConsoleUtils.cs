@@ -9,7 +9,7 @@ namespace OpenWorldServer
     {
         public static void UpdateTitle()
         {
-            Console.Title = Server.serverName + " " + Server.serverVersion + " / " + Server._Networking.localAddress.ToString() + " / " + Server._Networking.connectedClients.Count + " Of " + Server.maxPlayers + " Connected Players";
+            Console.Title = Server.serverName + " " + Server.serverVersion + " / " + Networking.localAddress.ToString() + " / " + Networking.connectedClients.Count + " Of " + Server.maxPlayers + " Connected Players";
         }
 
         public static void LogToConsole(string data)

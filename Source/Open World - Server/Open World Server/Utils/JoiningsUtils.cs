@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Text;
 
 namespace OpenWorldServer
 {
@@ -36,7 +35,7 @@ namespace OpenWorldServer
             if (Server.usingRoadSystem && Server.aggressiveRoadMode) roadInt = 2;
 
             string name = Server.serverName;
-            int countInt = Server._Networking.connectedClients.Count;
+            int countInt = Networking.connectedClients.Count;
 
             int chatInt = 0;
             if (Server.usingChat) chatInt = 1;
@@ -47,7 +46,7 @@ namespace OpenWorldServer
             int modVerifyInt = 0;
             if (Server.usingModVerification) modVerifyInt = 1;
 
-            if (!TryJoin(client)) return;
+            if (!CompareConnectingClientWithPlayerCount(client)) return;
 
             if (!CompareConnectingClientVersion(client, playerVersion)) return;
 
@@ -60,7 +59,7 @@ namespace OpenWorldServer
                 PlayerUtils.SaveNewPlayerFile(client.username, client.password);
 
                 float mmGC = Server.globeCoverage;
-                string? mmS = Server.seed;
+                string mmS = Server.seed;
                 int mmOR = Server.overallRainfall;
                 int mmOT = Server.overallTemperature;
                 int mmOP = Server.overallPopulation;
@@ -72,7 +71,7 @@ namespace OpenWorldServer
                 }
                 if (settlementString.Count() > 0) settlementString = settlementString.Remove(settlementString.Count() - 1, 1);
 
-                Server._Networking.SendData(client, "MapDetails│" + mmGC + "│" + mmS + "│" + mmOR + "│" + mmOT + "│" + mmOP + "│" + settlementString + "│" + devInt + "│" + wipeInt + "│" + roadInt + "│" + countInt + "│" + chatInt + "│" + profanityInt + "│" + modVerifyInt + "│" + name);
+                Networking.SendData(client, "MapDetails│" + mmGC + "│" + mmS + "│" + mmOR + "│" + mmOT + "│" + mmOP + "│" + settlementString + "│" + devInt + "│" + wipeInt + "│" + roadInt + "│" + countInt + "│" + chatInt + "│" + profanityInt + "│" + modVerifyInt + "│" + name);
             }
 
             void SendLoadGameData()
@@ -129,7 +128,7 @@ namespace OpenWorldServer
 
                 SaveSystem.SaveUserData(client);
 
-                Server._Networking.SendData(client, dataToSend);
+                Networking.SendData(client, dataToSend);
             }
 
             foreach (ServerClient savedClient in Server.savedClients)
@@ -169,7 +168,7 @@ namespace OpenWorldServer
 
                     else
                     {
-                        Server._Networking.SendData(client, "Disconnect│WrongPassword");
+                        Networking.SendData(client, "Disconnect│WrongPassword");
 
                         client.disconnectFlag = true;
                         ConsoleUtils.LogToConsole("Player [" + client.username + "] Has Been Kicked For: [Wrong Password]");
@@ -248,7 +247,7 @@ namespace OpenWorldServer
             {
                 ConsoleUtils.LogToConsole("Player [" + client.username + "] " + "Doesn't Have The Required Mod Or Mod Files Mismatch!");
                 flaggedMods = flaggedMods.Remove(flaggedMods.Count() - 1, 1);
-                Server._Networking.SendData(client, "Disconnect│WrongMods│" + flaggedMods);
+                Networking.SendData(client, "Disconnect│WrongMods│" + flaggedMods);
 
                 client.disconnectFlag = true;
                 return false;
@@ -258,13 +257,13 @@ namespace OpenWorldServer
 
         public static void CompareConnectingClientWithConnecteds(ServerClient client)
         {
-            foreach (ServerClient sc in Server._Networking.connectedClients)
+            foreach (ServerClient sc in Networking.connectedClients)
             {
                 if (sc.username == client.username)
                 {
                     if (sc == client) continue;
 
-                    Server._Networking.SendData(sc, "Disconnect│AnotherLogin");
+                    Networking.SendData(sc, "Disconnect│AnotherLogin");
                     sc.disconnectFlag = true;
                     break;
                 }
@@ -281,7 +280,7 @@ namespace OpenWorldServer
                 if (str == client.username) return true;
             }
 
-            Server._Networking.SendData(client, "Disconnect│Whitelist");
+            Networking.SendData(client, "Disconnect│Whitelist");
             client.disconnectFlag = true;
             ConsoleUtils.LogToConsole("Player [" + client.username + "] Tried To Join But Is Not Whitelisted");
             return false;
@@ -304,7 +303,7 @@ namespace OpenWorldServer
             if (clientVersion == latestVersion) return true;
             else
             {
-                Server._Networking.SendData(client, "Disconnect│Version");
+                Networking.SendData(client, "Disconnect│Version");
                 client.disconnectFlag = true;
                 ConsoleUtils.LogToConsole("Player [" + client.username + "] Tried To Join But Is Using Other Version");
                 return false;
@@ -317,7 +316,7 @@ namespace OpenWorldServer
             {
                 if (pair.Key == ((IPEndPoint)client.tcp.Client.RemoteEndPoint).Address.ToString() || pair.Value == client.username)
                 {
-                    Server._Networking.SendData(client, "Disconnect│Banned");
+                    Networking.SendData(client, "Disconnect│Banned");
                     client.disconnectFlag = true;
                     ConsoleUtils.LogToConsole("Player [" + client.username + "] Tried To Join But Is Banned");
                     return false;
@@ -327,13 +326,13 @@ namespace OpenWorldServer
             return true;
         }
 
-        public static bool TryJoin(ServerClient client)
+        public static bool CompareConnectingClientWithPlayerCount(ServerClient client)
         {
             if (client.isAdmin) return true;
 
-            if (Server._Networking.connectedClients.Count() >= Server.maxPlayers + 1)
+            if (Networking.connectedClients.Count() >= Server.maxPlayers + 1)
             {
-                Server._Networking.SendData(client, "Disconnect│ServerFull");
+                Networking.SendData(client, "Disconnect│ServerFull");
                 client.disconnectFlag = true;
                 return false;
             }
@@ -345,14 +344,14 @@ namespace OpenWorldServer
         {
             if (string.IsNullOrWhiteSpace(client.username))
             {
-                Server._Networking.SendData(client, "Disconnect│Corrupted");
+                Networking.SendData(client, "Disconnect│Corrupted");
                 client.disconnectFlag = true;
                 return false;
             }
 
             if (!client.username.All(character => Char.IsLetterOrDigit(character) || character == '_' || character == '-'))
             {
-                Server._Networking.SendData(client, "Disconnect│Corrupted");
+                Networking.SendData(client, "Disconnect│Corrupted");
                 client.disconnectFlag = true;
                 return false;
             }

@@ -100,14 +100,14 @@ namespace OpenWorldServer
                     else if (setting.StartsWith("Server Local IP: "))
                     {
                         string splitString = setting.Replace("Server Local IP: ", "");
-                        Server._Networking.localAddress = IPAddress.Parse(splitString);
+                        Networking.localAddress = IPAddress.Parse(splitString);
                         continue;
                     }
 
                     else if (setting.StartsWith("Server Port: "))
                     {
                         string splitString = setting.Replace("Server Port: ", "");
-                        Server._Networking.serverPort = int.Parse(splitString);
+                        Networking.serverPort = int.Parse(splitString);
                         continue;
                     }
 
@@ -633,22 +633,22 @@ namespace OpenWorldServer
 
             Server.chatCache.Add("[" + DateTime.Now + "]" + " │ " + messageForConsole);
 
-            foreach (ServerClient sc in Server._Networking.connectedClients)
+            foreach (ServerClient sc in Networking.connectedClients)
             {
                 if (sc == client) continue;
-                else Server._Networking.SendData(sc, data);
+                else Networking.SendData(sc, data);
             }
         }
 
         public static void RefreshClientCount(ServerClient client)
         {
-            int count = Server._Networking.connectedClients.Count;
+            int count = Networking.connectedClients.Count;
 
-            foreach (ServerClient sc in Server._Networking.connectedClients)
+            foreach (ServerClient sc in Networking.connectedClients)
             {
                 if (sc == client) continue;
 
-                try { Server._Networking.SendData(sc, "│PlayerCountRefresh│" + count + "│"); }
+                try { Networking.SendData(sc, "│PlayerCountRefresh│" + count + "│"); }
                 catch { continue; }
             }
         }
