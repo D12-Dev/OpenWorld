@@ -4,9 +4,9 @@ using System.Linq;
 
 namespace OpenWorld
 {
-    public class Encryption
+    public static class Encryption
     {
-        public string EncryptString(string stuff)
+        public static string EncryptString(string stuff)
         {
             string encryptedStuff = "";
 
@@ -21,7 +21,7 @@ namespace OpenWorld
             return encryptedStuff;
         }
 
-        public string DecryptString(string stuff)
+        public static string DecryptString(string stuff)
         {
             List<string> encryptedList = stuff.Split(':').ToList();
 

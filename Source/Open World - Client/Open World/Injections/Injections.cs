@@ -15,7 +15,9 @@ namespace OpenWorld
 	{
 		public override string ModIdentifier => Main._ParametersCache.modIdentifier;
 
-		public List<Action> thingsToDoInUpdate = new List<Action>();
+		public static List<Action> thingsToDoInUpdate = new List<Action>();
+
+		public static List<Action> queuedActions = new List<Action>();
 	}
 
 	//Inject Orders To ModBase
@@ -25,14 +27,21 @@ namespace OpenWorld
 		[HarmonyPostfix]
 		public static void InjectToRoot()
 		{
-			if (Main._Injections.thingsToDoInUpdate.Count > 0)
+			if (Injections.thingsToDoInUpdate.Count > 0)
 			{
-				foreach (Action a in Main._Injections.thingsToDoInUpdate)
+				foreach(Action a in Injections.thingsToDoInUpdate)
+                {
+					Injections.queuedActions.Add(a);
+				}
+
+				Injections.thingsToDoInUpdate.Clear();
+
+				foreach (Action a in Injections.queuedActions)
 				{
 					a.Invoke();
 				}
 
-				Main._Injections.thingsToDoInUpdate.Clear();
+				Injections.queuedActions.Clear();
 			}
 		}
 	}
@@ -112,7 +121,7 @@ namespace OpenWorld
 				LongEventHandler.QueueLongEvent(delegate
 				{
 					Main._ParametersCache.isPlayingOnline = false;
-					if (Main._Networking.isConnectedToServer) Main._Networking.DisconnectFromServer();
+					if (Networking.isConnectedToServer) Networking.DisconnectFromServer();
 
 					Find.GameInfo.permadeathModeUniqueName = Main._ParametersCache.onlineFileSaveName + " - " + Main._ParametersCache.connectedServerIdentifier + " - " + Main._ParametersCache.usernameText;
 					GameDataSaveLoader.SaveGame(Find.GameInfo.permadeathModeUniqueName);
@@ -167,7 +176,7 @@ namespace OpenWorld
 			if ((Widgets.ButtonText(new Rect(num6, num7, 150f, 38f), "Back".Translate()) || KeyBindingDefOf.Cancel.KeyDownEvent))
 			{
 				Main._ParametersCache.isPlayingOnline = false;
-				if (Main._Networking.isConnectedToServer) Main._Networking.DisconnectFromServer();
+				if (Networking.isConnectedToServer) Networking.DisconnectFromServer();
 
 				if (__instance.prev != null)
 				{
@@ -192,7 +201,7 @@ namespace OpenWorld
 			dataToSend += (int) __instance.CurrentMap.wealthWatcher.WealthTotal + "│";
 			dataToSend += __instance.CurrentMap.mapPawns.AllPawns.FindAll(pawn => pawn.IsColonistPlayerControlled).Count();
 
-			if (Main._Networking.isConnectedToServer) Main._Networking.SendData(dataToSend);
+			if (Networking.isConnectedToServer) Networking.SendData(dataToSend);
 			else return;
 		}
 	}
@@ -208,63 +217,16 @@ namespace OpenWorld
 
 			if (Main._ParametersCache.isPlayingOnline)
 			{
-				List<Settlement> settlementList = new List<Settlement>();
+				Main._MPWorld.HandleSettlementsLocation();
 
-				foreach (Settlement st in Find.WorldObjects.Settlements)
-				{
-					if (st.Faction == Main._ParametersCache.faction) settlementList.Add(st);
-				}
+				Main._MPWorld.HandleRoadGeneration();
 
-				foreach (Settlement wo in settlementList) Find.WorldObjects.Remove(wo);
-
-				foreach (KeyValuePair<string, List<string>> pair in Main._ParametersCache.onlineSettlements)
-				{
-					Settlement settlement = (Settlement)WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
-					settlement.SetFaction(Main._ParametersCache.faction);
-					settlement.Tile = int.Parse(pair.Key);
-					settlement.Name = pair.Value[0] + "'s Settlement";
-					Find.WorldObjects.Add(settlement);
-				}
-
-				if (Main._ParametersCache.roadMode != 0)
-                {
-					if (Main._ParametersCache.roadMode == 1)
-                    {
-                        List<WorldGenStepDef> GenStepsInOrder = DefDatabase<WorldGenStepDef>.AllDefs.ToList();
-                        WorldGenStepDef roadGenerator = GenStepsInOrder.Find(a => a.defName == "Roads");
-                        try { roadGenerator.worldGenStep.GenerateFresh(Find.World.info.seedString); }
-                        catch { }
-                    }
-					else if (Main._ParametersCache.roadMode == 2)
-                    {
-                        List<WorldGenStepDef> GenStepsInOrder = DefDatabase<WorldGenStepDef>.AllDefs.ToList();
-                        WorldGenStepDef roadGenerator = GenStepsInOrder.Find(a => a.defName == "Roads");
-                        try { roadGenerator.worldGenStep.GenerateFromScribe(Find.World.info.seedString); }
-                        catch { }
-                    }
-				}
-
-                string dataToSend = "NewSettlementID│";
-				dataToSend += __instance.CurrentMap.Tile + "│";
-				dataToSend += (int) __instance.CurrentMap.wealthWatcher.WealthTotal + "│";
-				dataToSend += __instance.CurrentMap.mapPawns.AllPawns.FindAll(pawn => pawn.IsColonistPlayerControlled).Count();
-
-				Map map = Find.AnyPlayerHomeMap;
-				string dataToSend2 = "NewSettlementID│";
-				dataToSend2 += map.Tile + "│";
-				dataToSend2 += (int) map.wealthWatcher.WealthTotal + "│";
-				dataToSend2 += map.mapPawns.AllPawns.FindAll(pawn => pawn.IsColonistPlayerControlled).Count();
-
-				if (Find.CurrentMap != null && Find.CurrentMap == Find.AnyPlayerHomeMap) Main._Networking.SendData(dataToSend);
-				else if (Find.AnyPlayerHomeMap != null) Main._Networking.SendData(dataToSend);
-				else Main._Networking.SendData("│NoSettlementInLoad│");
+				Main._MPGame.SendPlayerSettlementData(__instance);
 
 				Main._MPGame.CheckForGifts();
-
-				return;
 			}
 
-			else return;
+			return;
 		}
 	}
 
@@ -284,11 +246,11 @@ namespace OpenWorld
 					Main._ParametersCache.faction = FactionGenerator.NewGeneratedFaction(new FactionGeneratorParms(item));
 					Find.FactionManager.Add(Main._ParametersCache.faction);
 
-					foreach(KeyValuePair<string, List<string>> pair in Main._ParametersCache.onlineSettlements)
+					foreach(KeyValuePair<int, List<string>> pair in Main._ParametersCache.onlineSettlements)
 					{
 						Settlement settlement = (Settlement)WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
 						settlement.SetFaction(Main._ParametersCache.faction);
-						settlement.Tile = int.Parse(pair.Key);
+						settlement.Tile = pair.Key;
 						settlement.Name = pair.Value[0] + "'s Settlement";
 						Find.WorldObjects.Add(settlement);
 					}
@@ -308,9 +270,9 @@ namespace OpenWorld
 		[HarmonyPostfix]
 		public static void GetIDFromNewSettlement(ref Caravan caravan)
 		{
-			if (Main._Networking.isConnectedToServer)
+			if (Networking.isConnectedToServer)
 			{
-				if (Find.AnyPlayerHomeMap == null) Main._Networking.SendData("NewSettlementID│" + caravan.Tile);
+				if (Find.AnyPlayerHomeMap == null) Networking.SendData("NewSettlementID│" + caravan.Tile);
 				else return;
 			}
 			else return;
@@ -324,9 +286,9 @@ namespace OpenWorld
 		[HarmonyPostfix]
 		public static void GetIDFromAbandonedSettlement(ref Settlement settlement)
 		{
-			if (Main._Networking.isConnectedToServer)
+			if (Networking.isConnectedToServer)
 			{
-				if (Find.AnyPlayerHomeMap == null) Main._Networking.SendData("AbandonSettlementID│" + settlement.Tile);
+				if (Find.AnyPlayerHomeMap == null) Networking.SendData("AbandonSettlementID│" + settlement.Tile);
 				else return;
 			}
 			else return;
@@ -340,7 +302,7 @@ namespace OpenWorld
 		[HarmonyPrefix]
 		public static bool GetItemsGifted(List<Thing> ___thingsColony, int ___countToTransfer)
 		{
-			if (!Main._Networking.isConnectedToServer) return true;
+			if (!Networking.isConnectedToServer) return true;
 
 			if (TradeSession.trader.Faction == Main._ParametersCache.faction)
 			{
@@ -357,10 +319,10 @@ namespace OpenWorld
 
 					pawnData += "‼";
 
-					try { pawnData += sentPawn.story.childhood.identifier + "┼"; }
+					try { pawnData += sentPawn.story.Childhood.identifier + "┼"; }
 					catch { }
 
-					try { pawnData += sentPawn.story.adulthood.identifier + "┼"; }
+					try { pawnData += sentPawn.story.Adulthood.identifier + "┼"; }
 					catch { }
 
 					pawnData += "‼";
@@ -425,7 +387,7 @@ namespace OpenWorld
                 var floatMenuList = __result.ToList();
                 floatMenuList.Clear();
 
-                if (!Main._Networking.isConnectedToServer)
+                if (!Networking.isConnectedToServer)
                 {
                     __result = floatMenuList;
                     return;
@@ -433,7 +395,7 @@ namespace OpenWorld
 
                 Action action = delegate
                 {
-                    Main._MPCaravan.SendGiftedPodsToSettlement(representative.TransportersInGroup, settlement);
+                    MPCaravan.SendGiftedPodsToSettlement(representative.TransportersInGroup, settlement);
                     representative.TryLaunch(settlement.Tile, new TransportPodsArrivalAction_GiveGift(settlement));
                 };
 
@@ -544,7 +506,7 @@ namespace OpenWorld
 				var gizmoList = __result.ToList();
 				gizmoList.Clear();
 
-				if (!Main._Networking.isConnectedToServer)
+				if (!Networking.isConnectedToServer)
 				{
 					__result = gizmoList;
 					return;
@@ -557,7 +519,7 @@ namespace OpenWorld
             {
 				var gizmoList = __result.ToList();
 
-				if (!Main._Networking.isConnectedToServer) return;
+				if (!Networking.isConnectedToServer) return;
 
 				Command_Action command_TradingPost = new Command_Action
 				{
@@ -599,7 +561,7 @@ namespace OpenWorld
 				}
 				foreach(Gizmo g in removeList) gizmoList.Remove(g);
 
-				if (!Main._Networking.isConnectedToServer)
+				if (!Networking.isConnectedToServer)
 				{
 					__result = gizmoList;
 					return;
@@ -612,7 +574,7 @@ namespace OpenWorld
 					icon = ContentFinder<Texture2D>.Get("UI/Commands/AttackSettlement"),
 					action = delegate
 					{
-						if (!Main._Networking.isConnectedToServer) return;
+						if (!Networking.isConnectedToServer) return;
 
 						Main._ParametersCache.focusedSettlement = __instance;
 						Main._ParametersCache.focusedCaravan = caravan;
@@ -630,7 +592,7 @@ namespace OpenWorld
 					icon = ContentFinder<Texture2D>.Get("UI/Commands/Settle"),
 					action = delegate
 					{
-						if (!Main._Networking.isConnectedToServer) return;
+						if (!Networking.isConnectedToServer) return;
 
 						Main._ParametersCache.focusedSettlement = __instance;
 						Main._ParametersCache.focusedCaravan = caravan;
@@ -646,7 +608,7 @@ namespace OpenWorld
 					icon = ContentFinder<Texture2D>.Get("UI/Commands/ShowMap"),
 					action = delegate
 					{
-						if (!Main._Networking.isConnectedToServer) return;
+						if (!Networking.isConnectedToServer) return;
 
 						Main._ParametersCache.focusedSettlement = __instance;
 						Main._ParametersCache.focusedCaravan = caravan;
@@ -662,7 +624,7 @@ namespace OpenWorld
 					icon = ContentFinder<Texture2D>.Get("UI/Commands/Trade"),
 					action = delegate
 					{
-						if (!Main._Networking.isConnectedToServer) return;
+						if (!Networking.isConnectedToServer) return;
 
 						Main._ParametersCache.focusedSettlement = __instance;
 						Main._ParametersCache.focusedCaravan = caravan;
@@ -678,12 +640,12 @@ namespace OpenWorld
 					icon = ContentFinder<Texture2D>.Get("UI/Commands/FulfillTradeRequest"),
 					action = delegate
 					{
-						if (!Main._Networking.isConnectedToServer) return;
+						if (!Networking.isConnectedToServer) return;
 
 						Main._ParametersCache.focusedSettlement = __instance;
 						Main._ParametersCache.focusedCaravan = caravan;
 
-						//Main._Injections.OpenDialogs(3);
+						//Injections.OpenDialogs(3);
 						Find.WindowStack.Add(new Dialog_MPBarter(false, null));
 					}
 				};
@@ -695,7 +657,7 @@ namespace OpenWorld
 					icon = ContentFinder<Texture2D>.Get("UI/Commands/OfferGifts"),
 					action = delegate
 					{
-						if (!Main._Networking.isConnectedToServer) return;
+						if (!Networking.isConnectedToServer) return;
 
 						Main._ParametersCache.focusedSettlement = __instance;
 						Main._ParametersCache.focusedCaravan = caravan;
@@ -711,7 +673,7 @@ namespace OpenWorld
 					icon = ContentFinder<Texture2D>.Get("UI/Commands/CallAid"),
 					action = delegate
 					{
-						if (!Main._Networking.isConnectedToServer) return;
+						if (!Networking.isConnectedToServer) return;
 
 						Main._ParametersCache.focusedSettlement = __instance;
 						Main._ParametersCache.focusedCaravan = caravan;
@@ -771,12 +733,15 @@ namespace OpenWorld
         {
 			if (___TileTabs.Count() == 3) return true;
 
-			___TileTabs = new WITab[3]
+			if (Networking.isConnectedToServer)
 			{
-				new MP_WITabFind(),
-				new WITab_Terrain(),
-				new WITab_Planet()
-			};
+				___TileTabs = new WITab[3]
+				{
+					new MP_WITabFind(),
+					new WITab_Terrain(),
+					new WITab_Planet()
+				};
+			}
 
 			return true;
         }

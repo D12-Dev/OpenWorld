@@ -32,11 +32,11 @@ namespace OpenWorld
         {
             Text.Font = GameFont.Small;
 
-            if (Main._Networking.isConnectedToServer) connectionString = "Status: Connected [" + Main._ParametersCache.connectedPlayers + "]";
+            if (Networking.isConnectedToServer) connectionString = "Status: Connected [" + Main._ParametersCache.connectedPlayers + "]";
             else connectionString = "Status: Disconnected";
             Widgets.Label(new Rect(new Vector2(rect.x, rect.y), new Vector2(Text.CalcSize(connectionString).x, Text.CalcSize(connectionString).y)), connectionString);
 
-            userString = "User: " + Main._Networking.username;
+            userString = "User: " + Networking.username;
             Widgets.Label(new Rect(new Vector2(rect.xMax - Text.CalcSize(userString).x, rect.y), new Vector2(Text.CalcSize(userString).x, Text.CalcSize(userString).y)), userString);
 
             try { GenerateList(new Rect(new Vector2(rect.x, rect.y + 25f), new Vector2(rect.width, rect.height - 47f - 25f))); }

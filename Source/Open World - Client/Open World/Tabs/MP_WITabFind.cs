@@ -43,10 +43,10 @@ namespace OpenWorld
             if (!Main._ParametersCache.isPlayingOnline)
             {
                 Main._MPWorld.FindOnlineFactionInWorld();
-                Dictionary<string, List<string>> localOnlineSettlements = new Dictionary<string, List<string>>();
+                Dictionary<int, List<string>> localOnlineSettlements = new Dictionary<int, List<string>>();
                 foreach (Settlement st in Find.WorldObjects.Settlements)
                 {
-                    if (st.Faction == Main._ParametersCache.faction) localOnlineSettlements.Add(st.Tile.ToString(), new List<string>() { st.Name.Replace("'s Settlement", "") });
+                    if (st.Faction == Main._ParametersCache.faction) localOnlineSettlements.Add(st.Tile, new List<string>() { st.Name.Replace("'s Settlement", "") });
                 }
 
                 orderedDictionary = localOnlineSettlements.OrderBy(x => x.Value[0]);
@@ -62,7 +62,7 @@ namespace OpenWorld
             float num3 = scrollPosition.y + mainRect.height;
             int num4 = 0;
 
-            foreach (KeyValuePair<string, List<string>> pair in orderedDictionary)
+            foreach (KeyValuePair<int, List<string>> pair in orderedDictionary)
             {
                 if (num > num2 && num < num3)
                 {
@@ -77,7 +77,7 @@ namespace OpenWorld
             Widgets.EndScrollView();
         }
 
-        private void DrawCustomRow(Rect rect, KeyValuePair<string, List<string>> pair, int index)
+        private void DrawCustomRow(Rect rect, KeyValuePair<int, List<string>> pair, int index)
         {
             Text.Font = GameFont.Small;
 
@@ -94,7 +94,7 @@ namespace OpenWorld
             {
                 foreach(Settlement settlement in Find.World.worldObjects.Settlements)
                 {
-                    if (settlement.Faction == Main._ParametersCache.faction && settlement.Tile == int.Parse(pair.Key))
+                    if (settlement.Faction == Main._ParametersCache.faction && settlement.Tile == pair.Key)
                     {
                         CameraJumper.TryJumpAndSelect(new GlobalTargetInfo(settlement));
                         break;

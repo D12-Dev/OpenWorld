@@ -36,7 +36,7 @@ namespace OpenWorld
         public int profanityMode = 0;
         public int connectedPlayers = 0;
         public Faction faction;
-        public Dictionary<string, List<string>> onlineSettlements = new Dictionary<string, List<string>>();
+        public Dictionary<int, List<string>> onlineSettlements = new Dictionary<int, List<string>>();
 
         //Dialog_MPBlackMarket
         public Dialog_MPBlackMarket __MPBlackMarket;

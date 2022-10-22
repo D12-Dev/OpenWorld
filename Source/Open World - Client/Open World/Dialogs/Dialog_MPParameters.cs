@@ -136,7 +136,7 @@ namespace OpenWorld
 
             if (Widgets.ButtonText(new Rect(new Vector2(rect.x, rect.yMax - buttonY), new Vector2(buttonX, buttonY)), "Join"))
             {
-                if (Main._Networking.isTryingToConnect) return;
+                if (Networking.isTryingToConnect) return;
                 if (string.IsNullOrWhiteSpace(Main._ParametersCache.ipText))
                 {
                     Find.WindowStack.Add(new Dialog_MPMissingLogin());
@@ -168,14 +168,14 @@ namespace OpenWorld
                     return;
                 }
 
-                Main._Networking.ip = Main._ParametersCache.ipText;
-                Main._Networking.port = Main._ParametersCache.portText;
-                Main._Networking.username = Main._ParametersCache.usernameText;
-                Main._Networking.password = passwordText;
+                Networking.ip = Main._ParametersCache.ipText;
+                Networking.port = Main._ParametersCache.portText;
+                Networking.username = Main._ParametersCache.usernameText;
+                Networking.password = passwordText;
 
                 SaveSystem.SaveData(Main._ParametersCache);
 
-                Main._Threading.GenerateThreads(0);
+                Threading.GenerateThreads(0);
 
                 __instance = this;
             }

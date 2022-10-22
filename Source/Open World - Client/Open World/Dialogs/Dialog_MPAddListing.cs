@@ -125,7 +125,7 @@ namespace OpenWorld
 
             //if (!foundItemInDatabase) return;
 
-            Main._Networking.SendData("AddNewListing│" + itemNameText + "│" + QuantityText + "│" + willPayText + "│" + modeIndex);
+            Networking.SendData("AddNewListing│" + itemNameText + "│" + QuantityText + "│" + willPayText + "│" + modeIndex);
 
             Main._ParametersCache.yourListings.Add(Main._ParametersCache.yourListings.Count, new List<string>() { itemNameText, QuantityText, willPayText, modeIndex.ToString() });
 

@@ -27,13 +27,17 @@ namespace OpenWorld
 
             listingStandard.GapLine();
             listingStandard.Label("External Sources");
-            if (listingStandard.ButtonTextLabeled("Check The Latest Mod Changelogs", "Open"))
+            if (listingStandard.ButtonTextLabeled("Check Latest Mod Changelogs", "Open"))
             {
                 try { System.Diagnostics.Process.Start("https://steamcommunity.com/sharedfiles/filedetails/changelog/2768146099"); } catch { }
             }
             if (listingStandard.ButtonTextLabeled("Join Open World's Discord Community", "Open"))
             {
                 try { System.Diagnostics.Process.Start("https://discord.gg/SNtVjR6bqU"); } catch { }
+            }
+            if (listingStandard.ButtonTextLabeled("Access Open World's GitHub Repository", "Open"))
+            {
+                try { System.Diagnostics.Process.Start("https://github.com/TastyLollipop/OpenWorld"); } catch { }
             }
 
             listingStandard.GapLine();

@@ -69,8 +69,8 @@ namespace OpenWorld
             {
                 if (rebarter)
                 {
-                    Main._Networking.SendData("BarterStatus│Deal│" + invokerID);
-                    Main._MPCaravan.ReceiveBarterToCaravan(tradeableItems);
+                    Networking.SendData("BarterStatus│Deal│" + invokerID);
+                    MPCaravan.ReceiveBarterToCaravan(tradeableItems);
 
                     tradeableItems = null;
 
@@ -82,19 +82,19 @@ namespace OpenWorld
                     Main._ParametersCache.letterTitle = "Successful Trade";
                     Main._ParametersCache.letterDescription = "You have traded with another settlement! \n\nTraded items have been deposited in your caravan.";
                     Main._ParametersCache.letterType = LetterDefOf.PositiveEvent;
-                    Main._Injections.thingsToDoInUpdate.Add(Main._MPGame.TryGenerateLetter);
+                    Injections.thingsToDoInUpdate.Add(Main._MPGame.TryGenerateLetter);
                 }
                 else Find.WindowStack.Add(new Dialog_MPBarter(true, invokerID));
             }
 
             if (Widgets.ButtonText(new Rect(new Vector2(rect.xMax - buttonX, rect.yMax - buttonY), new Vector2(buttonX, buttonY)), "Reject"))
             {
-                Main._Networking.SendData("BarterStatus│Reject│" + invokerID);
+                Networking.SendData("BarterStatus│Reject│" + invokerID);
                 Main._ParametersCache.inTrade = false;
 
                 if (rebarter)
                 {
-                    Main._MPCaravan.ReturnTradesToCaravan();
+                    MPCaravan.ReturnTradesToCaravan();
                     Main._ParametersCache.__MPWaiting.Close();
                 }
 

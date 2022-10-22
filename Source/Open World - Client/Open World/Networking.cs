@@ -10,23 +10,23 @@ using Verse.AI;
 
 namespace OpenWorld
 {
-    public class Networking
+    public static class Networking
     {
-        private TcpClient connection;
-        private Stream s;
-        private NetworkStream ns;
-        private StreamWriter sw;
-        private StreamReader sr;
+        private static TcpClient connection;
+        private static Stream s;
+        private static NetworkStream ns;
+        private static StreamWriter sw;
+        private static StreamReader sr;
 
-        public string ip;
-        public string port;
-        public string username = "Offline User";
-        public string password;
+        public static string ip;
+        public static string port;
+        public static string username = "Offline User";
+        public static string password;
 
-        public bool isTryingToConnect;
-        public bool isConnectedToServer;
+        public static bool isTryingToConnect;
+        public static bool isConnectedToServer;
 
-        public void TryConnectToServer()
+        public static void TryConnectToServer()
         {
             isTryingToConnect = true;
 
@@ -43,7 +43,7 @@ namespace OpenWorld
 
                 Dialog_MPParameters.__instance.Close();
 
-                //Main._Threading.GenerateThreads(1);
+                //Threading.GenerateThreads(1);
                 ListenToServer();
             }
 
@@ -54,10 +54,10 @@ namespace OpenWorld
             }
         }
 
-        private void ListenToServer()
+        private static void ListenToServer()
         {
-            if (!Main._ParametersCache.isLoadingExistingGame) Main._Networking.SendData("Connect│" + username + "│" + password + "│" + Main._ParametersCache.versionCode + "│" + "NewGame" + "│" + Main._MPGame.GetCompactedModList());
-            else Main._Networking.SendData("Connect│" + username + "│" + password + "│" + Main._ParametersCache.versionCode + "│" + "LoadGame" + "│" + Main._MPGame.GetCompactedModList());
+            if (!Main._ParametersCache.isLoadingExistingGame) Networking.SendData("Connect│" + username + "│" + password + "│" + Main._ParametersCache.versionCode + "│" + "NewGame" + "│" + Main._MPGame.GetCompactedModList());
+            else SendData("Connect│" + username + "│" + password + "│" + Main._ParametersCache.versionCode + "│" + "LoadGame" + "│" + Main._MPGame.GetCompactedModList());
 
             while (true)
             {
@@ -70,7 +70,7 @@ namespace OpenWorld
                     if (ns.DataAvailable)
                     {
                         string data = sr.ReadLine();
-                        data = Main._Encryption.DecryptString(data);
+                        data = Encryption.DecryptString(data);
 
                         if (data != null)
                         {
@@ -87,7 +87,7 @@ namespace OpenWorld
                                 Main._ParametersCache.onlineSettlements.Clear();
                                 foreach (string str in settlements)
                                 {
-                                    Main._ParametersCache.onlineSettlements.Add(str.Split(':')[0], new List<string>() { str.Split(':')[1] });
+                                    Main._ParametersCache.onlineSettlements.Add(int.Parse(str.Split(':')[0]), new List<string>() { str.Split(':')[1] });
                                 }
 
                                 int adminValue = int.Parse(data.Split('│')[7]);
@@ -132,7 +132,7 @@ namespace OpenWorld
                                 Main._ParametersCache.onlineSettlements.Clear();
                                 foreach (string str in settlements)
                                 {
-                                    Main._ParametersCache.onlineSettlements.Add(str.Split(':')[0], new List<string>() { str.Split(':')[1] });
+                                    Main._ParametersCache.onlineSettlements.Add(int.Parse(str.Split(':')[0]), new List<string>() { str.Split(':')[1] });
                                 }
 
                                 int adminValue = int.Parse(data.Split('│')[2]);
@@ -249,7 +249,7 @@ namespace OpenWorld
                                 Main._ParametersCache.letterDescription = data.Split('│')[1];
                                 Main._ParametersCache.letterType = LetterDefOf.PositiveEvent;
 
-                                Main._Injections.thingsToDoInUpdate.Add(Main._MPGame.TryGenerateLetter);
+                                Injections.thingsToDoInUpdate.Add(Main._MPGame.TryGenerateLetter);
                             }
 
                             else if (data == "│Promote│")
@@ -293,7 +293,7 @@ namespace OpenWorld
 
                                     Main._ParametersCache.__MPBlackMarket.Close();
 
-                                    Main._MPCaravan.TakeFundsFromCaravan(); 
+                                    MPCaravan.TakeFundsFromCaravan(); 
                                 }
 
                                 else if (data == "│SentEvent│Deny│")
@@ -314,7 +314,7 @@ namespace OpenWorld
 
                                 else if (data == "│SentTrade│Deny│")
                                 {
-                                    Main._MPCaravan.ReturnTradesToCaravan();
+                                    MPCaravan.ReturnTradesToCaravan();
                                     Main._ParametersCache.__MPTrade.Close();
                                     Find.WindowStack.Add(new Dialog_MPPlayerNotConnected());
                                     Main._ParametersCache.wantedSilver = "";
@@ -322,21 +322,21 @@ namespace OpenWorld
 
                                 else if (data == "│SentTrade│Deal│")
                                 {
-                                    Main._MPCaravan.GiveFundsToCaravan();
+                                    MPCaravan.GiveFundsToCaravan();
                                     Main._ParametersCache.__MPWaiting.Close();
                                     Main._ParametersCache.tradedItemString = "";
 
                                     Main._ParametersCache.letterTitle = "Successful Trade";
                                     Main._ParametersCache.letterDescription = "You have traded with another settlement! \n\nTraded items have been deposited in your caravan.";
                                     Main._ParametersCache.letterType = LetterDefOf.PositiveEvent;
-                                    Main._Injections.thingsToDoInUpdate.Add(Main._MPGame.TryGenerateLetter);
+                                    Injections.thingsToDoInUpdate.Add(Main._MPGame.TryGenerateLetter);
 
-                                    Main._Injections.thingsToDoInUpdate.Add(Main._MPGame.ForceSave);
+                                    Injections.thingsToDoInUpdate.Add(Main._MPGame.ForceSave);
                                 }
 
                                 else if (data == "│SentTrade│Reject│")
                                 {
-                                    Main._MPCaravan.ReturnTradesToCaravan();
+                                    MPCaravan.ReturnTradesToCaravan();
                                     Main._ParametersCache.__MPWaiting.Close();
                                     Main._ParametersCache.__MPTrade.Close();
                                     Find.WindowStack.Add(new Dialog_MPRejectedTrade());
@@ -355,30 +355,30 @@ namespace OpenWorld
 
                                 else if (data == "│SentBarter│Deny│")
                                 {
-                                    Main._MPCaravan.ReturnTradesToCaravan();
+                                    MPCaravan.ReturnTradesToCaravan();
                                     Main._ParametersCache.__MPBarter.Close();
                                     Find.WindowStack.Add(new Dialog_MPPlayerNotConnected());
                                 }
 
                                 else if (data == "│SentBarter│Deal│")
                                 {
-                                    Main._MPCaravan.ReceiveTradesFromPlayer(Main._ParametersCache.cachedItems);
+                                    MPCaravan.ReceiveTradesFromPlayer(Main._ParametersCache.cachedItems);
                                     Main._ParametersCache.inTrade = false;
                                     Main._ParametersCache.cachedItems = null;
                                     Main._ParametersCache.tradedItemString = "";
                                     Main._ParametersCache.__MPWaiting.Close();
 
-                                    Main._Injections.thingsToDoInUpdate.Add(Main._MPGame.ForceSave);
+                                    Injections.thingsToDoInUpdate.Add(Main._MPGame.ForceSave);
                                 }
 
                                 else if (data == "│SentBarter│Reject│")
                                 {
                                     if (Main._ParametersCache.awaitingRebarter)
                                     {
-                                        Main._MPCaravan.ReturnTradesToSettlement();
+                                        MPCaravan.ReturnTradesToSettlement();
                                         Main._ParametersCache.__MPBarter.Close();
                                     }
-                                    else Main._MPCaravan.ReturnTradesToCaravan();
+                                    else MPCaravan.ReturnTradesToCaravan();
 
                                     Main._ParametersCache.inTrade = false;
                                     Main._ParametersCache.cachedItems = null;
@@ -407,7 +407,7 @@ namespace OpenWorld
 
                                 if (Main._ParametersCache.inTrade)
                                 {
-                                    Main._Networking.SendData("TradeStatus│Reject│" + invoker);
+                                    Networking.SendData("TradeStatus│Reject│" + invoker);
                                     continue;
                                 }
 
@@ -426,7 +426,7 @@ namespace OpenWorld
 
                                 if (Main._ParametersCache.inTrade)
                                 {
-                                    Main._Networking.SendData("BarterStatus│Reject│" + invoker);
+                                    Networking.SendData("BarterStatus│Reject│" + invoker);
                                     continue;
                                 }
 
@@ -446,7 +446,7 @@ namespace OpenWorld
                                 Main._ParametersCache.letterDescription = data.Split('│')[1] + "'s settlement has been spying you! \n\nAlthough their actions are unclear you should be careful about this.";
                                 Main._ParametersCache.letterType = LetterDefOf.NegativeEvent;
 
-                                Main._Injections.thingsToDoInUpdate.Add(Main._MPGame.TryGenerateLetter);
+                                Injections.thingsToDoInUpdate.Add(Main._MPGame.TryGenerateLetter);
                             }
 
                             else if (data.StartsWith("│SentSpy│"))
@@ -455,7 +455,7 @@ namespace OpenWorld
                                 {
                                     Main._ParametersCache.silverAmount = 150;
 
-                                    Main._MPCaravan.TakeFundsFromCaravan();
+                                    MPCaravan.TakeFundsFromCaravan();
 
                                     Find.WindowStack.Add(new Dialog_MPSpyResult(data.Split('│')[3]));
                                 }
@@ -472,7 +472,7 @@ namespace OpenWorld
                             {
                                 Main._ParametersCache.forcedEvent = data.Split('│')[1];
 
-                                Main._Injections.thingsToDoInUpdate.Add(Main._MPGame.ExecuteEvent);
+                                Injections.thingsToDoInUpdate.Add(Main._MPGame.ExecuteEvent);
 
                                 continue;
                             }
@@ -509,7 +509,7 @@ namespace OpenWorld
                                 {
                                     Main._ParametersCache.rtsGenerationData = data;
 
-                                    //Main._Injections.thingsToDoInUpdate.Add(Main._MPRTSE.TryPrepareHostForRaid);
+                                    //Injections.thingsToDoInUpdate.Add(Main._MPRTSE.TryPrepareHostForRaid);
                                 }
 
                                 else if (data == "RaidStatus│Start") Main._ParametersCache.__MPWaiting.Close();
@@ -523,7 +523,7 @@ namespace OpenWorld
                                 {
                                     Main._ParametersCache.rtsGenerationData = data;
 
-                                    //Main._Injections.thingsToDoInUpdate.Add(Main._MPRTSE.TryRaid);
+                                    //Injections.thingsToDoInUpdate.Add(Main._MPRTSE.TryRaid);
                                     Main._ParametersCache.__MPWaiting.Close();
                                 }
                                 
@@ -669,18 +669,18 @@ namespace OpenWorld
             }
         }
 
-        public void SendData(string data)
+        public static void SendData(string data)
         {
             try
             {
-                sw.WriteLine(Main._Encryption.EncryptString(data));
+                sw.WriteLine(Encryption.EncryptString(data));
                 sw.Flush();
             }
 
             catch { DisconnectFromServer(); }
         }
 
-        public void CheckConnection()
+        public static void CheckConnection()
         {
             while (true)
             {
@@ -727,7 +727,7 @@ namespace OpenWorld
             }
         }
 
-        public void PvPChannel()
+        public static void PvPChannel()
         {
             while (true)
             {
@@ -744,7 +744,7 @@ namespace OpenWorld
             }
         }
 
-        public void DisconnectFromServer()
+        public static void DisconnectFromServer()
         {
             try { connection.Close(); }
             catch { }

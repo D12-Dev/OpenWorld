@@ -225,7 +225,7 @@ namespace OpenWorld
             width -= 90f;
 
             //Caravan Items Label
-            TransferableUIUtility.DoExtraAnimalIcons(trad, rect, ref width);
+            TransferableUIUtility.DoExtraIcons(trad, rect, ref width);
 
             Rect idRect = new Rect(0f, 0f, width, rect.height);
             TransferableUIUtility.DrawTransferableInfo(trad, idRect, Color.white);

@@ -45,7 +45,7 @@ namespace OpenWorld
             {
                 if (CaravanInventoryUtility.HasThings(Main._ParametersCache.focusedCaravan, ThingDefOf.Silver, 2500))
                 {
-                    Main._Networking.SendData("ForceEvent│" + Main._ParametersCache.blackEventType + "│" + Main._ParametersCache.focusedSettlement.Tile);
+                    Networking.SendData("ForceEvent│" + Main._ParametersCache.blackEventType + "│" + Main._ParametersCache.focusedSettlement.Tile);
                     Main._ParametersCache.blackEventType = "";
                     Close();
                 }

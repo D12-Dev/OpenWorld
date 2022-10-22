@@ -46,15 +46,15 @@ namespace OpenWorld
             {
                 if (string.IsNullOrWhiteSpace(Main._ParametersCache.wantedSilver) || int.Parse(Main._ParametersCache.wantedSilver) == 0) return;
 
-                if (!Main._Networking.isConnectedToServer)
+                if (!Networking.isConnectedToServer)
                 {
                     Find.WindowStack.Add(new Dialog_MPDisconnected());
                     return;
                 }
 
-                Main._MPCaravan.TakeTradesFromCaravan();
+                MPCaravan.TakeTradesFromCaravan();
 
-                Main._MPCaravan.SendTradesToSettlement();
+                MPCaravan.SendTradesToSettlement();
 
                 Close();
             }

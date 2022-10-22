@@ -12,9 +12,9 @@ using Verse.Sound;
 
 namespace OpenWorld
 {
-    public class MPCaravan
+    public static class MPCaravan
     {
-		public void TakeFundsFromCaravan()
+		public static void TakeFundsFromCaravan()
 		{
 			int q = 0;
 
@@ -23,7 +23,7 @@ namespace OpenWorld
 				if (q == Main._ParametersCache.silverAmount)
 				{
 					Main._ParametersCache.silverAmount = 0;
-					Main._Injections.thingsToDoInUpdate.Add(Main._MPGame.ForceSave);
+					Injections.thingsToDoInUpdate.Add(Main._MPGame.ForceSave);
 					return;
 				}
 
@@ -46,7 +46,7 @@ namespace OpenWorld
 			}
 		}
 
-		public void GiveFundsToCaravan()
+		public static void GiveFundsToCaravan()
         {
 			try
 			{
@@ -63,7 +63,7 @@ namespace OpenWorld
 			catch { }
 		}
 
-		public void TakeGiftsFromCaravan()
+		public static void TakeGiftsFromCaravan()
 		{
 			Action action = delegate
 			{
@@ -82,21 +82,21 @@ namespace OpenWorld
 			Event.current.Use();
 		}
 
-		public void SendGiftsToSettlement()
+		public static void SendGiftsToSettlement()
 		{
 			if (Main._ParametersCache.giftedItemsString.Count() > 0) Main._ParametersCache.giftedItemsString = Main._ParametersCache.giftedItemsString.Remove(Main._ParametersCache.giftedItemsString.Count() - 1, 1);
 			else return;
 
 			string giftedString = "SendGiftTo│" + Main._ParametersCache.focusedSettlement.Tile + "│" + Main._ParametersCache.giftedItemsString;
 
-			Main._Networking.SendData(giftedString);
+			Networking.SendData(giftedString);
 
 			Main._ParametersCache.giftedItemsString = "";
 
-			Main._Injections.thingsToDoInUpdate.Add(Main._MPGame.ForceSave);
+			Injections.thingsToDoInUpdate.Add(Main._MPGame.ForceSave);
 		}
 
-		public void SendGiftedPodsToSettlement(List<CompTransporter> podList, Settlement targetSettlement)
+		public static void SendGiftedPodsToSettlement(List<CompTransporter> podList, Settlement targetSettlement)
 		{
 			SoundDefOf.ExecuteTrade.PlayOneShotOnCamera();
 
@@ -122,10 +122,10 @@ namespace OpenWorld
 
 						pawnData += "‼";
 
-						try { pawnData += sentPawn.story.childhood.identifier + "┼"; }
+						try { pawnData += sentPawn.story.Childhood.identifier + "┼"; }
 						catch { }
 
-						try { pawnData += sentPawn.story.adulthood.identifier + "┼"; }
+						try { pawnData += sentPawn.story.Adulthood.identifier + "┼"; }
 						catch { }
 
 						pawnData += "‼";
@@ -178,14 +178,14 @@ namespace OpenWorld
 
 			string giftedString = "SendGiftTo│" + targetSettlement.Tile + "│" + Main._ParametersCache.giftedItemsString + "│" + "Pod";
 
-			Main._Networking.SendData(giftedString);
+			Networking.SendData(giftedString);
 
 			Main._ParametersCache.giftedItemsString = "";
 
-			Main._Injections.thingsToDoInUpdate.Add(Main._MPGame.ForceSave);
+			Injections.thingsToDoInUpdate.Add(Main._MPGame.ForceSave);
 		}
 
-		public void TakeTradesFromSettlement()
+		public static void TakeTradesFromSettlement()
 		{
 			Action action = delegate
 			{
@@ -203,7 +203,7 @@ namespace OpenWorld
 			Event.current.Use();
 		}
 
-		public void TakeTradesFromCaravan()
+		public static void TakeTradesFromCaravan()
         {
 			Action action = delegate
 			{
@@ -222,7 +222,7 @@ namespace OpenWorld
 			Event.current.Use();
 		}
 
-		public void ReturnTradesToCaravan()
+		public static void ReturnTradesToCaravan()
 		{
 			Caravan caravan = Main._ParametersCache.focusedCaravan;
 
@@ -255,7 +255,7 @@ namespace OpenWorld
 			Main._ParametersCache.tradedItemString = "";
 		}
 
-		public void ReturnTradesToSettlement()
+		public static void ReturnTradesToSettlement()
         {
 			Map map = Find.AnyPlayerHomeMap;
 			IntVec3 positionToDrop = new IntVec3(map.Center.x, map.Center.y, map.Center.z);
@@ -304,37 +304,37 @@ namespace OpenWorld
 			Main._ParametersCache.awaitingRebarter = false;
 		}
 
-		public void SendTradesToSettlement()
+		public static void SendTradesToSettlement()
         {
 			if (Main._ParametersCache.tradedItemString.Count() > 0) Main._ParametersCache.tradedItemString = Main._ParametersCache.tradedItemString.Remove(Main._ParametersCache.tradedItemString.Count() - 1, 1);
 			else return;
 
 			string tradedString = "SendTradeTo│" + Main._ParametersCache.focusedSettlement.Tile + "│" + Main._ParametersCache.tradedItemString + "│" + Main._ParametersCache.wantedSilver;
 
-			Main._Networking.SendData(tradedString);
+			Networking.SendData(tradedString);
 		}
 
-		public void SendBarterToSettlement()
+		public static void SendBarterToSettlement()
         {
 			if (Main._ParametersCache.tradedItemString.Count() > 0) Main._ParametersCache.tradedItemString = Main._ParametersCache.tradedItemString.Remove(Main._ParametersCache.tradedItemString.Count() - 1, 1);
 			else return;
 
 			string tradedString = "SendBarterTo│" + Main._ParametersCache.focusedSettlement.Tile + "│" + Main._ParametersCache.tradedItemString;
 
-			Main._Networking.SendData(tradedString);
+			Networking.SendData(tradedString);
 		}
 
-		public void SendBarterToCaravan()
+		public static void SendBarterToCaravan()
 		{
 			if (Main._ParametersCache.tradedItemString.Count() > 0) Main._ParametersCache.tradedItemString = Main._ParametersCache.tradedItemString.Remove(Main._ParametersCache.tradedItemString.Count() - 1, 1);
 			else return;
 
 			string tradedString = "BarterStatus│Rebarter│" + Main._ParametersCache.focusedSettlement.Tile + "│" + Main._ParametersCache.tradedItemString;
 
-			Main._Networking.SendData(tradedString);
+			Networking.SendData(tradedString);
 		}
 
-		public void ReceiveBarterToCaravan(string[] items)
+		public static void ReceiveBarterToCaravan(string[] items)
         {
 			Caravan caravan = Main._ParametersCache.focusedCaravan;
 
@@ -402,10 +402,10 @@ namespace OpenWorld
 				catch { }
 			}
 
-			Main._Injections.thingsToDoInUpdate.Add(Main._MPGame.ForceSave);
+			Injections.thingsToDoInUpdate.Add(Main._MPGame.ForceSave);
 		}
 
-		public void ReceiveTradesFromPlayer(string[] items)
+		public static void ReceiveTradesFromPlayer(string[] items)
         {
 			Map map = Find.AnyPlayerHomeMap;
 			IntVec3 positionToDrop = new IntVec3(map.Center.x, map.Center.y, map.Center.z);
@@ -429,27 +429,27 @@ namespace OpenWorld
 					newPawn.ageTracker.AgeChronologicalTicks = int.Parse(str.Split('┼')[3]);
 					newPawn.gender = (Gender)int.Parse(str.Split('┼')[4]);
 
-					foreach (var bs in BackstoryDatabase.allBackstories)
+					foreach (var bs in DefDatabase<BackstoryDef>.AllDefs)
 					{
-						if (bs.Value.identifier == str.Split('‼')[1].Split('┼')[0])
+						if (bs.defName == str.Split('‼')[1].Split('┼')[1])
 						{
-							newPawn.story.childhood = bs.Value;
+							newPawn.story.Childhood = bs;
 							break;
 						}
 					}
 
 					try
 					{
-						foreach (var bs in BackstoryDatabase.allBackstories)
+						foreach (var bs in DefDatabase<BackstoryDef>.AllDefs)
 						{
-							if (bs.Value.identifier == str.Split('‼')[1].Split('┼')[1])
+							if (bs.defName == str.Split('‼')[1].Split('┼')[1])
 							{
-								newPawn.story.adulthood = bs.Value;
+								newPawn.story.Adulthood = bs;
 								break;
 							}
 						}
 					}
-					catch { newPawn.story.adulthood = null; }
+					catch { newPawn.story.Adulthood = null; }
 
 					List<string> skillList = str.Split('‼')[2].Split('┼').ToList();
 					for (int i = 0; i < 12; i++)
@@ -549,12 +549,12 @@ namespace OpenWorld
 			Main._ParametersCache.letterDescription = "You have received a trade from another player! \n\nIf you have a zone called 'Trading' check it for the items, if not, search around the center of the map. \n\nTake a look at your objects!Some might have been swapped out by thieves!";
 			Main._ParametersCache.letterType = LetterDefOf.PositiveEvent;
 
-			Main._Injections.thingsToDoInUpdate.Add(Main._MPGame.TryGenerateLetter);
+			Injections.thingsToDoInUpdate.Add(Main._MPGame.TryGenerateLetter);
 
-			Main._Injections.thingsToDoInUpdate.Add(Main._MPGame.ForceSave);
+			Injections.thingsToDoInUpdate.Add(Main._MPGame.ForceSave);
 		}
 
-		public void ReceiveGiftsFromPlayer(string[] items)
+		public static void ReceiveGiftsFromPlayer(string[] items)
 		{
 			Map map = Find.AnyPlayerHomeMap;
 			IntVec3 positionToDrop = new IntVec3(map.Center.x, map.Center.y, map.Center.z);
@@ -578,29 +578,29 @@ namespace OpenWorld
 					newPawn.ageTracker.AgeChronologicalTicks = int.Parse(str.Split('┼')[3]);
 					newPawn.gender = (Gender)int.Parse(str.Split('┼')[4]);
 
-					foreach (var bs in BackstoryDatabase.allBackstories)
-                    {
-						if (bs.Value.identifier == str.Split('‼')[1].Split('┼')[0])
-                        {
-							newPawn.story.childhood = bs.Value;
+					foreach (var bs in DefDatabase<BackstoryDef>.AllDefs)
+					{
+						if (bs.defName == str.Split('‼')[1].Split('┼')[1])
+						{
+							newPawn.story.Childhood = bs;
 							break;
-                        }
+						}
 					}
 
 					try
-					{
-						foreach (var bs in BackstoryDatabase.allBackstories)
-						{
-							if (bs.Value.identifier == str.Split('‼')[1].Split('┼')[1])
-							{
-								newPawn.story.adulthood = bs.Value;
+                    {
+                        foreach (var bs in DefDatabase<BackstoryDef>.AllDefs)
+                        {
+							if (bs.defName == str.Split('‼')[1].Split('┼')[1])
+                            {
+								newPawn.story.Adulthood = bs;
 								break;
 							}
-						}
-					}
-					catch { newPawn.story.adulthood = null; }
+                        }
+                    }
+                    catch { newPawn.story.Adulthood = null; }
 
-					List<string> skillList = str.Split('‼')[2].Split('┼').ToList();
+                    List<string> skillList = str.Split('‼')[2].Split('┼').ToList();
 					for (int i = 0; i < 12; i++)
                     {
 						int level = int.Parse(skillList[i].Split('-')[0]);
@@ -698,11 +698,11 @@ namespace OpenWorld
 			Main._ParametersCache.letterDescription = "You have received a gift from another player! \n\nIf you have a zone called 'Trading' check it for the items, if not, search around the center of the map. \n\nTake a look at your objects! Some might have been swapped out by thieves!";
 			Main._ParametersCache.letterType = LetterDefOf.PositiveEvent;
 
-			Main._Injections.thingsToDoInUpdate.Add(Main._MPGame.TryGenerateLetter);
+			Injections.thingsToDoInUpdate.Add(Main._MPGame.TryGenerateLetter);
 
 			Main._ParametersCache.receiveGiftsData = "";
 
-			Main._Injections.thingsToDoInUpdate.Add(Main._MPGame.ForceSave);
+			Injections.thingsToDoInUpdate.Add(Main._MPGame.ForceSave);
 		}
 	}
 }

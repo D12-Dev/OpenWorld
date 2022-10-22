@@ -62,7 +62,7 @@ namespace OpenWorld
             Text.Font = GameFont.Medium;
             if (Widgets.ButtonText(new Rect(new Vector2(rect.x, rect.yMax - buttonY), new Vector2(buttonX, buttonY)), "Accept"))
             {
-                Main._MPCaravan.ReceiveGiftsFromPlayer(tradeableItems);
+                MPCaravan.ReceiveGiftsFromPlayer(tradeableItems);
                 Main._ParametersCache.inTrade = false;
                 Close();
             }

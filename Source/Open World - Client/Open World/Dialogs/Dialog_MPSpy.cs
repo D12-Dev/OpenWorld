@@ -62,7 +62,7 @@ namespace OpenWorld
             {
                 if (CaravanInventoryUtility.HasThings(Main._ParametersCache.focusedCaravan, ThingDefOf.Silver, 150))
                 {
-                    Main._Networking.SendData("GetSpyInfo│" + Main._ParametersCache.focusedSettlement.Tile);
+                    Networking.SendData("GetSpyInfo│" + Main._ParametersCache.focusedSettlement.Tile);
                     Close();
                 }
 

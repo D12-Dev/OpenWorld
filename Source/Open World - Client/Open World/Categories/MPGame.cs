@@ -69,7 +69,7 @@ namespace OpenWorld
 					}, "Play", "LoadingLongEvent", doAsynchronously: true, null);
 				}
 
-				catch { Main._Networking.DisconnectFromServer(); }
+				catch { Networking.DisconnectFromServer(); }
 			}
 		}
 
@@ -262,10 +262,28 @@ namespace OpenWorld
 
 			Main._ParametersCache.forcedEvent = "";
 
-			Main._Injections.thingsToDoInUpdate.Add(Main._MPGame.ForceSave);
+			Injections.thingsToDoInUpdate.Add(Main._MPGame.ForceSave);
 		}
 
-		public void CheckForGifts()
+        public void SendPlayerSettlementData(Game __instance)
+        {
+			string dataToSend = "NewSettlementID│";
+			dataToSend += __instance.CurrentMap.Tile + "│";
+			dataToSend += (int)__instance.CurrentMap.wealthWatcher.WealthTotal + "│";
+			dataToSend += __instance.CurrentMap.mapPawns.AllPawns.FindAll(pawn => pawn.IsColonistPlayerControlled).Count();
+
+			Map map = Find.AnyPlayerHomeMap;
+			string dataToSend2 = "NewSettlementID│";
+			dataToSend2 += map.Tile + "│";
+			dataToSend2 += (int)map.wealthWatcher.WealthTotal + "│";
+			dataToSend2 += map.mapPawns.AllPawns.FindAll(pawn => pawn.IsColonistPlayerControlled).Count();
+
+			if (Find.CurrentMap != null && Find.CurrentMap == Find.AnyPlayerHomeMap) Networking.SendData(dataToSend);
+			else if (Find.AnyPlayerHomeMap != null) Networking.SendData(dataToSend);
+			else Networking.SendData("│NoSettlementInLoad│");
+		}
+
+        public void CheckForGifts()
         {
             if (!string.IsNullOrWhiteSpace(Main._ParametersCache.receiveGiftsData))
 			{
