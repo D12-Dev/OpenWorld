@@ -8,7 +8,7 @@ namespace Open_World_Server
     {
         public static void SaveUserData(ServerClient client)
         {
-            string folderPath = MainProgram._MainProgram.playersFolderPath;
+            string folderPath = MainProgram.playersFolderPath;
             string filePath = folderPath + Path.DirectorySeparatorChar + client.username + ".data";
 
             if (!Directory.Exists(folderPath))
@@ -29,7 +29,7 @@ namespace Open_World_Server
 
         public static MainDataHolder LoadUserData(string username)
         {
-            string path = MainProgram._MainProgram.playersFolderPath + Path.DirectorySeparatorChar + username + ".data";
+            string path = MainProgram.playersFolderPath + Path.DirectorySeparatorChar + username + ".data";
 
             BinaryFormatter formatter = new BinaryFormatter();
 
@@ -44,7 +44,7 @@ namespace Open_World_Server
 
         public static void SaveBannedIPs(Dictionary<string, string> IPs)
         {
-            string folderPath = MainProgram._MainProgram.mainFolderPath;
+            string folderPath = MainProgram.mainFolderPath;
             string filepath = folderPath + Path.DirectorySeparatorChar + "Banned IPs.data";
 
             BinaryFormatter formatter = new BinaryFormatter();
@@ -60,7 +60,7 @@ namespace Open_World_Server
 
         public static BanDataHolder LoadBannedIPs()
         {
-            string path = MainProgram._MainProgram.mainFolderPath + Path.DirectorySeparatorChar + "Banned IPs.data";
+            string path = MainProgram.mainFolderPath + Path.DirectorySeparatorChar + "Banned IPs.data";
 
             BinaryFormatter formatter = new BinaryFormatter();
 
