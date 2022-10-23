@@ -17,7 +17,7 @@ namespace OpenWorld
         private string windowTitle = "Multiplayer";
         private string windowDescription = "Please choose your joining mode";
 
-        private float buttonX = 150f;
+        private float buttonX = 200f;
         private float buttonY = 38f;
 
         public Dialog_MPMultiplayerType()
