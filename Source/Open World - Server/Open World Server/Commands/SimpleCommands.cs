@@ -22,11 +22,12 @@ namespace OpenWorldServer
             ConsoleUtils.WriteWithTime("Help - Displays Help Menu");
             ConsoleUtils.WriteWithTime("Settings - Displays Settings Menu");
             ConsoleUtils.WriteWithTime("Modlist - Displays Mods Menu");
-            ConsoleUtils.WriteWithTime("Reload - Reloads All Available Settings Into The Server");
-            ConsoleUtils.WriteWithTime("Status - Shows A General Overview Menu");
-            ConsoleUtils.WriteWithTime("Settlements - Displays Settlements Menu");
             ConsoleUtils.WriteWithTime("List - Displays Player List Menu");
             ConsoleUtils.WriteWithTime("Whitelist - Shows All Whitelisted Players");
+            ConsoleUtils.WriteWithTime("Settlements - Displays Settlements Menu");
+            ConsoleUtils.WriteWithTime("Faction - Displays All Data About X Faction");
+            ConsoleUtils.WriteWithTime("Reload - Reloads All Available Settings Into The Server");
+            ConsoleUtils.WriteWithTime("Status - Shows A General Overview Menu");
             ConsoleUtils.WriteWithTime("Clear - Clears The Console");
             ConsoleUtils.WriteWithTime("Exit - Closes The Server");
             Console.WriteLine("");
@@ -60,7 +61,7 @@ namespace OpenWorldServer
             ConsoleUtils.WriteWithTime("Admin Control:");
             Console.ForegroundColor = ConsoleColor.White;
 
-            ConsoleUtils.WriteWithTime("Investigate - Displays All Data About X Player");
+            ConsoleUtils.WriteWithTime("Player - Displays All Data About X Player");
             ConsoleUtils.WriteWithTime("Promote - Promotes X Player To Admin");
             ConsoleUtils.WriteWithTime("Demote - Demotes X Player");
             ConsoleUtils.WriteWithTime("Adminlist - Shows All Server Admins");
@@ -156,7 +157,7 @@ namespace OpenWorldServer
         {
             Console.Clear();
 
-            ServerUtils.CheckAllAvailableMods(false);
+            ModHandler.CheckMods(false);
             Console.ForegroundColor = ConsoleColor.Green;
             ConsoleUtils.WriteWithTime("Mods Have Been Reloaded");
             Console.WriteLine("");
@@ -266,6 +267,46 @@ namespace OpenWorldServer
             else foreach (string str in Server.whitelistedUsernames) ConsoleUtils.WriteWithTime("" + str);
 
             Console.WriteLine("");
+        }
+
+        public static void CreateTestFaction()
+        {
+            Console.Clear();
+            ConsoleUtils.WriteWithTime("Creating Test Faction");
+            Console.WriteLine();
+
+            //Create test leader
+
+            ServerClient leaderClient = new ServerClient(null);
+            leaderClient.username = "Epic Faction Leader Dude";
+
+            //Create test faction
+
+            string factionName = "test";
+            FactionHandler.CreateFaction(factionName, leaderClient);
+
+            //Create test members
+
+            ServerClient dummyClient1 = new ServerClient(null);
+            dummyClient1.username = "Normal dude 1";
+
+            ServerClient dummyClient2 = new ServerClient(null);
+            dummyClient2.username = "Normal dude 2";
+
+            ServerClient dummyClient3 = new ServerClient(null);
+            dummyClient3.username = "Normal dude 3";
+
+            FactionHandler.AddMember(leaderClient.faction, dummyClient1);
+            FactionHandler.AddMember(leaderClient.faction, dummyClient2);
+            FactionHandler.AddMember(leaderClient.faction, dummyClient3);
+
+            //Create test moderator
+
+            ServerClient moderatorClient = new ServerClient(null);
+            moderatorClient.username = "Amazing moderator dude";
+
+            FactionHandler.AddMember(leaderClient.faction, moderatorClient);
+            FactionHandler.ChangeMemberRank(moderatorClient.faction, moderatorClient, FactionHandler.MemberRank.Moderator);
         }
 
         //Check this one
@@ -380,6 +421,18 @@ namespace OpenWorldServer
                     ConsoleUtils.WriteWithTime("Error Processing Player With IP " + ((IPEndPoint)savedClient.tcp.Client.RemoteEndPoint).Address.ToString());
                     Console.ForegroundColor = ConsoleColor.White;
                 }
+            }
+
+            Console.WriteLine("");
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            ConsoleUtils.WriteWithTime("Saved Factions: " + Server.factionList.Count);
+            Console.ForegroundColor = ConsoleColor.White;
+
+            if (Server.factionList.Count == 0) ConsoleUtils.WriteWithTime("No Factions Saved");
+            else foreach (Faction savedFaction in Server.factionList)
+            {
+                ConsoleUtils.WriteWithTime(savedFaction.name);
             }
 
             Console.WriteLine("");

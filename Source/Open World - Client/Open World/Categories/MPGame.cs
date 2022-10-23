@@ -14,7 +14,7 @@ namespace OpenWorld
 {
     public class MPGame
     {
-		public void CreateMultiplayerGame(float globeCoverage, string seed, int rainfall, int temperature, int population)
+		public void CreateMultiplayerGame()
 		{
 			Find.GameInitData.permadeathChosen = true;
 			Find.GameInitData.permadeath = true;
@@ -24,14 +24,17 @@ namespace OpenWorld
 
 			Main._MPGame.DisableDevOptions();
 
-			OverallRainfall overalRainfall = (OverallRainfall)rainfall;
-			OverallTemperature overallTemperature = (OverallTemperature)temperature;
-			OverallPopulation overallPopulation = (OverallPopulation)population;
+			OverallRainfall overalRainfall = (OverallRainfall)Main._ParametersCache.rainfall;
+			OverallTemperature overallTemperature = (OverallTemperature)Main._ParametersCache.temperature;
+			OverallPopulation overallPopulation = (OverallPopulation)Main._ParametersCache.population;
 
 			LongEventHandler.QueueLongEvent(delegate
 			{
 				Find.GameInitData.ResetWorldRelatedMapInitData();
-				Current.Game.World = WorldGenerator.GenerateWorld(globeCoverage, seed, overalRainfall, overallTemperature, overallPopulation, null);
+
+				Current.Game.World = WorldGenerator.GenerateWorld(Main._ParametersCache.globalCoverage, 
+					Main._ParametersCache.seed, overalRainfall, overallTemperature, overallPopulation, null);
+
 				LongEventHandler.ExecuteWhenFinished(delegate
 				{
 					if (Main._ParametersCache.__createWorldParams.next != null)
@@ -44,31 +47,27 @@ namespace OpenWorld
 					Main._ParametersCache.__createWorldParams.Close();
 				});
 			}, "GeneratingWorld", doAsynchronously: true, null);
+
 			return;
 		}
 
 		public void LoadMultiplayerGame()
 		{
-			try
+			string saveName = Main._ParametersCache.onlineFileSaveName + " - " + Main._ParametersCache.connectedServerIdentifier + " - " + Main._ParametersCache.usernameText;
+
+			Main._ParametersCache.isPlayingOnline = true;
+
+			Main._MPGame.DisableDevOptions();
+
+			LongEventHandler.QueueLongEvent(delegate
 			{
-				string saveName = Main._ParametersCache.onlineFileSaveName + " - " + Main._ParametersCache.connectedServerIdentifier + " - " + Main._ParametersCache.usernameText;
-
-				Main._ParametersCache.isPlayingOnline = true;
-
-				Main._MPGame.DisableDevOptions();
-
-				LongEventHandler.QueueLongEvent(delegate
-				{
-					MemoryUtility.ClearAllMapsAndWorld();
-					Current.Game = new Game();
-					Current.Game.InitData = new GameInitData();
-					Current.Game.InitData.gameToLoad = saveName;
-					Current.Game.InitData.permadeathChosen = true;
-					Current.Game.InitData.permadeath = true;
-				}, "Play", "LoadingLongEvent", doAsynchronously: true, null);
-			}
-
-			catch { Networking.DisconnectFromServer(); }
+				MemoryUtility.ClearAllMapsAndWorld();
+				Current.Game = new Game();
+				Current.Game.InitData = new GameInitData();
+				Current.Game.InitData.gameToLoad = saveName;
+				Current.Game.InitData.permadeathChosen = true;
+				Current.Game.InitData.permadeath = true;
+			}, "Play", "LoadingLongEvent", doAsynchronously: true, null);
 		}
 
 		public string GetCompactedModList()

@@ -8,6 +8,13 @@ namespace OpenWorld
 {
     public class ParametersCache
     {
+        //Planet Parameters
+        public float globalCoverage;
+        public string seed;
+        public int rainfall;
+        public int temperature;
+        public int population;
+
         //GENERAL PURPOSE GOES HERE
         public string gameSavePath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData).Replace("Roaming", "LocalLow") + "Ludeon Studios/RimWorld by Ludeon Studios/Saves" + "\\";
         public bool pvpFlag;

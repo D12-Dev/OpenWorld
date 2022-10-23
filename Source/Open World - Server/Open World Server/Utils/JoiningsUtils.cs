@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading;
 
 namespace OpenWorldServer
 {
@@ -9,42 +10,12 @@ namespace OpenWorldServer
     {
         public static void LoginProcedures(ServerClient client, string data)
         {
-            bool userPresent = false;
-
             client.username = data.Split('│')[1];
             client.password = data.Split('│')[2];
 
             string playerVersion = data.Split('│')[3];
             string joinMode = data.Split('│')[4];
             string playerMods = data.Split('│')[5];
-
-            if (Server.savedClients.Find(fetch => fetch.username == client.username) != null)
-            {
-                client.isAdmin = Server.savedClients.Find(fetch => fetch.username == client.username).isAdmin;
-            }
-            else client.isAdmin = false;
-
-            int devInt = 0;
-            if (client.isAdmin || Server.allowDevMode) devInt = 1;
-
-            int wipeInt = 0;
-            if (client.toWipe) wipeInt = 1;
-
-            int roadInt = 0;
-            if (Server.usingRoadSystem) roadInt = 1;
-            if (Server.usingRoadSystem && Server.aggressiveRoadMode) roadInt = 2;
-
-            string name = Server.serverName;
-            int countInt = Networking.connectedClients.Count;
-
-            int chatInt = 0;
-            if (Server.usingChat) chatInt = 1;
-
-            int profanityInt = 0;
-            if (Server.usingProfanityFilter) profanityInt = 1;
-
-            int modVerifyInt = 0;
-            if (Server.usingModVerification) modVerifyInt = 1;
 
             if (!CompareConnectingClientWithPlayerCount(client)) return;
 
@@ -54,157 +25,229 @@ namespace OpenWorldServer
 
             if (!ParseClientUsername(client)) return;
 
-            void SendNewGameData()
+            LoginProcedures2(client, playerMods, joinMode);
+
+            LoginProcedures3(client, joinMode);
+        }
+
+        private static void LoginProcedures2(ServerClient client, string playerMods, string joinMode)
+        {
+            if (!CompareClientIPWithBans(client)) return;
+
+            if (!CompareModsWithClient(client, playerMods)) return;
+
+            CompareConnectingClientWithConnecteds(client);
+
+            if (!CheckIfUserExisted(client)) PlayerUtils.SaveNewPlayerFile(client.username, client.password);
+            else if (!CheckForPassword(client)) return;
+        }
+
+        private static void LoginProcedures3(ServerClient client, string joinMode)
+        {
+            ConsoleUtils.UpdateTitle();
+
+            ServerUtils.RefreshClientCount(client);
+
+            CheckForJoinMode(client, joinMode);
+        }
+
+        private static void CheckForJoinMode(ServerClient client, string joinMode)
+        {
+            if (joinMode == "NewGame")
             {
-                PlayerUtils.SaveNewPlayerFile(client.username, client.password);
-
-                float mmGC = Server.globeCoverage;
-                string mmS = Server.seed;
-                int mmOR = Server.overallRainfall;
-                int mmOT = Server.overallTemperature;
-                int mmOP = Server.overallPopulation;
-
-                string settlementString = "";
-                foreach (KeyValuePair<string, List<string>> pair in Server.savedSettlements)
-                {
-                    settlementString += pair.Key + ":" + pair.Value[0] + "»";
-                }
-                if (settlementString.Count() > 0) settlementString = settlementString.Remove(settlementString.Count() - 1, 1);
-
-                Networking.SendData(client, "MapDetails│" + mmGC + "│" + mmS + "│" + mmOR + "│" + mmOT + "│" + mmOP + "│" + settlementString + "│" + devInt + "│" + wipeInt + "│" + roadInt + "│" + countInt + "│" + chatInt + "│" + profanityInt + "│" + modVerifyInt + "│" + name);
+                SendNewGameData(client);
+                ConsoleUtils.LogToConsole("Player [" + client.username + "] Has Reset Game Progress");
             }
 
-            void SendLoadGameData()
+            else if (joinMode == "LoadGame")
             {
-                string settlementString = "";
-                foreach (KeyValuePair<string, List<string>> pair in Server.savedSettlements)
-                {
-                    if (pair.Value[0] == client.username) continue;
-                    settlementString += pair.Key + ":" + pair.Value[0] + "»";
-                }
-                if (settlementString.Count() > 0) settlementString = settlementString.Remove(settlementString.Count() - 1, 1);
-
-                string dataToSend = "UpdateSettlements│" + settlementString + "│" + devInt + "│" + wipeInt + "│" + roadInt + "│" + countInt + "│" + chatInt + "│" + profanityInt + "│" + modVerifyInt + "│" + name;
-
-                if (client.giftString.Count() > 0)
-                {
-                    string giftsToSend = "";
-
-                    foreach (string str in client.giftString)
-                    {
-                        giftsToSend += str + "»";
-                    }
-                    if (giftsToSend.Count() > 0) giftsToSend = giftsToSend.Remove(giftsToSend.Count() - 1, 1);
-
-                    dataToSend += "│GiftedItems│" + giftsToSend;
-
-                    client.giftString.Clear();
-                }
-
-                if (client.tradeString.Count() > 0)
-                {
-                    string tradesToSend = "";
-
-                    foreach (string str in client.tradeString)
-                    {
-                        tradesToSend += str + "»";
-                    }
-                    if (tradesToSend.Count() > 0) tradesToSend = tradesToSend.Remove(tradesToSend.Count() - 1, 1);
-
-                    dataToSend += "│TradedItems│" + tradesToSend;
-
-                    client.tradeString.Clear();
-                }
-
-                foreach (ServerClient sc in Server.savedClients)
-                {
-                    if (sc.username == client.username)
-                    {
-                        sc.giftString.Clear();
-                        sc.tradeString.Clear();
-                        break;
-                    }
-                }
-
+                PlayerUtils.GiveSavedDataToPlayer(client);
+                SendLoadGameData(client);
                 SaveSystem.SaveUserData(client);
-
-                Networking.SendData(client, dataToSend);
             }
 
-            foreach (ServerClient savedClient in Server.savedClients)
+            ConsoleUtils.LogToConsole("Player [" + client.username + "] " + "[" + 
+                ((IPEndPoint)client.tcp.Client.RemoteEndPoint).Address.ToString() + "] " + "Has Connected");
+        }
+
+        private static void SendNewGameData(ServerClient client)
+        {
+            PlayerUtils.SaveNewPlayerFile(client.username, client.password);
+
+            Networking.SendData(client, GetPlanetToSend());
+
+            Thread.Sleep(250);
+
+            string settlementsToSend = GetSettlementsToSend(client);
+            Networking.SendData(client, settlementsToSend);
+            Thread.Sleep(250);
+
+            Networking.SendData(client, GetVariablesToSend(client));
+
+            Thread.Sleep(250);
+
+            Networking.SendData(client, "NewGame│");
+        }
+
+        private static void SendLoadGameData(ServerClient client)
+        {
+            string settlementsToSend = GetSettlementsToSend(client);
+            Networking.SendData(client, settlementsToSend);
+            Thread.Sleep(250);
+
+            Networking.SendData(client, GetVariablesToSend(client));
+
+            Thread.Sleep(250);
+
+            string giftsToSend = GetGiftsToSend(client);
+            if (!string.IsNullOrWhiteSpace(giftsToSend))
             {
-                if (savedClient.username.ToLower() == client.username.ToLower())
-                {
-                    userPresent = true;
-
-                    client.username = savedClient.username;
-
-                    if (savedClient.password == client.password)
-                    {
-                        if (!CompareClientIPWithBans(client)) return;
-
-                        if (!CompareModsWithClient(client, playerMods)) return;
-
-                        CompareConnectingClientWithConnecteds(client);
-
-                        ConsoleUtils.UpdateTitle();
-
-                        ConsoleUtils.LogToConsole("Player [" + client.username + "] " + "[" + ((IPEndPoint)client.tcp.Client.RemoteEndPoint).Address.ToString() + "] " + "Has Connected");
-
-                        ServerUtils.RefreshClientCount(client);
-
-                        if (joinMode == "NewGame")
-                        {
-                            SendNewGameData();
-                            ConsoleUtils.LogToConsole("Player [" + client.username + "] Has Reset Game Progress");
-                        }
-
-                        else if (joinMode == "LoadGame")
-                        {
-                            PlayerUtils.GiveSavedDataToPlayer(client);
-                            SendLoadGameData();
-                        }
-                    }
-
-                    else
-                    {
-                        Networking.SendData(client, "Disconnect│WrongPassword");
-
-                        client.disconnectFlag = true;
-                        ConsoleUtils.LogToConsole("Player [" + client.username + "] Has Been Kicked For: [Wrong Password]");
-                        return;
-                    }
-
-                    break;
-                }
+                Networking.SendData(client, giftsToSend);
+                Thread.Sleep(250);
             }
 
-            if (userPresent) return;
+            string tradesToSend = GetTradesToSend(client);
+            if (!string.IsNullOrWhiteSpace(tradesToSend))
+            {
+                Networking.SendData(client, tradesToSend);
+                Thread.Sleep(250);
+            }
+
+            Networking.SendData(client, "LoadGame│");
+        }
+
+        private static bool CheckIfUserExisted(ServerClient client)
+        {
+            ServerClient clientToFetch = Server.savedClients.Find(fetch => fetch.username.ToLower() == client.username.ToLower());
+
+            if (clientToFetch == null) return false;
+            else return true;
+        }
+
+        private static bool CheckForPassword(ServerClient client)
+        {
+            ServerClient clientToFetch = Server.savedClients.Find(fetch => fetch.username.ToLower() == client.username.ToLower());
+
+            client.username = clientToFetch.username;
+
+            if (clientToFetch.password != client.password)
+            {
+                Networking.SendData(client, "Disconnect│WrongPassword");
+
+                client.disconnectFlag = true;
+
+                ConsoleUtils.LogToConsole("Player [" + client.username + "] Has Been Kicked For: [Wrong Password]");
+
+                return false;
+            }
+
+            else return true;
+        }
+
+        public static string GetPlanetToSend()
+        {
+            string dataToSend = "Planet│";
+
+            float mmGC = Server.globeCoverage;
+            string mmS = Server.seed;
+            int mmOR = Server.overallRainfall;
+            int mmOT = Server.overallTemperature;
+            int mmOP = Server.overallPopulation;
+
+            return dataToSend + mmGC + "│" + mmS + "│" + mmOR + "│" + mmOT + "│" + mmOP;
+        }
+
+        public static string GetSettlementsToSend(ServerClient client)
+        {
+            string dataToSend = "Settlements│";
+
+            if (Server.savedSettlements.Count == 0) return dataToSend;
 
             else
             {
-                if (!CompareClientIPWithBans(client)) return;
-
-                if (!CompareModsWithClient(client, playerMods)) return;
-
-                CompareConnectingClientWithConnecteds(client);
-
-                ConsoleUtils.UpdateTitle();
-
-                ConsoleUtils.LogToConsole("New Player [" + client.username + "] " + "[" + ((IPEndPoint)client.tcp.Client.RemoteEndPoint).Address.ToString() + "] " + "Has Connected For The First Time");
-
-                PlayerUtils.SaveNewPlayerFile(client.username, client.password);
-
-                if (joinMode == "NewGame")
+                foreach (KeyValuePair<string, List<string>> pair in Server.savedSettlements)
                 {
-                    SendNewGameData();
+                    if (pair.Value[0] == client.username) continue;
+
+                    dataToSend += pair.Key + ":" + pair.Value[0] + "│";
                 }
 
-                else if (joinMode == "LoadGame")
-                {
-                    SendLoadGameData();
-                    ConsoleUtils.LogToConsole("Player [" + client.username + "] Has Registered With Existing Save");
-                }
+                return dataToSend;
+            }
+        }
+
+        public static string GetVariablesToSend(ServerClient client)
+        {
+            string dataToSend = "Variables│";
+
+            if (Server.savedClients.Find(fetch => fetch.username == client.username) != null)
+            {
+                client.isAdmin = Server.savedClients.Find(fetch => fetch.username == client.username).isAdmin;
+            }
+            else client.isAdmin = false;
+
+            int devInt = client.isAdmin || Server.allowDevMode ? 1 : 0;
+
+            int wipeInt = client.toWipe ? 1 : 0;
+
+            int roadInt = 0;
+            if (Server.usingRoadSystem) roadInt = 1;
+            if (Server.usingRoadSystem && Server.aggressiveRoadMode) roadInt = 2;
+
+            string name = Server.serverName;
+
+            int countInt = Networking.connectedClients.Count;
+
+            int chatInt = Server.usingChat ? 1 : 0;
+
+            int profanityInt = Server.usingProfanityFilter ? 1 : 0;
+
+            int modVerifyInt = Server.usingModVerification ? 1 : 0;
+
+            return dataToSend + devInt + "│" + wipeInt + "│" + roadInt + "│" + countInt + "│" + chatInt + "│" + profanityInt + "│" + modVerifyInt + "│" + name;
+        }
+
+        public static string GetGiftsToSend(ServerClient client)
+        {
+            string dataToSend = "GiftedItems│";
+
+            if (client.giftString.Count == 0) return null;
+
+            else
+            {
+                string giftsToSend = "";
+
+                foreach (string str in client.giftString) giftsToSend += str + "│";
+
+                if (giftsToSend.Count() > 0) giftsToSend = giftsToSend.Remove(giftsToSend.Count() - 1, 1);
+
+                dataToSend += giftsToSend;
+
+                client.giftString.Clear();
+
+                return dataToSend;
+            }
+        }
+
+        public static string GetTradesToSend(ServerClient client)
+        {
+            string dataToSend = "TradedItems│";
+
+            if (client.tradeString.Count == 0) return null;
+
+            else
+            {
+                string tradesToSend = "";
+
+                foreach (string str in client.tradeString) tradesToSend += str + "│";
+
+                if (tradesToSend.Count() > 0) tradesToSend = tradesToSend.Remove(tradesToSend.Count() - 1, 1);
+
+                dataToSend += tradesToSend;
+
+                client.tradeString.Clear();
+
+                return dataToSend;
             }
         }
 
@@ -255,7 +298,7 @@ namespace OpenWorldServer
             else return true;
         }
 
-        public static void CompareConnectingClientWithConnecteds(ServerClient client)
+        public static bool CompareConnectingClientWithConnecteds(ServerClient client)
         {
             foreach (ServerClient sc in Networking.connectedClients)
             {
@@ -265,9 +308,11 @@ namespace OpenWorldServer
 
                     Networking.SendData(sc, "Disconnect│AnotherLogin");
                     sc.disconnectFlag = true;
-                    break;
+                    return false;
                 }
             }
+
+            return true;
         }
 
         public static bool CompareConnectingClientWithWhitelist(ServerClient client)

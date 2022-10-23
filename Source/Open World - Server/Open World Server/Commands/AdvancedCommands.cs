@@ -496,8 +496,7 @@ namespace OpenWorldServer
             }
         }
 
-        //Test
-        public static void InvestigateCommand()
+        public static void PlayerDetailsCommand()
         {
             Console.Clear();
 
@@ -513,7 +512,7 @@ namespace OpenWorldServer
 
             else
             {
-                ServerClient targetClient = Networking.connectedClients.Find(fetch => fetch.username == clientID);
+                ServerClient targetClient = Server.savedClients.Find(fetch => fetch.username == clientID);
 
                 if (targetClient == null)
                 {
@@ -539,17 +538,92 @@ namespace OpenWorldServer
                     Console.ForegroundColor = ConsoleColor.White;
                     ConsoleUtils.WriteWithTime("Username: [" + targetClient.username + "]");
                     ConsoleUtils.WriteWithTime("Password: [" + targetClient.password + "]");
-                    ConsoleUtils.WriteWithTime("Admin: [" + targetClient.isAdmin + "]");
-                    ConsoleUtils.WriteWithTime("Online: [" + isConnected + "]");
+                    Console.WriteLine();
+
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    ConsoleUtils.WriteWithTime("Security: ");
+                    Console.ForegroundColor = ConsoleColor.White;
                     ConsoleUtils.WriteWithTime("Connection IP: [" + ip + "]");
-                    ConsoleUtils.WriteWithTime("Home Tile ID: [" + targetClient.homeTileID + "]");
+                    ConsoleUtils.WriteWithTime("Admin: [" + targetClient.isAdmin + "]");
+                    Console.WriteLine();
+
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    ConsoleUtils.WriteWithTime("Status: ");
+                    Console.ForegroundColor = ConsoleColor.White;
+                    ConsoleUtils.WriteWithTime("Online: [" + isConnected + "]");
+                    ConsoleUtils.WriteWithTime("Immunized: [" + targetClient.isImmunized + "]");
+                    ConsoleUtils.WriteWithTime("Event Shielded: [" + targetClient.eventShielded + "]");
+                    ConsoleUtils.WriteWithTime("In RTSE: [" + targetClient.inRTSE + "]");
+                    Console.WriteLine();
+
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    ConsoleUtils.WriteWithTime("Wealth: ");
+                    Console.ForegroundColor = ConsoleColor.White;
                     ConsoleUtils.WriteWithTime("Stored Gifts: [" + targetClient.giftString.Count + "]");
                     ConsoleUtils.WriteWithTime("Stored Trades: [" + targetClient.tradeString.Count + "]");
                     ConsoleUtils.WriteWithTime("Wealth Value: [" + targetClient.wealth + "]");
                     ConsoleUtils.WriteWithTime("Pawn Count: [" + targetClient.pawnCount + "]");
-                    ConsoleUtils.WriteWithTime("Immunized: [" + targetClient.isImmunized + "]");
-                    ConsoleUtils.WriteWithTime("Event Shielded: [" + targetClient.eventShielded + "]");
-                    ConsoleUtils.WriteWithTime("In RTSE: [" + targetClient.inRTSE + "]");
+                    Console.WriteLine();
+
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    ConsoleUtils.WriteWithTime("Details: ");
+                    Console.ForegroundColor = ConsoleColor.White;
+                    ConsoleUtils.WriteWithTime("Home Tile ID: [" + targetClient.homeTileID + "]");
+                    ConsoleUtils.WriteWithTime("Faction: [" + (targetClient.faction == null ? "None" : targetClient.faction.name)  + "]");
+                    Console.WriteLine();
+                }
+            }
+        }
+
+        public static void FactionDetailsCommand()
+        {
+            Console.Clear();
+            Console.ForegroundColor = ConsoleColor.Green;
+
+            string factionID = commandData.Split(' ')[0];
+            if (string.IsNullOrWhiteSpace(factionID))
+            {
+                ConsoleUtils.WriteWithTime("Missing Parameters");
+                Console.WriteLine();
+            }
+
+            else
+            {
+                Faction factionToSearch = Server.factionList.Find(fetch => fetch.name == commandData);
+
+                if (factionToSearch == null)
+                {
+                    ConsoleUtils.WriteWithTime("Faction " + commandData + " Was Not Found");
+                    Console.WriteLine();
+                }
+
+                else
+                {
+                    ConsoleUtils.WriteWithTime("Faction Details Of [" + factionToSearch.name + "]:");
+                    Console.WriteLine();
+
+                    ConsoleUtils.WriteWithTime("Members:");
+                    Console.ForegroundColor = ConsoleColor.White;
+
+                    foreach (KeyValuePair<ServerClient, FactionHandler.MemberRank> member in factionToSearch.members)
+                    {
+                        ConsoleUtils.WriteWithTime(member.Key.username + " - " + member.Value);
+                    }
+
+                    Console.WriteLine();
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    ConsoleUtils.WriteWithTime("Wealth:");
+                    Console.ForegroundColor = ConsoleColor.White;
+
+                    ConsoleUtils.WriteWithTime(factionToSearch.wealth.ToString());
+                    Console.WriteLine();
+
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    ConsoleUtils.WriteWithTime("Structures:");
+                    Console.ForegroundColor = ConsoleColor.White;
+
+                    ConsoleUtils.WriteWithTime("TODO");
+
                     Console.WriteLine();
                 }
             }

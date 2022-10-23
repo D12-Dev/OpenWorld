@@ -11,35 +11,45 @@ namespace OpenWorldServer
             string folderPath = Server.playersFolderPath;
             string filePath = folderPath + Path.DirectorySeparatorChar + client.username + ".data";
 
-            if (!Directory.Exists(folderPath))
+            try
             {
-                Directory.CreateDirectory(folderPath);
+                if (!Directory.Exists(folderPath))
+                {
+                    Directory.CreateDirectory(folderPath);
+                }
+
+                BinaryFormatter formatter = new BinaryFormatter();
+
+                FileStream stream = new FileStream(filePath, FileMode.Create);
+
+                MainDataHolder data = new MainDataHolder(client);
+
+                formatter.Serialize(stream, data);
+
+                stream.Close();
             }
 
-            BinaryFormatter formatter = new BinaryFormatter();
-
-            FileStream stream = new FileStream(filePath, FileMode.Create);
-
-            MainDataHolder data = new MainDataHolder(client);
-
-            formatter.Serialize(stream, data);
-
-            stream.Close();
+            catch { }
         }
 
         public static MainDataHolder LoadUserData(string username)
         {
-            string path = Server.playersFolderPath + Path.DirectorySeparatorChar + username + ".data";
+            try
+            {
+                string path = Server.playersFolderPath + Path.DirectorySeparatorChar + username + ".data";
 
-            BinaryFormatter formatter = new BinaryFormatter();
+                BinaryFormatter formatter = new BinaryFormatter();
 
-            FileStream stream = new FileStream(path, FileMode.Open);
+                FileStream stream = new FileStream(path, FileMode.Open);
 
-            MainDataHolder data = formatter.Deserialize(stream) as MainDataHolder;
+                MainDataHolder data = formatter.Deserialize(stream) as MainDataHolder;
 
-            stream.Close();
+                stream.Close();
 
-            return data;
+                return data;
+            }
+
+            catch { return null; }
         }
 
         public static void SaveBannedIPs(Dictionary<string, string> IPs)

@@ -11,6 +11,7 @@ namespace OpenWorldServer
         public static string serverSettingsPath;
         public static string worldSettingsPath;
         public static string playersFolderPath;
+        public static string factionsFolderPath;
         public static string enforcedModsFolderPath;
         public static string whitelistedModsFolderPath;
         public static string blacklistedModsFolderPath;
@@ -55,6 +56,7 @@ namespace OpenWorldServer
         public static List<string> adminList = new List<string>();
         public static List<string> chatCache = new List<string>();
         public static Dictionary<string, string> bannedIPs = new Dictionary<string, string>();
+        public static List<Faction> factionList = new List<Faction>();
 
         //World Parameters
         public static float globeCoverage;
@@ -70,10 +72,11 @@ namespace OpenWorldServer
 
             ServerUtils.CheckServerVersion();
             ServerUtils.CheckSettingsFile();
-            ServerUtils.CheckAllAvailableMods(true);
-            ServerUtils.CheckWorldFile();
 
+            ModHandler.CheckMods(true);
             PlayerUtils.CheckAllAvailablePlayers(true);
+            WorldHandler.CheckWorldFile();
+            FactionHandler.CheckFactions();
 
             Threading.GenerateThreads(0);
 
@@ -84,8 +87,8 @@ namespace OpenWorldServer
         {
             Console.ForegroundColor = ConsoleColor.White;
 
-            string fullCommand = Console.ReadLine().ToLower();
-            string commandBase = fullCommand.Split(' ')[0];
+            string fullCommand = Console.ReadLine();
+            string commandBase = fullCommand.Split(' ')[0].ToLower();
 
             string commandArguments = "";
             if (fullCommand.Contains(' ')) commandArguments = fullCommand.Replace(fullCommand.Split(' ')[0], "").Remove(0, 1);
@@ -98,6 +101,7 @@ namespace OpenWorldServer
                 {"reload", SimpleCommands.ReloadCommand},
                 {"status", SimpleCommands.StatusCommand},
                 {"eventlist", SimpleCommands.EventListCommand},
+                {"factiont", SimpleCommands.CreateTestFaction},
                 {"chat", SimpleCommands.ChatCommand},
                 {"list", SimpleCommands.ListCommand},
                 {"settlements", SimpleCommands.SettlementsCommand},
@@ -116,7 +120,8 @@ namespace OpenWorldServer
                 {"notify", AdvancedCommands.NotifyCommand},
                 {"invoke", AdvancedCommands.InvokeCommand},
                 {"plague", AdvancedCommands.PlagueCommand},
-                {"investigate", AdvancedCommands.InvestigateCommand},
+                {"player", AdvancedCommands.PlayerDetailsCommand},
+                {"faction", AdvancedCommands.FactionDetailsCommand},
                 {"kick", AdvancedCommands.KickCommand},
                 {"ban", AdvancedCommands.BanCommand},
                 {"pardon", AdvancedCommands.PardonCommand},

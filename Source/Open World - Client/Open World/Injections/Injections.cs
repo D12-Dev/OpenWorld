@@ -565,7 +565,19 @@ namespace OpenWorld
 					}
 				};
 
+				Command_Action command_FactionMenu = new Command_Action
+				{
+					defaultLabel = "Faction Menu",
+					defaultDesc = "Open Your Faction Menu",
+					icon = ContentFinder<Texture2D>.Get("UI/Commands/MergeCaravans"),
+					action = delegate
+					{
+						Find.WindowStack.Add(new Dialog_MPNotImplemented());
+					}
+				};
+
 				gizmoList.Add(command_TradingPost);
+				gizmoList.Add(command_FactionMenu);
 				__result = gizmoList;
 			}
 
@@ -611,16 +623,32 @@ namespace OpenWorld
 						Main._ParametersCache.focusedSettlement = __instance;
 						Main._ParametersCache.focusedCaravan = caravan;
 
+						Find.WindowStack.Add(new Dialog_MPNotImplemented());
+					}
+				};
+
+				Command_Action command_RealtimeAttack = new Command_Action
+				{
+					defaultLabel = "Realtime Attack",
+					defaultDesc = "Attack this settlement realtime",
+					icon = ContentFinder<Texture2D>.Get("UI/Commands/AttackSettlement"),
+					action = delegate
+					{
+						if (!Networking.isConnectedToServer) return;
+
+						Main._ParametersCache.focusedSettlement = __instance;
+						Main._ParametersCache.focusedCaravan = caravan;
+
 						//Main._MPRTSE.SetupRaidParameters();
 
 						Find.WindowStack.Add(new Dialog_MPNotImplemented());
 					}
 				};
 
-				Command_Action command_Visit = new Command_Action
+				Command_Action command_RealtimeVisit = new Command_Action
 				{
-					defaultLabel = "Visit",
-					defaultDesc = "Visit this settlement",
+					defaultLabel = "Realtime Visit",
+					defaultDesc = "Visit this settlement realtime",
 					icon = ContentFinder<Texture2D>.Get("UI/Commands/Settle"),
 					action = delegate
 					{
@@ -715,7 +743,8 @@ namespace OpenWorld
 				};
 
 				gizmoList.Add(command_Attack);
-				gizmoList.Add(command_Visit);
+				gizmoList.Add(command_RealtimeAttack);
+				gizmoList.Add(command_RealtimeVisit);
 				gizmoList.Add(command_Spy);
 				gizmoList.Add(command_Trade);
 				gizmoList.Add(command_Barter);

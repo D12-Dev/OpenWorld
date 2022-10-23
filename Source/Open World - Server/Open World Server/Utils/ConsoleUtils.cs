@@ -58,16 +58,13 @@ namespace OpenWorldServer
         public static void DisplayNetworkStatus()
         {
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("");
             LogToConsole("Network Check:");
 
             Console.ForegroundColor = ConsoleColor.White;
             LogToConsole("Server Started");
             LogToConsole("Type 'Help' To See Available Commands");
             LogToConsole("Network Line Started");
-
-            LogToConsole(Environment.NewLine);
-            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine("");
         }
     }
 }

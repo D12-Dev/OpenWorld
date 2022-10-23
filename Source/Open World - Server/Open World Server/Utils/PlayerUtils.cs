@@ -53,7 +53,7 @@ namespace OpenWorldServer
             if (newLine) Console.WriteLine("");
 
             Console.ForegroundColor = ConsoleColor.Green;
-            ConsoleUtils.LogToConsole("Player Check:");
+            ConsoleUtils.LogToConsole("Players Check:");
             Console.ForegroundColor = ConsoleColor.White;
 
             CheckSavedPlayers();
@@ -64,6 +64,7 @@ namespace OpenWorldServer
         private static void CheckSavedPlayers()
         {
             Server.savedClients.Clear();
+            Server.savedSettlements.Clear();
 
             if (!Directory.Exists(Server.playersFolderPath))
             {
@@ -90,6 +91,8 @@ namespace OpenWorldServer
 
                     MainDataHolder data = SaveSystem.LoadUserData(Path.GetFileNameWithoutExtension(file));
                     {
+                        if (data == null) break;
+
                         ServerClient dummy = data.serverclient;
                         Server.savedClients.Add(dummy);
                         if (!string.IsNullOrWhiteSpace(dummy.homeTileID))
