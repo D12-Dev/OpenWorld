@@ -569,10 +569,10 @@ namespace OpenWorld
 				{
 					defaultLabel = "Faction Menu",
 					defaultDesc = "Open Your Faction Menu",
-					icon = ContentFinder<Texture2D>.Get("UI/Commands/MergeCaravans"),
+					icon = ContentFinder<Texture2D>.Get("UI/Icons/VisitorsHelp"),
 					action = delegate
 					{
-						Find.WindowStack.Add(new Dialog_MPNotImplemented());
+						Find.WindowStack.Add(new Dialog_MPFactionMenu());
 					}
 				};
 

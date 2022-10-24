@@ -84,6 +84,7 @@
     <Compile Include="Categories\MPChat.cs" />
     <Compile Include="Categories\MPGame.cs" />
     <Compile Include="Categories\MPWorld.cs" />
+    <Compile Include="Dialogs\Dialog_MPFactionMenu.cs" />
     <Compile Include="Dialogs\Dialog_MPMultiplayerType.cs" />
     <Compile Include="Dialogs\Dialog_MPModifiedMods.cs" />
     <Compile Include="Dialogs\Dialog_MPDisabledChat.cs" />

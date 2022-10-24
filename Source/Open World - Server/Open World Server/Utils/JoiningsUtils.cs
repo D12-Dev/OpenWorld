@@ -18,34 +18,17 @@ namespace OpenWorldServer
             string playerMods = data.Split('│')[5];
 
             if (!CompareConnectingClientWithPlayerCount(client)) return;
-
             if (!CompareConnectingClientVersion(client, playerVersion)) return;
-
             if (!CompareConnectingClientWithWhitelist(client)) return;
-
-            if (!ParseClientUsername(client)) return;
-
-            LoginProcedures2(client, playerMods, joinMode);
-
-            LoginProcedures3(client, joinMode);
-        }
-
-        private static void LoginProcedures2(ServerClient client, string playerMods, string joinMode)
-        {
-            if (!CompareClientIPWithBans(client)) return;
-
             if (!CompareModsWithClient(client, playerMods)) return;
-
+            if (!CompareClientIPWithBans(client)) return;
+            if (!ParseClientUsername(client)) return;
             CompareConnectingClientWithConnecteds(client);
 
             if (!CheckIfUserExisted(client)) PlayerUtils.SaveNewPlayerFile(client.username, client.password);
             else if (!CheckForPassword(client)) return;
-        }
 
-        private static void LoginProcedures3(ServerClient client, string joinMode)
-        {
             ConsoleUtils.UpdateTitle();
-
             ServerUtils.RefreshClientCount(client);
 
             CheckForJoinMode(client, joinMode);
@@ -141,7 +124,7 @@ namespace OpenWorldServer
                 return false;
             }
 
-            else return true;
+            return true;
         }
 
         public static string GetPlanetToSend()
