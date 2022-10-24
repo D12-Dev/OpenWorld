@@ -32,7 +32,7 @@ namespace OpenWorld
         {
             Text.Font = GameFont.Small;
 
-            if (Networking.isConnectedToServer) connectionString = "Status: Connected [" + Main._ParametersCache.connectedPlayers + "]";
+            if (Networking.isConnectedToServer) connectionString = "Status: Connected [" + Main._ParametersCache.playerCount + "]";
             else connectionString = "Status: Disconnected";
             Widgets.Label(new Rect(new Vector2(rect.x, rect.y), new Vector2(Text.CalcSize(connectionString).x, Text.CalcSize(connectionString).y)), connectionString);
 

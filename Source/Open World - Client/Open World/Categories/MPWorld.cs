@@ -23,9 +23,8 @@ namespace OpenWorld
 				settlement.Name = Main._ParametersCache.addSettlementData.Split('│')[3] + "'s Settlement";
 				Find.WorldObjects.Add(settlement);
 
-				Main._ParametersCache.onlineSettlements.Add(int.Parse(Main._ParametersCache.addSettlementData.Split('│')[1]), new List<string>() { Main._ParametersCache.addSettlementData.Split('│')[2] });
-
-				Main._ParametersCache.addSettlementData = "";
+				Main._ParametersCache.onlineSettlements.Add(int.Parse(Main._ParametersCache.addSettlementData.Split('│')[1]), 
+					new List<string>() { Main._ParametersCache.addSettlementData.Split('│')[2] });
 			}
 
 			catch { }
@@ -41,17 +40,9 @@ namespace OpenWorld
 
 				Settlement toDestroy = settlementList.Find(item => item.Tile == int.Parse(Main._ParametersCache.removeSettlementData.Split('│')[2]));
 
-				if (toDestroy.Faction == Faction.OfPlayer)
-                {
-					Main._ParametersCache.removeSettlementData = "";
-					return;
-				}
-
 				Find.WorldObjects.Remove(toDestroy);
 
 				Main._ParametersCache.onlineSettlements.Remove(int.Parse(Main._ParametersCache.removeSettlementData.Split('│')[2]));
-
-				Main._ParametersCache.removeSettlementData = "";
 			}
 
 			catch { }
@@ -59,14 +50,8 @@ namespace OpenWorld
 
 		public void FindOnlineFactionInWorld()
 		{
-			foreach (Faction f in Find.FactionManager.AllFactions)
-			{
-				if (f.Name == "Open World Settlements")
-				{
-					Main._ParametersCache.faction = f;
-					break;
-				}
-			}
+			List<Faction> allFactions = Find.FactionManager.AllFactions.ToList();
+			Main._ParametersCache.faction = allFactions.Find(fetch => fetch.Name == "Open World Settlements");
 		}
 
         public void HandleSettlementsLocation()
@@ -131,25 +116,19 @@ namespace OpenWorld
 
         public void HandleRoadGeneration()
         {
-			if (Main._ParametersCache.roadMode != 0)
+			if (Main._ParametersCache.roadMode == 0) return;
+
+			List<WorldGenStepDef> GenStepsInOrder = DefDatabase<WorldGenStepDef>.AllDefs.ToList();
+			WorldGenStepDef roadGenerator = GenStepsInOrder.Find(a => a.defName == "Roads");
+
+			if (Main._ParametersCache.roadMode == 1)
 			{
-				if (Main._ParametersCache.roadMode == 1)
-				{
-					List<WorldGenStepDef> GenStepsInOrder = DefDatabase<WorldGenStepDef>.AllDefs.ToList();
-					WorldGenStepDef roadGenerator = GenStepsInOrder.Find(a => a.defName == "Roads");
+				roadGenerator.worldGenStep.GenerateFresh(Find.World.info.seedString);
+			}
 
-					try { roadGenerator.worldGenStep.GenerateFresh(Find.World.info.seedString); }
-					catch { }
-				}
-
-				else if (Main._ParametersCache.roadMode == 2)
-				{
-					List<WorldGenStepDef> GenStepsInOrder = DefDatabase<WorldGenStepDef>.AllDefs.ToList();
-					WorldGenStepDef roadGenerator = GenStepsInOrder.Find(a => a.defName == "Roads");
-
-					try { roadGenerator.worldGenStep.GenerateFromScribe(Find.World.info.seedString); }
-					catch { }
-				}
+			else if (Main._ParametersCache.roadMode == 2)
+			{
+				roadGenerator.worldGenStep.GenerateFromScribe(Find.World.info.seedString);
 			}
 		}
     }

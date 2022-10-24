@@ -57,8 +57,6 @@ namespace OpenWorld
 
 			Main._ParametersCache.isPlayingOnline = true;
 
-			Main._MPGame.DisableDevOptions();
-
 			LongEventHandler.QueueLongEvent(delegate
 			{
 				MemoryUtility.ClearAllMapsAndWorld();
@@ -91,6 +89,41 @@ namespace OpenWorld
 
 			if (Main._ParametersCache.isAdmin) return;
 			else Prefs.DevMode = false;
+		}
+
+		public void EnforceDificultyTweaks()
+        {
+			Current.Game.storyteller.difficulty.threatScale = 2.0f;
+			Current.Game.storyteller.difficulty.allowBigThreats = true;
+			Current.Game.storyteller.difficulty.allowViolentQuests = true;
+			Current.Game.storyteller.difficulty.allowIntroThreats = true;
+			Current.Game.storyteller.difficulty.predatorsHuntHumanlikes = true;
+			Current.Game.storyteller.difficulty.allowExtremeWeatherIncidents = true;
+
+			Current.Game.storyteller.difficulty.cropYieldFactor = 0.3f;
+			Current.Game.storyteller.difficulty.mineYieldFactor = 0.3f;
+			Current.Game.storyteller.difficulty.butcherYieldFactor = 0.3f;
+			Current.Game.storyteller.difficulty.researchSpeedFactor = 0.90f;
+			Current.Game.storyteller.difficulty.questRewardValueFactor = 0.3f;
+			Current.Game.storyteller.difficulty.raidLootPointsFactor = 0.50f;
+			Current.Game.storyteller.difficulty.tradePriceFactorLoss = 0.75f;
+			Current.Game.storyteller.difficulty.maintenanceCostFactor = 1.0f;
+			Current.Game.storyteller.difficulty.scariaRotChance = 1.0f;
+			Current.Game.storyteller.difficulty.enemyDeathOnDownedChanceFactor = 1.0f;
+
+			Current.Game.storyteller.difficulty.colonistMoodOffset = -10f;
+			Current.Game.storyteller.difficulty.foodPoisonChanceFactor = 1.50f;
+			Current.Game.storyteller.difficulty.manhunterChanceOnDamageFactor = 5.00f;
+			Current.Game.storyteller.difficulty.playerPawnInfectionChanceFactor = 1.25f;
+			Current.Game.storyteller.difficulty.deepDrillInfestationChanceFactor = 2.00f;
+			Current.Game.storyteller.difficulty.friendlyFireChanceFactor = 0.75f;
+			Current.Game.storyteller.difficulty.allowInstantKillChance = 1.0f;
+
+			Current.Game.storyteller.difficulty.allowTraps = true;
+			Current.Game.storyteller.difficulty.allowTurrets = true;
+			Current.Game.storyteller.difficulty.allowMortars = true;
+
+			Current.Game.storyteller.difficulty.fixedWealthMode = false;
 		}
 
 		public void ExecuteEvent()
@@ -268,12 +301,6 @@ namespace OpenWorld
 			dataToSend += __instance.CurrentMap.Tile + "│";
 			dataToSend += (int)__instance.CurrentMap.wealthWatcher.WealthTotal + "│";
 			dataToSend += __instance.CurrentMap.mapPawns.AllPawns.FindAll(pawn => pawn.IsColonistPlayerControlled).Count();
-
-			Map map = Find.AnyPlayerHomeMap;
-			string dataToSend2 = "UserSettlement│NewSettlementID│";
-			dataToSend2 += map.Tile + "│";
-			dataToSend2 += (int)map.wealthWatcher.WealthTotal + "│";
-			dataToSend2 += map.mapPawns.AllPawns.FindAll(pawn => pawn.IsColonistPlayerControlled).Count();
 
 			if (Find.CurrentMap != null && Find.CurrentMap == Find.AnyPlayerHomeMap) Networking.SendData(dataToSend);
 			else if (Find.AnyPlayerHomeMap != null) Networking.SendData(dataToSend);

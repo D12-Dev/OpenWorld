@@ -15,6 +15,11 @@ namespace OpenWorld
         public int temperature;
         public int population;
 
+        //Player Details
+        public bool hasFaction;
+        public string factionName;
+        public int factionMembers;
+
         //GENERAL PURPOSE GOES HERE
         public string gameSavePath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData).Replace("Roaming", "LocalLow") + "Ludeon Studios/RimWorld by Ludeon Studios/Saves" + "\\";
         public bool pvpFlag;
@@ -42,9 +47,12 @@ namespace OpenWorld
         public int chatMode = 0;
         public int modVerificationMode = 0;
         public int profanityMode = 0;
-        public int connectedPlayers = 0;
         public Faction faction;
         public Dictionary<int, List<string>> onlineSettlements = new Dictionary<int, List<string>>();
+
+        //Players
+        public List<string> playerList = new List<string>();
+        public int playerCount = 0;
 
         //Dialog_MPBlackMarket
         public Dialog_MPBlackMarket __MPBlackMarket;
@@ -55,12 +63,6 @@ namespace OpenWorld
         public List<Tradeable> listToShowInGiftMenu = new List<Tradeable>();
         public Dialog_MPGift __MPGift;
         public string giftedItemsString;
-
-        //Dialog_MPMarket
-        public Dialog_MPMarket __MPMarket;
-        public Dictionary<int, List<string>> buyListings = new Dictionary<int, List<string>>();
-        public Dictionary<int, List<string>> sellListings = new Dictionary<int, List<string>>();
-        public Dictionary<int, List<string>> yourListings = new Dictionary<int, List<string>>();
 
         //Dialog_MPTrade
         public Dialog_MPTrade __MPTrade;
@@ -94,12 +96,5 @@ namespace OpenWorld
         public string serverStatusString;
         public string transferMode;
         public string versionCode = "Going 1.4";
-
-        //RTS
-        public bool isInRTS;
-        public string rtsBuffer = "";
-        public string rtsGenerationData = "";
-        public List<Pawn> playerPawnData = new List<Pawn>();
-        public List<Pawn> enemyPawnData = new List<Pawn>();
     }
 }

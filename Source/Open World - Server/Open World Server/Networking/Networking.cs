@@ -73,12 +73,12 @@ namespace OpenWorldServer
                         
                         if (encryptedData != null)
                         {
-                            if (encryptedData.StartsWith(Encryption.EncryptString("Connect│")))
+                            if (data.StartsWith("Connect│"))
                             {
                                 NetworkingHandler.ConnectHandle(client, data);
                             }
 
-                            else if (encryptedData.StartsWith(Encryption.EncryptString("ChatMessage│")))
+                            else if (data.StartsWith("ChatMessage│"))
                             {
                                 NetworkingHandler.ChatMessageHandle(client, data);
                             }
@@ -88,39 +88,44 @@ namespace OpenWorldServer
                                 NetworkingHandler.UserSettlementHandle(client, data);
                             }
 
-                            else if (encryptedData.StartsWith(Encryption.EncryptString("ForceEvent│")))
+                            else if (data.StartsWith("ForceEvent│"))
                             {
                                 NetworkingHandler.ForceEventHandle(client, data);
                             }
 
-                            else if (encryptedData.StartsWith(Encryption.EncryptString("SendGiftTo│")))
+                            else if (data.StartsWith("SendGiftTo│"))
                             {
                                 NetworkingHandler.SendGiftHandle(client, data);
                             }
 
-                            else if (encryptedData.StartsWith(Encryption.EncryptString("SendTradeTo│")))
+                            else if (data.StartsWith("SendTradeTo│"))
                             {
                                 NetworkingHandler.SendTradeHandle(client, data);
                             }
 
-                            else if (encryptedData.StartsWith(Encryption.EncryptString("SendBarterTo│")))
+                            else if (data.StartsWith("SendBarterTo│"))
                             {
                                 NetworkingHandler.SendBarterHandle(client, data);
                             }
 
-                            else if (encryptedData.StartsWith(Encryption.EncryptString("TradeStatus│")))
+                            else if (data.StartsWith("TradeStatus│"))
                             {
                                 NetworkingHandler.TradeStatusHandle(client, data);
                             }
 
-                            else if (encryptedData.StartsWith(Encryption.EncryptString("BarterStatus│")))
+                            else if (data.StartsWith("BarterStatus│"))
                             {
                                 NetworkingHandler.BarterStatusHandle(client, data);
                             }
 
-                            else if (encryptedData.StartsWith(Encryption.EncryptString("GetSpyInfo│")))
+                            else if (data.StartsWith("GetSpyInfo│"))
                             {
                                 NetworkingHandler.SpyInfoHandle(client, data);
+                            }
+
+                            else if (data.StartsWith("FactionManagement│"))
+                            {
+                                NetworkingHandler.FactionManagementHandle(client, data);
                             }
                         }
                     }
@@ -160,7 +165,7 @@ namespace OpenWorldServer
             else if (kickMode == "Silent") { }
             else { }
 
-            ServerUtils.RefreshClientCount(null);
+            ServerUtils.SendPlayerListToAll(null);
 
             ConsoleUtils.UpdateTitle();
         }

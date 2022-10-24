@@ -106,13 +106,11 @@
     <Compile Include="Dialogs\Dialog_MPBanned.cs" />
     <Compile Include="Dialogs\Dialog_MPGiftRequest.cs" />
     <Compile Include="Dialogs\Dialog_MPTradeRequest.cs" />
-    <Compile Include="Dialogs\Dialog_MPAddListing.cs" />
     <Compile Include="Dialogs\Dialog_MPConfirmTrade.cs" />
     <Compile Include="Dialogs\Dialog_MPConfirmGift.cs" />
     <Compile Include="Dialogs\Dialog_MPRejectedTrade.cs" />
     <Compile Include="Dialogs\Dialog_MPGift.cs" />
     <Compile Include="Dialogs\Dialog_MPDisconnected.cs" />
-    <Compile Include="Dialogs\Dialog_MPMarket.cs" />
     <Compile Include="Dialogs\Dialog_MPNoFunds.cs" />
     <Compile Include="Dialogs\Dialog_MPPlayerNotConnected.cs" />
     <Compile Include="Dialogs\Dialog_MPConfirmEvent.cs" />
@@ -131,7 +129,8 @@
     <Compile Include="Save System\SaveDataHolder.cs" />
     <Compile Include="Save System\SaveSystem.cs" />
     <Compile Include="Tabs\MP_MainTabWindow_Online.cs" />
-    <Compile Include="Tabs\MP_WITabFind.cs" />
+    <Compile Include="Tabs\MP_WITabOnlinePlayers.cs" />
+    <Compile Include="Tabs\MP_WITabSettlementList.cs" />
     <Compile Include="Networking\Networking.cs" />
     <Compile Include="ParametersCache.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

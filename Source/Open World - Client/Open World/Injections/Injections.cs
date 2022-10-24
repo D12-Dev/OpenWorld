@@ -228,13 +228,15 @@ namespace OpenWorld
 		[HarmonyPostfix]
 		public static void GetIDFromNewGame(Game __instance)
 		{
-			string dataToSend = "UserSettlement│NewSettlementID│";
-			dataToSend += __instance.CurrentMap.Tile + "│";
-			dataToSend += (int) __instance.CurrentMap.wealthWatcher.WealthTotal + "│";
-			dataToSend += __instance.CurrentMap.mapPawns.AllPawns.FindAll(pawn => pawn.IsColonistPlayerControlled).Count();
+			if (!Networking.isConnectedToServer) return;
+			else
+            {
+				Main._MPGame.EnforceDificultyTweaks();
 
-			if (Networking.isConnectedToServer) Networking.SendData(dataToSend);
-			else return;
+				Main._MPGame.DisableDevOptions();
+
+				Main._MPGame.SendPlayerSettlementData(__instance);
+			}
 		}
 	}
 
@@ -253,12 +255,14 @@ namespace OpenWorld
 
 				Main._MPWorld.HandleRoadGeneration();
 
+				Main._MPGame.EnforceDificultyTweaks();
+
+				Main._MPGame.DisableDevOptions();
+
 				Main._MPGame.SendPlayerSettlementData(__instance);
 
 				Main._MPGame.CheckForGifts();
 			}
-
-			return;
 		}
 	}
 
@@ -489,6 +493,19 @@ namespace OpenWorld
 			if (!Main._ParametersCache.isPlayingOnline) return;
 
 			Main._MPGame.DisableDevOptions();
+		}
+	}
+
+	//Enforce Difficulty Tweaks
+	[HarmonyPatch(typeof(Page_SelectStorytellerInGame), "DoWindowContents")]
+	public static class EnforceDifficultyTweaks
+	{
+		[HarmonyPostfix]
+		public static void EnforceDifficulty()
+		{
+			if (!Main._ParametersCache.isPlayingOnline) return;
+
+			Main._MPGame.EnforceDificultyTweaks();
 		}
 	}
 
@@ -792,13 +809,14 @@ namespace OpenWorld
 		[HarmonyPrefix]
 		public static bool AddButton(ref WITab[] ___TileTabs)
         {
-			if (___TileTabs.Count() == 3) return true;
+			if (___TileTabs.Count() == 4) return true;
 
 			if (Networking.isConnectedToServer)
 			{
-				___TileTabs = new WITab[3]
+				___TileTabs = new WITab[4]
 				{
-					new MP_WITabFind(),
+					new MP_WITabOnlinePlayers(),
+					new MP_WITabSettlementList(),
 					new WITab_Terrain(),
 					new WITab_Planet()
 				};

@@ -6,7 +6,7 @@ using Verse;
 
 namespace OpenWorld
 {
-    public class MP_WITabFind : WITab
+    public class MP_WITabSettlementList : WITab
     {
         private Vector2 scrollPosition;
 
@@ -14,9 +14,9 @@ namespace OpenWorld
 
         public override bool IsVisible => true;
 
-        private string titleText = "Online Settlements List";
+        private string titleText;
 
-        public MP_WITabFind()
+        public MP_WITabSettlementList()
         {
             size = WinSize;
             labelKey = "Find";
@@ -24,6 +24,8 @@ namespace OpenWorld
 
         protected override void FillTab()
         {
+            titleText = "Online Settlements [" + Main._ParametersCache.onlineSettlements.Count + "]";
+
             Rect outRect = new Rect(0f, 0f, WinSize.x, WinSize.y).ContractedBy(10f);
             Rect rect = new Rect(10f, 10f, outRect.width - 16f, Mathf.Max(0f, outRect.height));
 
@@ -33,8 +35,7 @@ namespace OpenWorld
             Widgets.Label(rect, titleText);
             Widgets.DrawLineHorizontal(rect.x, horizontalLineDif, rect.width);
 
-            try { GenerateList(new Rect(new Vector2(rect.x, rect.y + 30f), new Vector2(rect.width, rect.height - 30f))); }
-            catch { }
+            GenerateList(new Rect(new Vector2(rect.x, rect.y + 30f), new Vector2(rect.width, rect.height - 30f)));
         }
 
         private void GenerateList(Rect mainRect)

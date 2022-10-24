@@ -349,16 +349,40 @@ namespace OpenWorldServer
             }
         }
 
-        public static void RefreshClientCount(ServerClient client)
+        public static void SendPlayerListToAll(ServerClient client)
         {
-            int count = Networking.connectedClients.Count;
-
             foreach (ServerClient sc in Networking.connectedClients)
             {
                 if (sc == client) continue;
 
-                try { Networking.SendData(sc, "│PlayerCountRefresh│" + count + "│"); }
-                catch { continue; }
+                SendPlayerList(sc);
+            }
+        }
+
+        public static void SendPlayerList(ServerClient client)
+        {
+            string playersToSend = GetPlayersToSend(client);
+            Networking.SendData(client, playersToSend);
+        }
+
+        public static string GetPlayersToSend(ServerClient client)
+        {
+            string dataToSend = "PlayerList│";
+
+            if (Networking.connectedClients.Count == 0) return dataToSend;
+
+            else
+            {
+                foreach (ServerClient sc in Networking.connectedClients)
+                {
+                    if (sc == client) continue;
+
+                    else dataToSend += sc.username + ":";
+                }
+
+                dataToSend += "│" + Networking.connectedClients.Count();
+
+                return dataToSend;
             }
         }
     }

@@ -10,7 +10,7 @@ namespace OpenWorldServer
     {
         public static void LoginProcedures(ServerClient client, string data)
         {
-            client.username = data.Split('│')[1];
+            client.username = data.Split('│')[1].ToLower();
             client.password = data.Split('│')[2];
 
             string playerVersion = data.Split('│')[3];
@@ -29,7 +29,7 @@ namespace OpenWorldServer
             else if (!CheckForPassword(client)) return;
 
             ConsoleUtils.UpdateTitle();
-            ServerUtils.RefreshClientCount(client);
+            ServerUtils.SendPlayerListToAll(client);
 
             CheckForJoinMode(client, joinMode);
         }
@@ -58,16 +58,17 @@ namespace OpenWorldServer
             PlayerUtils.SaveNewPlayerFile(client.username, client.password);
 
             Networking.SendData(client, GetPlanetToSend());
-
-            Thread.Sleep(250);
+            Thread.Sleep(100);
 
             string settlementsToSend = GetSettlementsToSend(client);
             Networking.SendData(client, settlementsToSend);
-            Thread.Sleep(250);
+            Thread.Sleep(100);
 
             Networking.SendData(client, GetVariablesToSend(client));
+            Thread.Sleep(100);
 
-            Thread.Sleep(250);
+            ServerUtils.SendPlayerList(client);
+            Thread.Sleep(100);
 
             Networking.SendData(client, "NewGame│");
         }
@@ -76,32 +77,29 @@ namespace OpenWorldServer
         {
             string settlementsToSend = GetSettlementsToSend(client);
             Networking.SendData(client, settlementsToSend);
-            Thread.Sleep(250);
+            Thread.Sleep(100);
 
             Networking.SendData(client, GetVariablesToSend(client));
+            Thread.Sleep(100);
 
-            Thread.Sleep(250);
+            ServerUtils.SendPlayerList(client);
+            Thread.Sleep(100);
 
-            string giftsToSend = GetGiftsToSend(client);
-            if (!string.IsNullOrWhiteSpace(giftsToSend))
-            {
-                Networking.SendData(client, giftsToSend);
-                Thread.Sleep(250);
-            }
+            Networking.SendData(client, GetFactionToSend(client));
+            Thread.Sleep(100);
 
-            string tradesToSend = GetTradesToSend(client);
-            if (!string.IsNullOrWhiteSpace(tradesToSend))
-            {
-                Networking.SendData(client, tradesToSend);
-                Thread.Sleep(250);
-            }
+            Networking.SendData(client, GetGiftsToSend(client));
+            Thread.Sleep(100);
+
+            Networking.SendData(client, GetTradesToSend(client));
+            Thread.Sleep(100);
 
             Networking.SendData(client, "LoadGame│");
         }
 
         private static bool CheckIfUserExisted(ServerClient client)
         {
-            ServerClient clientToFetch = Server.savedClients.Find(fetch => fetch.username.ToLower() == client.username.ToLower());
+            ServerClient clientToFetch = Server.savedClients.Find(fetch => fetch.username == client.username);
 
             if (clientToFetch == null) return false;
             else return true;
@@ -109,7 +107,7 @@ namespace OpenWorldServer
 
         private static bool CheckForPassword(ServerClient client)
         {
-            ServerClient clientToFetch = Server.savedClients.Find(fetch => fetch.username.ToLower() == client.username.ToLower());
+            ServerClient clientToFetch = Server.savedClients.Find(fetch => fetch.username == client.username);
 
             client.username = clientToFetch.username;
 
@@ -179,30 +177,39 @@ namespace OpenWorldServer
 
             string name = Server.serverName;
 
-            int countInt = Networking.connectedClients.Count;
-
             int chatInt = Server.usingChat ? 1 : 0;
 
             int profanityInt = Server.usingProfanityFilter ? 1 : 0;
 
             int modVerifyInt = Server.usingModVerification ? 1 : 0;
 
-            return dataToSend + devInt + "│" + wipeInt + "│" + roadInt + "│" + countInt + "│" + chatInt + "│" + profanityInt + "│" + modVerifyInt + "│" + name;
+            return dataToSend + devInt + "│" + wipeInt + "│" + roadInt + "│" + chatInt + "│" + profanityInt + "│" + modVerifyInt + "│" + name;
+        }
+
+        public static string GetFactionToSend(ServerClient client)
+        {
+            string dataToSend = "FactionManagement│Details│";
+
+            if (client.faction == null) return dataToSend;
+
+            else
+            {
+                dataToSend += client.faction.name + "│";
+                return dataToSend;
+            }
         }
 
         public static string GetGiftsToSend(ServerClient client)
         {
             string dataToSend = "GiftedItems│";
 
-            if (client.giftString.Count == 0) return null;
+            if (client.giftString.Count == 0) return dataToSend;
 
             else
             {
                 string giftsToSend = "";
 
                 foreach (string str in client.giftString) giftsToSend += str + "│";
-
-                if (giftsToSend.Count() > 0) giftsToSend = giftsToSend.Remove(giftsToSend.Count() - 1, 1);
 
                 dataToSend += giftsToSend;
 
@@ -216,15 +223,13 @@ namespace OpenWorldServer
         {
             string dataToSend = "TradedItems│";
 
-            if (client.tradeString.Count == 0) return null;
+            if (client.tradeString.Count == 0) return dataToSend;
 
             else
             {
                 string tradesToSend = "";
 
                 foreach (string str in client.tradeString) tradesToSend += str + "│";
-
-                if (tradesToSend.Count() > 0) tradesToSend = tradesToSend.Remove(tradesToSend.Count() - 1, 1);
 
                 dataToSend += tradesToSend;
 

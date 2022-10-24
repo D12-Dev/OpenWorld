@@ -181,5 +181,42 @@ namespace OpenWorldServer
 
             Networking.SendData(client, dataToSend);
         }
+
+        public static void FactionManagementHandle(ServerClient client, string data)
+        {
+            string dataToSend = "";
+
+            if (data == "FactionManagement│Refresh")
+            {
+                dataToSend = "FactionManagement│Refresh";
+
+                Networking.SendData(client, dataToSend);
+            }
+
+            else if (data == "FactionManagement│Create")
+            {
+
+            }
+
+            else if (data == "FactionManagement│Disband")
+            {
+
+            }
+
+            else if (data == "FactionManagement│AddMember")
+            {
+
+            }
+
+            else if (data == "FactionManagement│RemoveMember")
+            {
+
+            }
+
+            else if (data == "FactionManagement│ChangeMemberRank")
+            {
+
+            }
+        }
     }
 }

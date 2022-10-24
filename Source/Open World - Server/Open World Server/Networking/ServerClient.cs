@@ -19,7 +19,7 @@ namespace OpenWorldServer
         public string homeTileID;
         public List<string> giftString = new List<string>();
         public List<string> tradeString = new List<string>();
-        [NonSerialized] public Faction faction;
+        public Faction faction;
 
         //Wealth Data
         public int pawnCount;

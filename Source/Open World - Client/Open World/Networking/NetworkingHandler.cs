@@ -63,13 +63,11 @@ namespace OpenWorld
 
             Main._ParametersCache.roadMode = int.Parse(variablesData[2]);
 
-            Main._ParametersCache.connectedPlayers = int.Parse(variablesData[3]);
+            Main._ParametersCache.chatMode = int.Parse(variablesData[3]);
 
-            Main._ParametersCache.chatMode = int.Parse(variablesData[4]);
+            Main._ParametersCache.profanityMode = int.Parse(variablesData[4]);
 
-            Main._ParametersCache.profanityMode = int.Parse(variablesData[5]);
-
-            Main._ParametersCache.modVerificationMode = int.Parse(variablesData[6]);
+            Main._ParametersCache.modVerificationMode = int.Parse(variablesData[5]);
             if (Main._ParametersCache.modVerificationMode == 1)
             {
                 List<bool> modsReady = LoadedModManager.RunningMods.Select((ModContentPack mod) => !mod.ModMetaData.OnSteamWorkshop).ToList();
@@ -81,7 +79,7 @@ namespace OpenWorld
                 }
             }
 
-            Main._ParametersCache.connectedServerIdentifier = variablesData[7];
+            Main._ParametersCache.connectedServerIdentifier = variablesData[6];
         }
 
         public static void NewGameHandle(string data)
@@ -323,6 +321,7 @@ namespace OpenWorld
         {
             string splitedString = data.Split('│')[1];
 
+            if (string.IsNullOrWhiteSpace(splitedString)) return;
             if (Main._ParametersCache.inTrade) return;
 
             string[] tradeableItems = new string[0];
@@ -332,9 +331,50 @@ namespace OpenWorld
             Find.WindowStack.Add(new Dialog_MPGiftRequest(tradeableItems));
         }
 
-        public static void PlayerCountRefreshHandle(string data)
+        public static void PlayerListHandle(string data)
         {
-            Main._ParametersCache.connectedPlayers = int.Parse(data.Split('│')[2]);
+            Main._ParametersCache.playerList.Clear();
+            Main._ParametersCache.playerCount = 0;
+
+            List<string> playerList = data.Split('│')[1].Split(':').ToList();
+            foreach(string str in playerList)
+            {
+                if (string.IsNullOrWhiteSpace(str)) continue;
+                else Main._ParametersCache.playerList.Add(str);
+            }
+
+            Main._ParametersCache.playerCount = int.Parse(data.Split('│')[2]);
+        }
+
+        public static void FactionManagementHandle(string data)
+        {
+            if (data == "FactionManagement│Refresh")
+            {
+
+            }
+
+            else if (data == "FactionManagement│Kicked")
+            {
+
+            }
+
+            else if (data.StartsWith("FactionManagement│Details│"))
+            {
+                string factionName = data.Split('│')[2];
+                if (string.IsNullOrWhiteSpace(factionName))
+                {
+                    Main._ParametersCache.hasFaction = false;
+                    Main._ParametersCache.factionName = "";
+                }
+
+                else
+                {
+                    Main._ParametersCache.hasFaction = true;
+                    Main._ParametersCache.factionName = factionName;
+                }
+
+                Log.Message(Main._ParametersCache.hasFaction + " - " + Main._ParametersCache.factionName);
+            }
         }
 
         public static void DisconnectHandle(string data)

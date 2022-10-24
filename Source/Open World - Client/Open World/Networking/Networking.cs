@@ -90,6 +90,11 @@ namespace OpenWorld
                             NetworkingHandler.VariablesHandle(data);
                         }
 
+                        else if (data.StartsWith("PlayerList│"))
+                        {
+                            NetworkingHandler.PlayerListHandle(data);
+                        }
+
                         else if (data == "NewGame│")
                         {
                             NetworkingHandler.NewGameHandle(data);
@@ -165,9 +170,9 @@ namespace OpenWorld
                             NetworkingHandler.GiftedHandle(data);
                         }
 
-                        else if (data.StartsWith("│PlayerCountRefresh│"))
+                        else if (data.StartsWith("FactionManagement│"))
                         {
-                            NetworkingHandler.PlayerCountRefreshHandle(data);
+                            NetworkingHandler.FactionManagementHandle(data);
                         }
 
                         else if (data.StartsWith("Disconnect│"))
@@ -192,49 +197,64 @@ namespace OpenWorld
 
         public static void CheckConnection()
         {
-            while (true)
+            while(true)
             {
-                if (!isConnectedToServer) break;
-
-                Thread.Sleep(1000);
-
-                try
+                if (!isConnectedToServer)
                 {
-                    if (!IsConnected(connection))
-                    {
-                        Find.WindowStack.Add(new Dialog_MPDisconnected());
-                        DisconnectFromServer();
-                        break;
-                    }
-                }
-
-                catch
-                {
-                    Find.WindowStack.Add(new Dialog_MPDisconnected());
                     DisconnectFromServer();
                     break;
                 }
+
+                Thread.Sleep(1000);
+
+                SendData("Ping");
+
+                Log.Message("Ping");
             }
 
-            bool IsConnected(TcpClient connection)
-            {
-                try
-                {
-                    TcpClient c = connection;
+            //while (true)
+            //{
+            //    if (!isConnectedToServer) break;
 
-                    if (c != null && c.Client != null && c.Client.Connected)
-                    {
-                        if (c.Client.Poll(0, SelectMode.SelectRead))
-                        {
-                            return !(c.Client.Receive(new byte[1], SocketFlags.Peek) == 0);
-                        }
-                    }
+            //    Thread.Sleep(1000);
 
-                    return true;
-                }
+            //    try
+            //    {
+            //        if (!IsConnected(connection))
+            //        {
+            //            Find.WindowStack.Add(new Dialog_MPDisconnected());
+            //            DisconnectFromServer();
+            //            break;
+            //        }
+            //    }
 
-                catch { return false; }
-            }
+            //    catch
+            //    {
+            //        Find.WindowStack.Add(new Dialog_MPDisconnected());
+            //        DisconnectFromServer();
+            //        break;
+            //    }
+            //}
+
+            //bool IsConnected(TcpClient connection)
+            //{
+            //    try
+            //    {
+            //        TcpClient c = connection;
+
+            //        if (c != null && c.Client != null && c.Client.Connected)
+            //        {
+            //            if (c.Client.Poll(0, SelectMode.SelectRead))
+            //            {
+            //                return !(c.Client.Receive(new byte[1], SocketFlags.Peek) == 0);
+            //            }
+            //        }
+
+            //        return true;
+            //    }
+
+            //    catch { return false; }
+            //}
         }
 
         public static void DisconnectFromServer()
