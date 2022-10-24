@@ -228,7 +228,7 @@ namespace OpenWorld
 		[HarmonyPostfix]
 		public static void GetIDFromNewGame(Game __instance)
 		{
-			string dataToSend = "NewSettlementID│";
+			string dataToSend = "UserSettlement│NewSettlementID│";
 			dataToSend += __instance.CurrentMap.Tile + "│";
 			dataToSend += (int) __instance.CurrentMap.wealthWatcher.WealthTotal + "│";
 			dataToSend += __instance.CurrentMap.mapPawns.AllPawns.FindAll(pawn => pawn.IsColonistPlayerControlled).Count();
@@ -304,7 +304,7 @@ namespace OpenWorld
 		{
 			if (Networking.isConnectedToServer)
 			{
-				if (Find.AnyPlayerHomeMap == null) Networking.SendData("NewSettlementID│" + caravan.Tile);
+				if (Find.AnyPlayerHomeMap == null) Networking.SendData("UserSettlement│NewSettlementID│" + caravan.Tile);
 				else return;
 			}
 			else return;
@@ -320,7 +320,7 @@ namespace OpenWorld
 		{
 			if (Networking.isConnectedToServer)
 			{
-				if (Find.AnyPlayerHomeMap == null) Networking.SendData("AbandonSettlementID│" + settlement.Tile);
+				if (Find.AnyPlayerHomeMap == null) Networking.SendData("UserSettlement│AbandonSettlementID│" + settlement.Tile);
 				else return;
 			}
 			else return;

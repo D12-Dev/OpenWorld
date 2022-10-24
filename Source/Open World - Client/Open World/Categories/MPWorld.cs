@@ -69,14 +69,6 @@ namespace OpenWorld
 			}
 		}
 
-		public void RenderPodInWorld(string data)
-        {
-			string originTile = data.Split('│')[2];
-			string targetTile = data.Split('│')[3];
-
-			//DoStuff
-		}
-
         public void HandleSettlementsLocation()
         {
 			List<Settlement> existingSettlements = new List<Settlement>();

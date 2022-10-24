@@ -264,20 +264,20 @@ namespace OpenWorld
 
         public void SendPlayerSettlementData(Game __instance)
         {
-			string dataToSend = "NewSettlementID│";
+			string dataToSend = "UserSettlement│NewSettlementID│";
 			dataToSend += __instance.CurrentMap.Tile + "│";
 			dataToSend += (int)__instance.CurrentMap.wealthWatcher.WealthTotal + "│";
 			dataToSend += __instance.CurrentMap.mapPawns.AllPawns.FindAll(pawn => pawn.IsColonistPlayerControlled).Count();
 
 			Map map = Find.AnyPlayerHomeMap;
-			string dataToSend2 = "NewSettlementID│";
+			string dataToSend2 = "UserSettlement│NewSettlementID│";
 			dataToSend2 += map.Tile + "│";
 			dataToSend2 += (int)map.wealthWatcher.WealthTotal + "│";
 			dataToSend2 += map.mapPawns.AllPawns.FindAll(pawn => pawn.IsColonistPlayerControlled).Count();
 
 			if (Find.CurrentMap != null && Find.CurrentMap == Find.AnyPlayerHomeMap) Networking.SendData(dataToSend);
 			else if (Find.AnyPlayerHomeMap != null) Networking.SendData(dataToSend);
-			else Networking.SendData("│NoSettlementInLoad│");
+			else Networking.SendData("UserSettlement│NoSettlementInLoad");
 		}
 
         public void CheckForGifts()

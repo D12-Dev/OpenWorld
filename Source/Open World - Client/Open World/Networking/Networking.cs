@@ -188,53 +188,6 @@ namespace OpenWorld
             catch { DisconnectFromServer(); }
         }
 
-        public static void CheckConnection()
-        {
-            while (true)
-            {
-                if (!isConnectedToServer) break;
-
-                Thread.Sleep(1000);
-
-                try
-                {
-                    if (!IsConnected(connection))
-                    {
-                        Find.WindowStack.Add(new Dialog_MPDisconnected());
-                        DisconnectFromServer();
-                        break;
-                    }
-                }
-
-                catch
-                {
-                    Find.WindowStack.Add(new Dialog_MPDisconnected());
-                    DisconnectFromServer();
-                    break;
-                }
-            }
-
-            bool IsConnected(TcpClient connection)
-            {
-                try
-                {
-                    TcpClient c = connection;
-
-                    if (c != null && c.Client != null && c.Client.Connected)
-                    {
-                        if (c.Client.Poll(0, SelectMode.SelectRead))
-                        {
-                            return !(c.Client.Receive(new byte[1], SocketFlags.Peek) == 0);
-                        }
-                    }
-
-                    return true;
-                }
-
-                catch { return false; }
-            }
-        }
-
         public static void DisconnectFromServer()
         {
             try { connection.Close(); }

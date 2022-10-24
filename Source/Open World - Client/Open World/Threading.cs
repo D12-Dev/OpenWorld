@@ -14,14 +14,6 @@ namespace OpenWorld
                 networkingThread.Start();
             }
 
-            else if (threadID == 1)
-            {
-                Thread CheckThread = new Thread(() => Networking.CheckConnection());
-                CheckThread.IsBackground = true;
-                CheckThread.Name = "Check Thread";
-                CheckThread.Start();
-            }
-
             else return;
         }
     }

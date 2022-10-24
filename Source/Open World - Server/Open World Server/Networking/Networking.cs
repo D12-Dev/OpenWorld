@@ -75,234 +75,52 @@ namespace OpenWorldServer
                         {
                             if (encryptedData.StartsWith(Encryption.EncryptString("Connect│")))
                             {
-                                JoiningsUtils.LoginProcedures(client, data);
+                                NetworkingHandler.ConnectHandle(client, data);
                             }
 
                             else if (encryptedData.StartsWith(Encryption.EncryptString("ChatMessage│")))
                             {
-                                ServerUtils.SendChatMessage(client, data);
-                                continue;
+                                NetworkingHandler.ChatMessageHandle(client, data);
                             }
 
-                            else if (encryptedData.StartsWith(Encryption.EncryptString("NewSettlementID│")))
+                            else if (data.StartsWith("UserSettlement│"))
                             {
-                                try
-                                {
-                                    client.wealth = float.Parse(data.Split('│')[2]);
-                                    client.pawnCount = int.Parse(data.Split('│')[3]);
-
-                                    PlayerUtils.CheckForPlayerWealth(client);
-                                }
-                                catch { }
-
-                                WorldUtils.CheckForTileDisponibility(client, data.Split('│')[1]);
-                                continue;
-                            }
-
-                            else if (encryptedData.StartsWith(Encryption.EncryptString("AbandonSettlementID│")))
-                            {
-                                if (client.homeTileID != data.Split('│')[1] || string.IsNullOrWhiteSpace(client.homeTileID)) continue;
-                                else WorldUtils.RemoveSettlement(client, data.Split('│')[1]);
-                                continue;
-                            }
-
-                            else if (encryptedData == Encryption.EncryptString("│NoSettlementInLoad│"))
-                            {
-                                if (string.IsNullOrWhiteSpace(client.homeTileID)) continue;
-                                else WorldUtils.RemoveSettlement(client, client.homeTileID);
-                                continue;
+                                NetworkingHandler.UserSettlementHandle(client, data);
                             }
 
                             else if (encryptedData.StartsWith(Encryption.EncryptString("ForceEvent│")))
                             {
-                                string dataToSend = "";
-
-                                if (PlayerUtils.CheckForConnectedPlayers(data.Split('│')[2]))
-                                {
-                                    if (PlayerUtils.CheckForPlayerShield(data.Split('│')[2]))
-                                    {
-                                        dataToSend = "│SentEvent│Confirm│";
-
-                                        PlayerUtils.SendEventToPlayer(client, data);
-                                    }
-
-                                    else dataToSend = "│SentEvent│Deny│";
-                                }
-                                else dataToSend = "│SentEvent│Deny│";
-
-                                SendData(client, dataToSend);
-
-                                continue;
+                                NetworkingHandler.ForceEventHandle(client, data);
                             }
 
                             else if (encryptedData.StartsWith(Encryption.EncryptString("SendGiftTo│")))
                             {
-                                PlayerUtils.SendGiftToPlayer(client, data);
-                                continue;
+                                NetworkingHandler.SendGiftHandle(client, data);
                             }
 
                             else if (encryptedData.StartsWith(Encryption.EncryptString("SendTradeTo│")))
                             {
-                                string dataToSend = "";
-
-                                if (PlayerUtils.CheckForConnectedPlayers(data.Split('│')[1]))
-                                {
-                                    dataToSend = "│SentTrade│Confirm│";
-
-                                    PlayerUtils.SendTradeRequestToPlayer(client, data);
-                                }
-                                else dataToSend = "│SentTrade│Deny│";
-
-                                SendData(client, dataToSend);
-
-                                continue;
+                                NetworkingHandler.SendTradeHandle(client, data);
                             }
 
                             else if (encryptedData.StartsWith(Encryption.EncryptString("SendBarterTo│")))
                             {
-                                string dataToSend = "";
-
-                                if (PlayerUtils.CheckForConnectedPlayers(data.Split('│')[1]))
-                                {
-                                    dataToSend = "│SentBarter│Confirm│";
-
-                                    PlayerUtils.SendBarterRequestToPlayer(client, data);
-                                }
-                                else dataToSend = "│SentBarter│Deny│";
-
-                                SendData(client, dataToSend);
-
-                                continue;
+                                NetworkingHandler.SendBarterHandle(client, data);
                             }
 
                             else if (encryptedData.StartsWith(Encryption.EncryptString("TradeStatus│")))
                             {
-                                string username = data.Split('│')[2];
-                                ServerClient target = null;
-
-                                foreach(ServerClient sc in connectedClients)
-                                {
-                                    if (sc.username == username)
-                                    {
-                                        target = sc;
-                                        break;
-                                    }
-                                }
-
-                                if (target == null) return;
-                                
-                                if (encryptedData.StartsWith(Encryption.EncryptString("TradeStatus│Deal│")))
-                                {
-                                    SendData(target, "│SentTrade│Deal│");
-
-                                    ConsoleUtils.LogToConsole("Trade Done Between [" + target.username + "] And [" + client.username + "]");
-                                }
-
-                                else if (encryptedData.StartsWith(Encryption.EncryptString("TradeStatus│Reject│")))
-                                {
-                                    SendData(target, "│SentTrade│Reject│");
-                                }
-
-                                continue;
+                                NetworkingHandler.TradeStatusHandle(client, data);
                             }
 
                             else if (encryptedData.StartsWith(Encryption.EncryptString("BarterStatus│")))
                             {
-                                string username = data.Split('│')[2];
-                                ServerClient target = null;
-
-                                foreach (ServerClient sc in connectedClients)
-                                {
-                                    if (sc.username == username)
-                                    {
-                                        target = sc;
-                                        break;
-                                    }
-                                    else if (sc.homeTileID == username)
-                                    {
-                                        target = sc;
-                                        break;
-                                    }
-                                }
-
-                                if (target == null) return;
-
-                                if (encryptedData.StartsWith(Encryption.EncryptString("BarterStatus│Deal│")))
-                                {
-                                    SendData(target, "│SentBarter│Deal│");
-
-                                    ConsoleUtils.LogToConsole("Barter Done Between [" + target.username + "] And [" + client.username + "]");
-                                }
-
-                                else if (encryptedData.StartsWith(Encryption.EncryptString("BarterStatus│Reject│")))
-                                {
-                                    SendData(target, "│SentBarter│Reject│");
-                                }
-
-                                else if (encryptedData.StartsWith(Encryption.EncryptString("BarterStatus│Rebarter│")))
-                                {
-                                    SendData(target, "│SentBarter│Rebarter│" + client.username + "│" + data.Split('│')[3]);
-                                }
-
-                                continue;
+                                NetworkingHandler.BarterStatusHandle(client, data);
                             }
 
                             else if (encryptedData.StartsWith(Encryption.EncryptString("GetSpyInfo│")))
                             {
-                                string dataToSend = "";
-
-                                if (PlayerUtils.CheckForConnectedPlayers(data.Split('│')[1]))
-                                {
-                                    dataToSend = "│SentSpy│Confirm│" + PlayerUtils.GetSpyData(data.Split('│')[1], client);
-                                }
-                                else dataToSend = "│SentSpy│Deny│";
-
-                                SendData(client, dataToSend);
-
-                                continue;
-                            }
-
-                            else if (encryptedData.StartsWith(Encryption.EncryptString("Raid│")))
-                            {
-                                if (data.StartsWith("Raid│TryRaid│"))
-                                {
-                                    string tileID = data.Split('│')[2];
-                                    string enemyPawnsData = data.Split('│')[3];
-
-                                    if (PlayerUtils.CheckForConnectedPlayers(tileID) && PlayerUtils.CheckForPlayerShield(tileID) && PlayerUtils.CheckForPvpAvailability(tileID))
-                                    {
-                                        SendData(client, "SentRaid│Accept│" + connectedClients.Find(fetch => fetch.homeTileID == tileID).pawnCount);
-                                        client.inRTSE = true;
-
-                                        foreach (ServerClient target in connectedClients)
-                                        {
-                                            if (target.homeTileID == tileID)
-                                            {
-                                                SendData(target, "RaidStatus│Invaded│" + enemyPawnsData);
-                                                client.inRtsActionWith = target;
-                                                target.inRtsActionWith = client;
-                                                target.inRTSE = true;
-                                                break;
-                                            }
-                                        }
-                                    }
-
-                                    else SendData(client, "SentRaid│Deny│");
-                                }
-
-                                else if (data == "Raid│Ready│")
-                                {
-                                    SendData(client.inRtsActionWith, "RaidStatus│Start");
-                                }
-
-                                else if (data == "Raid│Ended│") ;
-
-                                continue;
-                            }
-
-                            else if (encryptedData.StartsWith(Encryption.EncryptString("RTSBuffer│")))
-                            {
-                                SendData(client.inRtsActionWith, data);
+                                NetworkingHandler.SpyInfoHandle(client, data);
                             }
                         }
                     }
