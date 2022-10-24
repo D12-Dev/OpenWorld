@@ -11,7 +11,7 @@ namespace OpenWorld
 {
     public class MPWorld
     {
-		public void AddSettlementRealtime()
+		public void AddSettlementInWorld()
 		{
 			if (string.IsNullOrWhiteSpace(Main._ParametersCache.addSettlementData)) return;
 
@@ -19,8 +19,8 @@ namespace OpenWorld
 			{
 				Settlement settlement = (Settlement)WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
 				settlement.SetFaction(Main._ParametersCache.faction);
-				settlement.Tile = int.Parse(Main._ParametersCache.addSettlementData.Split('│')[1]);
-				settlement.Name = Main._ParametersCache.addSettlementData.Split('│')[2] + "'s Settlement";
+				settlement.Tile = int.Parse(Main._ParametersCache.addSettlementData.Split('│')[2]);
+				settlement.Name = Main._ParametersCache.addSettlementData.Split('│')[3] + "'s Settlement";
 				Find.WorldObjects.Add(settlement);
 
 				Main._ParametersCache.onlineSettlements.Add(int.Parse(Main._ParametersCache.addSettlementData.Split('│')[1]), new List<string>() { Main._ParametersCache.addSettlementData.Split('│')[2] });
@@ -31,7 +31,7 @@ namespace OpenWorld
 			catch { }
 		}
 
-		public void RemoveSettlementRealtime()
+		public void RemoveSettlementInWorld()
 		{
 			if (string.IsNullOrWhiteSpace(Main._ParametersCache.removeSettlementData)) return;
 
@@ -39,7 +39,7 @@ namespace OpenWorld
 			{
 				List<Settlement> settlementList = Find.WorldObjects.Settlements;
 
-				Settlement toDestroy = settlementList.Find(item => item.Tile == int.Parse(Main._ParametersCache.removeSettlementData.Split('│')[1]));
+				Settlement toDestroy = settlementList.Find(item => item.Tile == int.Parse(Main._ParametersCache.removeSettlementData.Split('│')[2]));
 
 				if (toDestroy.Faction == Faction.OfPlayer)
                 {
@@ -49,7 +49,7 @@ namespace OpenWorld
 
 				Find.WorldObjects.Remove(toDestroy);
 
-				Main._ParametersCache.onlineSettlements.Remove(int.Parse(Main._ParametersCache.removeSettlementData.Split('│')[1]));
+				Main._ParametersCache.onlineSettlements.Remove(int.Parse(Main._ParametersCache.removeSettlementData.Split('│')[2]));
 
 				Main._ParametersCache.removeSettlementData = "";
 			}

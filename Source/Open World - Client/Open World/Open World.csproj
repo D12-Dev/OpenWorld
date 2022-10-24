@@ -126,11 +126,12 @@
     <Compile Include="Main.cs" />
     <Compile Include="ModStuff.cs" />
     <Compile Include="ModConfigs.cs" />
+    <Compile Include="Networking\NetworkingHandler.cs" />
     <Compile Include="Save System\SaveDataHolder.cs" />
     <Compile Include="Save System\SaveSystem.cs" />
     <Compile Include="Tabs\MP_MainTabWindow_Online.cs" />
     <Compile Include="Tabs\MP_WITabFind.cs" />
-    <Compile Include="Networking.cs" />
+    <Compile Include="Networking\Networking.cs" />
     <Compile Include="ParametersCache.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Injections\Injections.cs" />

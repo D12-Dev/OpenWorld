@@ -22,14 +22,6 @@ namespace OpenWorld
                 CheckThread.Start();
             }
 
-            else if (threadID == 2)
-            {
-                Thread PvPThread = new Thread(() => Networking.PvPChannel());
-                PvPThread.IsBackground = true;
-                PvPThread.Name = "PvP Thread";
-                PvPThread.Start();
-            }
-
             else return;
         }
     }

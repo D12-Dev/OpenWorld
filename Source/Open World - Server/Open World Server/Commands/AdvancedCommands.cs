@@ -437,7 +437,7 @@ namespace OpenWorldServer
                         Server.savedClients.Find(fetch => fetch.username == clientID).isAdmin = true;
                         SaveSystem.SaveUserData(targetClient);
 
-                        Networking.SendData(targetClient, "│Promote│");
+                        Networking.SendData(targetClient, "Admin│Promote");
 
                         Console.ForegroundColor = ConsoleColor.Green;
                         ConsoleUtils.LogToConsole("Player [" + targetClient.username + "] Has Been Promoted");
@@ -486,7 +486,7 @@ namespace OpenWorldServer
                         Server.savedClients.Find(fetch => fetch.username == targetClient.username).isAdmin = false;
                         SaveSystem.SaveUserData(targetClient);
 
-                        Networking.SendData(targetClient, "│Demote│");
+                        Networking.SendData(targetClient, "Admin│Demote");
 
                         Console.ForegroundColor = ConsoleColor.Green;
                         ConsoleUtils.LogToConsole("Player [" + targetClient.username + "] Has Been Demoted");

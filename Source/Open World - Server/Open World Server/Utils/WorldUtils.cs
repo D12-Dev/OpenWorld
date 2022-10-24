@@ -26,7 +26,7 @@ namespace OpenWorldServer
                 SaveSystem.SaveUserData(client);
             }
 
-            string dataString = "AddSettlement│" + dataSplit[0] + "│" + dataSplit[1];
+            string dataString = "SettlementBuilder│AddSettlement│" + dataSplit[0] + "│" + dataSplit[1];
 
             foreach (ServerClient sc in Networking.connectedClients)
             {
@@ -63,7 +63,7 @@ namespace OpenWorldServer
 
             if (!string.IsNullOrWhiteSpace(tile))
             {
-                string dataString = "RemoveSettlement│" + tile;
+                string dataString = "SettlementBuilder│RemoveSettlement│" + tile;
 
                 foreach (ServerClient sc in Networking.connectedClients)
                 {
