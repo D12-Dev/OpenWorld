@@ -15,6 +15,12 @@ namespace OpenWorld
         public int temperature;
         public int population;
 
+        //Planet Factions
+        public List<Faction> allFactions = new List<Faction>();
+        public Faction neutralFaction;
+        public Faction allyFaction;
+        public Faction enemyFaction;
+
         //Player Faction
         public bool hasFaction;
         public string factionName;
@@ -53,8 +59,10 @@ namespace OpenWorld
         public int chatMode = 0;
         public int modVerificationMode = 0;
         public int profanityMode = 0;
-        public Faction faction;
-        public Dictionary<int, List<string>> onlineSettlements = new Dictionary<int, List<string>>();
+        public Dictionary<int, List<string>> allSettlements = new Dictionary<int, List<string>>();
+        public Dictionary<int, List<string>> onlineNeutralSettlements = new Dictionary<int, List<string>>();
+        public Dictionary<int, List<string>> onlineAllySettlements = new Dictionary<int, List<string>>();
+        public Dictionary<int, List<string>> onlineEnemySettlements = new Dictionary<int, List<string>>();
 
         //Dialog_MPBlackMarket
         public Dialog_MPBlackMarket __MPBlackMarket;

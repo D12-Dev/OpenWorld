@@ -236,6 +236,8 @@ namespace OpenWorld
 				Main._MPGame.DisableDevOptions();
 
 				Main._MPGame.SendPlayerSettlementData(__instance);
+
+				FactionHandler.FindOnlineFactionInWorld();
 			}
 		}
 	}
@@ -247,7 +249,7 @@ namespace OpenWorld
 		[HarmonyPostfix]
 		public static void GetIDFromExistingGame(Game __instance)
 		{
-			Main._MPWorld.FindOnlineFactionInWorld();
+			FactionHandler.FindOnlineFactionInWorld();
 
 			if (Main._ParametersCache.isPlayingOnline)
 			{
@@ -277,21 +279,49 @@ namespace OpenWorld
 
 			foreach (FactionDef item in DefDatabase<FactionDef>.AllDefs.OrderBy((FactionDef x) => x.hidden))
 			{
-				if (item.defName == "Online")
+				if (item.defName == "OnlineNeutral")
 				{
-					Main._ParametersCache.faction = FactionGenerator.NewGeneratedFaction(new FactionGeneratorParms(item));
-					Find.FactionManager.Add(Main._ParametersCache.faction);
+					Main._ParametersCache.neutralFaction = FactionGenerator.NewGeneratedFaction(new FactionGeneratorParms(item));
+					Find.FactionManager.Add(Main._ParametersCache.neutralFaction);
 
-					foreach(KeyValuePair<int, List<string>> pair in Main._ParametersCache.onlineSettlements)
+					foreach (KeyValuePair<int, List<string>> pair in Main._ParametersCache.onlineNeutralSettlements)
 					{
 						Settlement settlement = (Settlement)WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
-						settlement.SetFaction(Main._ParametersCache.faction);
-						settlement.Tile = pair.Key;
 						settlement.Name = pair.Value[0] + "'s Settlement";
+						settlement.Tile = pair.Key;
+						settlement.SetFaction(Main._ParametersCache.neutralFaction);
 						Find.WorldObjects.Add(settlement);
 					}
+				}
 
-					return true;
+				else if (item.defName == "OnlineAlly")
+				{
+					Main._ParametersCache.allyFaction = FactionGenerator.NewGeneratedFaction(new FactionGeneratorParms(item));
+					Find.FactionManager.Add(Main._ParametersCache.allyFaction);
+
+					foreach (KeyValuePair<int, List<string>> pair in Main._ParametersCache.onlineAllySettlements)
+					{
+						Settlement settlement = (Settlement)WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
+						settlement.Tile = pair.Key;
+						settlement.Name = pair.Value[0] + "'s Settlement";
+						settlement.SetFaction(Main._ParametersCache.allyFaction);
+						Find.WorldObjects.Add(settlement);
+					}
+				}
+
+				else if (item.defName == "OnlineEnemy")
+				{
+					Main._ParametersCache.enemyFaction = FactionGenerator.NewGeneratedFaction(new FactionGeneratorParms(item));
+					Find.FactionManager.Add(Main._ParametersCache.enemyFaction);
+
+					foreach (KeyValuePair<int, List<string>> pair in Main._ParametersCache.onlineEnemySettlements)
+					{
+						Settlement settlement = (Settlement)WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
+						settlement.Name = pair.Value[0] + "'s Settlement";
+						settlement.Tile = pair.Key;
+						settlement.SetFaction(Main._ParametersCache.enemyFaction);
+						Find.WorldObjects.Add(settlement);
+					}
 				}
 			}
 
@@ -340,7 +370,7 @@ namespace OpenWorld
 		{
 			if (!Networking.isConnectedToServer) return true;
 
-			if (TradeSession.trader.Faction == Main._ParametersCache.faction)
+			if (Main._ParametersCache.allFactions.Contains(TradeSession.trader.Faction))
 			{
 				string itemDefName = "";
 
@@ -418,7 +448,7 @@ namespace OpenWorld
         [HarmonyPostfix]
         public static void ChangeOptions(ref IEnumerable<FloatMenuOption> __result, Settlement settlement, CompLaunchable representative)
         {
-            if (settlement.Faction == Main._ParametersCache.faction)
+            if (Main._ParametersCache.allFactions.Contains(settlement.Faction))
             {
                 var floatMenuList = __result.ToList();
                 floatMenuList.Clear();
@@ -453,7 +483,7 @@ namespace OpenWorld
 		[HarmonyPostfix]
 		public static void ForbidAttack(ref IEnumerable<FloatMenuOption> __result, Settlement settlement, CompLaunchable representative)
 		{
-			if (settlement.Faction == Main._ParametersCache.faction)
+			if (Main._ParametersCache.allFactions.Contains(settlement.Faction))
 			{
 				var floatMenuList = __result.ToList();
 				floatMenuList.Clear();
@@ -473,7 +503,7 @@ namespace OpenWorld
 		[HarmonyPrefix]
 		public static bool AllowAllItems(ref List<Tradeable> ___tradeables)
 		{
-			if (TradeSession.trader.Faction == Main._ParametersCache.faction)
+			if (Main._ParametersCache.allFactions.Contains(TradeSession.trader.Faction))
 			{
 				___tradeables = Main._ParametersCache.listToShowInGiftMenu;
 				return false;
@@ -521,7 +551,7 @@ namespace OpenWorld
 			for (int i = 0; i < settlements.Count; i++)
 			{
 				Settlement settlement = settlements[i];
-				if (settlement.Faction == null || settlement.Faction == Main._ParametersCache.faction || settlement.Faction == Faction.OfPlayer || settlement.Faction.def.permanentEnemy || settlement.Faction.PlayerGoodwill == -100)
+				if (settlement.Faction == null || settlement.Faction != Main._ParametersCache.enemyFaction || settlement.Faction == Faction.OfPlayer || settlement.Faction.def.permanentEnemy || settlement.Faction.PlayerGoodwill == -100)
 				{
 					continue;
 				}
@@ -548,7 +578,7 @@ namespace OpenWorld
 		[HarmonyPostfix]
 		public static void SetSettlementGizmos(ref IEnumerable<Gizmo> __result, Settlement __instance)
 		{
-			if (__instance.Faction == Main._ParametersCache.faction)
+			if (Main._ParametersCache.allFactions.Contains(__instance.Faction))
 			{
 				Main._ParametersCache.focusedSettlement = __instance;
 
@@ -609,7 +639,7 @@ namespace OpenWorld
 		[HarmonyPostfix]
 		public static void SetCaravanGizmos(ref IEnumerable<Gizmo> __result, Settlement __instance, Caravan caravan)
 		{
-			if (__instance.Faction == Main._ParametersCache.faction)
+			if (Main._ParametersCache.allFactions.Contains(__instance.Faction))
 			{
 				var gizmoList = __result.ToList();
 				List<Gizmo> removeList = new List<Gizmo>();
@@ -801,7 +831,7 @@ namespace OpenWorld
 		[HarmonyPostfix]
 		public static void SetGizmos(ref IEnumerable<FloatMenuOption> __result, Caravan caravan, Settlement __instance)
 		{
-			if (__instance.Faction == Main._ParametersCache.faction)
+			if (Main._ParametersCache.allFactions.Contains(__instance.Faction))
 			{
 				var gizmoList = __result.ToList();
 				gizmoList.Clear();

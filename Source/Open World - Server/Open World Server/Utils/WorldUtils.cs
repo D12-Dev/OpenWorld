@@ -23,7 +23,7 @@ namespace OpenWorldServer
                     }
                 }
 
-                SaveSystem.SaveUserData(client);
+                PlayerUtils.SavePlayer(client);
             }
 
             string dataString = "SettlementBuilder│AddSettlement│" + dataSplit[0] + "│" + dataSplit[1];
@@ -58,7 +58,7 @@ namespace OpenWorldServer
                     }
                 }
 
-                SaveSystem.SaveUserData(client);
+                PlayerUtils.SavePlayer(client);
             }
 
             if (!string.IsNullOrWhiteSpace(tile))

@@ -46,7 +46,6 @@ namespace OpenWorldServer
             {
                 PlayerUtils.GiveSavedDataToPlayer(client);
                 SendLoadGameData(client);
-                SaveSystem.SaveUserData(client);
             }
 
             ConsoleUtils.LogToConsole("Player [" + client.username + "] " + "[" + 
@@ -55,6 +54,7 @@ namespace OpenWorldServer
 
         private static void SendNewGameData(ServerClient client)
         {
+            PlayerUtils.GiveSavedDataToPlayer(client);
             PlayerUtils.SaveNewPlayerFile(client.username, client.password);
 
             Networking.SendData(client, GetPlanetToSend());
@@ -68,6 +68,9 @@ namespace OpenWorldServer
             Thread.Sleep(100);
 
             ServerUtils.SendPlayerList(client);
+            Thread.Sleep(100);
+
+            Networking.SendData(client, FactionHandler.GetFactionDetails(client));
             Thread.Sleep(100);
 
             Networking.SendData(client, "NewGame│");
@@ -150,7 +153,18 @@ namespace OpenWorldServer
                 {
                     if (pair.Value[0] == client.username) continue;
 
-                    dataToSend += pair.Key + ":" + pair.Value[0] + "│";
+                    int factionValue = 0;
+                    if (client.faction == null) factionValue = 0;
+
+                    ServerClient clientToCompare = Server.savedClients.Find(fetch => fetch.username == pair.Value[0]);
+                    if (clientToCompare.faction == null) factionValue = 0;
+                    else if (client.faction != null && clientToCompare.faction != null)
+                    {
+                        if (client.faction.name == clientToCompare.faction.name) factionValue = 1;
+                        else factionValue = 2;
+                    }
+
+                    dataToSend += pair.Key + ":" + pair.Value[0] + ":" + factionValue + "│";
                 }
 
                 return dataToSend;

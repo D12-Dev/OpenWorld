@@ -74,9 +74,9 @@ namespace OpenWorldServer
             ServerUtils.CheckSettingsFile();
 
             ModHandler.CheckMods(true);
-            PlayerUtils.CheckAllAvailablePlayers(true);
+            FactionHandler.CheckFactions(true);
             WorldHandler.CheckWorldFile();
-            FactionHandler.CheckFactions();
+            PlayerUtils.CheckAllAvailablePlayers(false);
 
             Threading.GenerateThreads(0);
 

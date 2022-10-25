@@ -371,7 +371,7 @@ namespace OpenWorldServer
                 {
                     client.wealth = 0;
                     client.pawnCount = 0;
-                    SaveSystem.SaveUserData(client);
+                    PlayerUtils.SavePlayer(client);
                 }
 
                 Console.Clear();

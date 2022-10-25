@@ -27,7 +27,10 @@ namespace OpenWorld
         {
             data = data.Remove(0, 12);
 
-            Main._ParametersCache.onlineSettlements.Clear();
+            Main._ParametersCache.allSettlements.Clear();
+            Main._ParametersCache.onlineNeutralSettlements.Clear();
+            Main._ParametersCache.onlineAllySettlements.Clear();
+            Main._ParametersCache.onlineEnemySettlements.Clear();
 
             string[] settlementsToLoad = data.Split('│');
 
@@ -37,14 +40,22 @@ namespace OpenWorld
 
                 int settlementTile = int.Parse(str.Split(':')[0]);
                 string settlementName = str.Split(':')[1];
+                int settlementFactionValue = int.Parse(str.Split(':')[2]);
 
                 List<string> settlementDetails = new List<string>()
-                                {
-                                    settlementName
-                                };
+                {
+                    settlementName,
+                    settlementFactionValue.ToString()
+                };
 
-                Main._ParametersCache.onlineSettlements.Add(settlementTile, settlementDetails);
+                if (settlementFactionValue == 0) Main._ParametersCache.onlineNeutralSettlements.Add(settlementTile, settlementDetails);
+                else if (settlementFactionValue == 1) Main._ParametersCache.onlineAllySettlements.Add(settlementTile, settlementDetails);
+                else if (settlementFactionValue == 2) Main._ParametersCache.onlineEnemySettlements.Add(settlementTile, settlementDetails);
             }
+
+            Main._ParametersCache.allSettlements.AddRange(Main._ParametersCache.onlineNeutralSettlements);
+            Main._ParametersCache.allSettlements.AddRange(Main._ParametersCache.onlineAllySettlements);
+            Main._ParametersCache.allSettlements.AddRange(Main._ParametersCache.onlineEnemySettlements);
         }
 
         public static void VariablesHandle(string data)
@@ -371,6 +382,23 @@ namespace OpenWorld
             else if (data == "FactionManagement│NotInFaction")
             {
                 Find.WindowStack.Add(new Dialog_MPFactionNotInFaction());
+            }
+
+            else if (data == "FactionManagement│NotTheLeader")
+            {
+                Find.WindowStack.Add(new Dialog_MPFactionNotLeader());
+            }
+
+            else if (data.StartsWith("FactionManagement│Invite"))
+            {
+                string factionName = data.Split('│')[2];
+
+                Find.WindowStack.Add(new Dialog_MPFactionInvite(factionName));
+            }
+
+            else if (data == "FactionManagement│Kicked")
+            {
+                FactionHandler.FactionKickedHandle();
             }
         }
 

@@ -3,17 +3,6 @@
 namespace OpenWorldServer
 {
     [System.Serializable]
-    public class MainDataHolder
-    {
-        public ServerClient serverclient;
-
-        public MainDataHolder(ServerClient clientToSave)
-        {
-            serverclient = clientToSave;
-        }
-    }
-
-    [System.Serializable]
     public class BanDataHolder
     {
         public Dictionary<string, string> bannedIPs = new Dictionary<string, string>();

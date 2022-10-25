@@ -17,8 +17,10 @@ namespace OpenWorldServer
 
         public enum MemberRank { Member, Moderator, Leader }
 
-        public static void CheckFactions()
+        public static void CheckFactions(bool newLine)
         {
+            if (newLine) Console.WriteLine("");
+
             Console.ForegroundColor = ConsoleColor.Green;
             ConsoleUtils.LogToConsole("Factions Check:");
             Console.ForegroundColor = ConsoleColor.White;
@@ -27,7 +29,6 @@ namespace OpenWorldServer
             {
                 Directory.CreateDirectory(Server.factionsFolderPath);
                 ConsoleUtils.LogToConsole("No Factions Folder Found, Generating");
-                Console.WriteLine("");
             }
 
             else
@@ -56,7 +57,7 @@ namespace OpenWorldServer
 
             ServerClient clientToSave = Server.savedClients.Find(fetch => fetch.username == factionLeader.username);
             clientToSave.faction = newFaction;
-            SaveSystem.SaveUserData(clientToSave);
+            PlayerUtils.SavePlayer(clientToSave);
 
             Networking.SendData(factionLeader, "FactionManagement│Created");
 
@@ -102,12 +103,6 @@ namespace OpenWorldServer
                     s.Close();
                     s.Dispose();
 
-                    if (factionToLoad.members.Count < 1)
-                    {
-                        DisbandFaction(factionToLoad);
-                        continue;
-                    }
-
                     if (!Server.factionList.Contains(factionToLoad)) Server.factionList.Add(factionToLoad);
                 }
                 catch { failedToLoadFactions++; }
@@ -121,8 +116,6 @@ namespace OpenWorldServer
                 ConsoleUtils.LogToConsole("Failed to load [" + failedToLoadFactions + "] Factions");
                 Console.ForegroundColor = ConsoleColor.White;
             }
-
-            Console.WriteLine("");
         }
 
         public static void DisbandFaction(Faction factionToDisband)
@@ -130,6 +123,7 @@ namespace OpenWorldServer
             Server.factionList.Remove(factionToDisband);
 
             string factionSavePath = Server.factionsFolderPath + Path.DirectorySeparatorChar + factionToDisband.name + ".bin";
+            Debug.WriteLine(factionSavePath);
             File.Delete(factionSavePath);
         }
 
@@ -178,9 +172,11 @@ namespace OpenWorldServer
 
             else
             {
-                dataToSend += client.faction.name + "│";
+                Faction factionToCheck = Server.factionList.Find(fetch => fetch.name == client.faction.name);
 
-                foreach (KeyValuePair<ServerClient, MemberRank> member in client.faction.members)
+                dataToSend += factionToCheck.name + "│";
+
+                foreach (KeyValuePair<ServerClient, MemberRank> member in factionToCheck.members)
                 {
                     dataToSend += member.Key.username + ":" + (int)member.Value + "»";
                 }
@@ -199,40 +195,84 @@ namespace OpenWorldServer
 
         public static void AddMember(Faction faction, ServerClient memberToAdd)
         {
-            faction.members.Add(memberToAdd, MemberRank.Member);
-            SaveFaction(faction);
-
             memberToAdd.faction = faction;
 
             ServerClient clientToSave = Server.savedClients.Find(fetch => fetch.username == memberToAdd.username);
             clientToSave.faction = faction;
-            SaveSystem.SaveUserData(clientToSave);
+            PlayerUtils.SavePlayer(clientToSave);
+
+            faction.members.Add(memberToAdd, MemberRank.Member);
+            SaveFaction(faction);
 
             UpdateAllPlayersInFaction(faction);
         }
 
         public static void RemoveMember(Faction faction, ServerClient memberToRemove)
         {
-            faction.members.Remove(memberToRemove);
-            if (faction.members.Count > 0) SaveFaction(faction);
+            foreach (KeyValuePair<ServerClient, MemberRank> pair in faction.members)
+            {
+                if (pair.Key.username == memberToRemove.username)
+                {
+                    faction.members.Remove(pair.Key);
+                    break;
+                }
+            }
+
+            ServerClient saved = Server.savedClients.Find(fetch => fetch.username == memberToRemove.username);
+            if (saved != null)
+            {
+                saved.faction = null;
+                PlayerUtils.SavePlayer(saved);
+            }
+
+            ServerClient connected = Networking.connectedClients.Find(fetch => fetch.username == memberToRemove.username);
+            if (connected != null)
+            {
+                connected.faction = null;
+                Networking.SendData(connected, GetFactionDetails(connected));
+            }
+
+            if (faction.members.Count > 0)
+            {
+                SaveFaction(faction);
+                UpdateAllPlayersInFaction(faction);
+            }
             else DisbandFaction(faction);
+        }
 
-            memberToRemove.faction = null;
+        public static void PurgeFaction(Faction faction)
+        {
+            ServerClient[] dummyfactionMembers = faction.members.Keys.ToArray();
 
-            ServerClient clientToSave = Server.savedClients.Find(fetch => fetch.username == memberToRemove.username);
-            clientToSave.faction = null;
-            SaveSystem.SaveUserData(clientToSave);
+            foreach(ServerClient dummy in dummyfactionMembers)
+            {
+                ServerClient connected = Networking.connectedClients.Find(fetch => fetch.username == dummy.username);
+                if (connected != null)
+                {
+                    connected.faction = null;
+                    Networking.SendData(connected, GetFactionDetails(connected));
+                }
 
-            Networking.SendData(memberToRemove, GetFactionDetails(memberToRemove));
+                ServerClient saved = Server.savedClients.Find(fetch => fetch.username == dummy.username);
+                if (saved != null)
+                {
+                    saved.faction = null;
+                    PlayerUtils.SavePlayer(saved);
+                }
+            }
 
-            UpdateAllPlayersInFaction(faction);
+            DisbandFaction(faction);
         }
 
         public static void UpdateAllPlayersInFaction(Faction faction)
         {
-            foreach (ServerClient member in Networking.connectedClients)
+            foreach(ServerClient client in Networking.connectedClients)
             {
-                if (member.faction == faction) Networking.SendData(member, GetFactionDetails(member));
+                if (client.faction == null) continue;
+                if (client.faction.name == faction.name)
+                {
+                    Networking.SendData(client, GetFactionDetails(client));
+                }
             }
         }
 
@@ -243,11 +283,11 @@ namespace OpenWorldServer
             SaveFaction(faction);
         }
 
-        public static ServerClient GetFactionLeader(Faction faction)
+        public static string GetFactionLeader(Faction faction)
         {
-            foreach (KeyValuePair<ServerClient, FactionHandler.MemberRank> member in faction.members)
+            foreach (KeyValuePair<ServerClient, MemberRank> member in faction.members)
             {
-                if (member.Value == MemberRank.Leader) return member.Key;
+                if (member.Value == MemberRank.Leader) return member.Key.username;
             }
 
             return null;

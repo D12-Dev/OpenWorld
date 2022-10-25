@@ -1,8 +1,10 @@
-﻿using System;
+﻿using RimWorld;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Verse;
 
 namespace OpenWorld
 {
@@ -17,6 +19,7 @@ namespace OpenWorld
             {
                 Main._ParametersCache.hasFaction = false;
                 Main._ParametersCache.factionName = "";
+                Main._ParametersCache.factionMembers.Clear();
             }
 
             else
@@ -35,6 +38,25 @@ namespace OpenWorld
                     Main._ParametersCache.factionMembers.Add(memberName, memberRank);
                 }
             }
+        }
+
+        public static void FactionKickedHandle()
+        {
+            Main._ParametersCache.hasFaction = false;
+            Main._ParametersCache.factionName = "";
+            Main._ParametersCache.factionMembers.Clear();
+        }
+
+        public static void FindOnlineFactionInWorld()
+        {
+            List<Faction> factions = Find.FactionManager.AllFactions.ToList();
+            Main._ParametersCache.neutralFaction = factions.Find(fetch => fetch.Name == "Open World Settlements Neutral");
+            Main._ParametersCache.allyFaction = factions.Find(fetch => fetch.Name == "Open World Settlements Ally");
+            Main._ParametersCache.enemyFaction = factions.Find(fetch => fetch.Name == "Open World Settlements Enemy");
+
+            Main._ParametersCache.allFactions.Add(Main._ParametersCache.neutralFaction);
+            Main._ParametersCache.allFactions.Add(Main._ParametersCache.allyFaction);
+            Main._ParametersCache.allFactions.Add(Main._ParametersCache.enemyFaction);
         }
     }
 }

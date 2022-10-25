@@ -139,8 +139,6 @@ namespace OpenWorld
             float num3 = scrollPosition.y + mainRect.height;
             int num4 = 0;
 
-            var orderedDictionary = Main._ParametersCache.onlineSettlements.OrderBy(x => x.Value[0]);
-
             int index = 0;
 
             var orderedList = tradeableItems.OrderBy(x => x.ToString());

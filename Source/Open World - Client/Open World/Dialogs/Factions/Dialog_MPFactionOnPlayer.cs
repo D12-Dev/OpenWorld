@@ -12,7 +12,7 @@ namespace OpenWorld
 {
     public class Dialog_MPFactionOnPlayer : Window
     {
-        public override Vector2 InitialSize => new Vector2(350f, 250f);
+        public override Vector2 InitialSize => new Vector2(325f, 225f);
 
         private string windowTitle = "Faction Options";
 
@@ -38,12 +38,12 @@ namespace OpenWorld
 
             Widgets.DrawLineHorizontal(rect.xMin, (rect.y + Text.CalcSize(windowTitle).y + 10), rect.width);
 
-            if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX / 2), rect.yMax - buttonY * 3 + 30), new Vector2(buttonX, buttonY)), "Recruit"))
+            if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX / 2), rect.yMax - buttonY * 3 - 20), new Vector2(buttonX, buttonY)), "Recruit"))
             {
                 Find.WindowStack.Add(new Dialog_MPFactionRecruit(this));
             }
 
-            if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX / 2), rect.yMax - buttonY * 2 + 20), new Vector2(buttonX, buttonY)), "Kick"))
+            if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX / 2), rect.yMax - buttonY * 2 - 10), new Vector2(buttonX, buttonY)), "Kick"))
             {
                 Find.WindowStack.Add(new Dialog_MPFactionKick(this));
             }

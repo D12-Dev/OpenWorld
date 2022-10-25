@@ -69,7 +69,7 @@ namespace OpenWorldServer
                     {
                         string encryptedData = sr.ReadLine();
                         string data = Encryption.DecryptString(encryptedData);
-                        Debug.WriteLine(data);
+                        if (data != "Ping") Debug.WriteLine(data);
                         
                         if (encryptedData != null)
                         {

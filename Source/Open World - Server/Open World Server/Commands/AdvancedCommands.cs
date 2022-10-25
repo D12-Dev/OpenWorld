@@ -211,7 +211,7 @@ namespace OpenWorldServer
                 {
                     targetClient.isImmunized = true;
                     Server.savedClients.Find(fetch => fetch.username == targetClient.username).isImmunized = true;
-                    SaveSystem.SaveUserData(targetClient);
+                    PlayerUtils.SavePlayer(targetClient);
 
                     Console.ForegroundColor = ConsoleColor.Green;
                     ConsoleUtils.WriteWithTime("Player [" + targetClient.username + "] Has Been Inmmunized");
@@ -248,7 +248,7 @@ namespace OpenWorldServer
                 {
                     targetClient.isImmunized = false;
                     Server.savedClients.Find(fetch => fetch.username == targetClient.username).isImmunized = false;
-                    SaveSystem.SaveUserData(targetClient);
+                    PlayerUtils.SavePlayer(targetClient);
 
                     Console.ForegroundColor = ConsoleColor.Green;
                     ConsoleUtils.WriteWithTime("Player [" + targetClient.username + "] Has Been Deinmmunized");
@@ -435,7 +435,7 @@ namespace OpenWorldServer
                     {
                         targetClient.isAdmin = true;
                         Server.savedClients.Find(fetch => fetch.username == clientID).isAdmin = true;
-                        SaveSystem.SaveUserData(targetClient);
+                        PlayerUtils.SavePlayer(targetClient);
 
                         Networking.SendData(targetClient, "Admin│Promote");
 
@@ -484,7 +484,7 @@ namespace OpenWorldServer
                     {
                         targetClient.isAdmin = false;
                         Server.savedClients.Find(fetch => fetch.username == targetClient.username).isAdmin = false;
-                        SaveSystem.SaveUserData(targetClient);
+                        PlayerUtils.SavePlayer(targetClient);
 
                         Networking.SendData(targetClient, "Admin│Demote");
 

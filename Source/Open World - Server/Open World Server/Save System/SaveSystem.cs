@@ -6,52 +6,6 @@ namespace OpenWorldServer
 {
     public class SaveSystem
     {
-        public static void SaveUserData(ServerClient client)
-        {
-            string folderPath = Server.playersFolderPath;
-            string filePath = folderPath + Path.DirectorySeparatorChar + client.username + ".data";
-
-            try
-            {
-                if (!Directory.Exists(folderPath))
-                {
-                    Directory.CreateDirectory(folderPath);
-                }
-
-                BinaryFormatter formatter = new BinaryFormatter();
-
-                FileStream stream = new FileStream(filePath, FileMode.Create);
-
-                MainDataHolder data = new MainDataHolder(client);
-
-                formatter.Serialize(stream, data);
-
-                stream.Close();
-            }
-
-            catch { }
-        }
-
-        public static MainDataHolder LoadUserData(string username)
-        {
-            try
-            {
-                string path = Server.playersFolderPath + Path.DirectorySeparatorChar + username + ".data";
-
-                BinaryFormatter formatter = new BinaryFormatter();
-
-                FileStream stream = new FileStream(path, FileMode.Open);
-
-                MainDataHolder data = formatter.Deserialize(stream) as MainDataHolder;
-
-                stream.Close();
-
-                return data;
-            }
-
-            catch { return null; }
-        }
-
         public static void SaveBannedIPs(Dictionary<string, string> IPs)
         {
             string folderPath = Server.mainFolderPath;

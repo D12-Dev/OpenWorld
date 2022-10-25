@@ -26,7 +26,7 @@ namespace OpenWorld
         private bool inCreateWindow;
         private string createFactionName;
 
-        private bool inSettingsWindow;
+        private bool inOptionsWindow;
 
         private bool inMembersWindow;
 
@@ -78,47 +78,42 @@ namespace OpenWorld
                 }
             }
 
-            else if (inSettingsWindow)
+            else if (inOptionsWindow)
             {
-                string line1 = "Settings";
+                string line1 = "Options";
 
                 Widgets.Label(new Rect(centeredX - Text.CalcSize(line1).x / 2, rect.y + 50, Text.CalcSize(line1).x, Text.CalcSize(line1).y), line1);
 
-                if (Widgets.ButtonText(new Rect(new Vector2(rect.xMin, rect.y + 100), new Vector2(buttonX, buttonY)), "Leave"))
+                if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX * 2 / 2), rect.y + 85), new Vector2(buttonX * 2, buttonY)), "Leave Faction"))
                 {
                     Find.WindowStack.Add(new Dialog_MPFactionLeave(this));
                 }
 
-                if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX / 2), rect.y + 100), new Vector2(buttonX, buttonY)), "Disband"))
+                if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX * 2 / 2), rect.y + 125), new Vector2(buttonX * 2, buttonY)), "Disband Faction"))
                 {
                     Find.WindowStack.Add(new Dialog_MPFactionDisband(this));
                 }
 
-                if (Widgets.ButtonText(new Rect(new Vector2(rect.xMax - buttonX, rect.y + 100), new Vector2(buttonX, buttonY)), "X"))
+                if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX * 2 / 2), rect.y + 165), new Vector2(buttonX * 2, buttonY)), "X"))
                 {
                     
                 }
 
-                if (Widgets.ButtonText(new Rect(new Vector2(rect.xMin, rect.yMax - buttonY), new Vector2(buttonX, buttonY)), "Apply"))
+                if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX / 2), rect.yMax - buttonY), new Vector2(buttonX, buttonY)), "Back"))
                 {
-                    inSettingsWindow = false;
-                }
-
-                if (Widgets.ButtonText(new Rect(new Vector2(rect.xMax - buttonX, rect.yMax - buttonY), new Vector2(buttonX, buttonY)), "Back"))
-                {
-                    inSettingsWindow = false;
+                    inOptionsWindow = false;
                 }
             }
 
             else if (inMembersWindow)
             {
-                string line1 = "Member List";
+                string line1 = "Member List [" + Main._ParametersCache.factionMembers.Count() + "]";
 
                 Widgets.Label(new Rect(centeredX - Text.CalcSize(line1).x / 2, rect.y + 50, Text.CalcSize(line1).x, Text.CalcSize(line1).y), line1);
 
                 GenerateList(new Rect(new Vector2(centeredX - rect.width / 2, rect.y + 85), new Vector2(rect.width, rect.height)));
 
-                if (Widgets.ButtonText(new Rect(new Vector2(rect.xMax - buttonX, rect.yMax - buttonY), new Vector2(buttonX, buttonY)), "Back"))
+                if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX / 2), rect.yMax - buttonY), new Vector2(buttonX, buttonY)), "Back"))
                 {
                     inMembersWindow = false;
                 }
@@ -169,9 +164,9 @@ namespace OpenWorld
                     
                 }
 
-                if (Widgets.ButtonText(new Rect(new Vector2(rect.xMin, rect.yMax - buttonY), new Vector2(buttonX, buttonY)), "Settings"))
+                if (Widgets.ButtonText(new Rect(new Vector2(rect.xMin, rect.yMax - buttonY), new Vector2(buttonX, buttonY)), "Options"))
                 {
-                    inSettingsWindow = true;
+                    inOptionsWindow = true;
                 }
 
                 if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX / 2), rect.yMax - buttonY), new Vector2(buttonX, buttonY)), "Refresh"))

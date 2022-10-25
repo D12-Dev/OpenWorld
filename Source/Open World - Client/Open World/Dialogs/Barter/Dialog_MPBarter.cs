@@ -45,7 +45,7 @@ namespace OpenWorld
             }
             else
             {
-                settlement = Find.WorldObjects.Settlements.Find(fetch => fetch.Faction == Main._ParametersCache.faction && fetch.Tile == int.Parse(invoker));
+                settlement = Find.WorldObjects.Settlements.Find(fetch => Main._ParametersCache.allFactions.Contains(settlement.Faction) && fetch.Tile == int.Parse(invoker));
                 Main._ParametersCache.focusedSettlement = settlement;
 
                 playerNegotiator = Find.AnyPlayerHomeMap.mapPawns.AllPawns.Find(fetch => fetch.IsColonist && fetch.IsSociallyProper(fetch));

@@ -18,12 +18,15 @@ namespace OpenWorld
 			try
 			{
 				Settlement settlement = (Settlement)WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
-				settlement.SetFaction(Main._ParametersCache.faction);
+				settlement.SetFaction(Main._ParametersCache.neutralFaction);
 				settlement.Tile = int.Parse(Main._ParametersCache.addSettlementData.Split('│')[2]);
 				settlement.Name = Main._ParametersCache.addSettlementData.Split('│')[3] + "'s Settlement";
 				Find.WorldObjects.Add(settlement);
 
-				Main._ParametersCache.onlineSettlements.Add(int.Parse(Main._ParametersCache.addSettlementData.Split('│')[1]), 
+				Main._ParametersCache.onlineNeutralSettlements.Add(int.Parse(Main._ParametersCache.addSettlementData.Split('│')[1]), 
+					new List<string>() { Main._ParametersCache.addSettlementData.Split('│')[2] });
+
+				Main._ParametersCache.allSettlements.Add(int.Parse(Main._ParametersCache.addSettlementData.Split('│')[1]),
 					new List<string>() { Main._ParametersCache.addSettlementData.Split('│')[2] });
 			}
 
@@ -42,16 +45,12 @@ namespace OpenWorld
 
 				Find.WorldObjects.Remove(toDestroy);
 
-				Main._ParametersCache.onlineSettlements.Remove(int.Parse(Main._ParametersCache.removeSettlementData.Split('│')[2]));
+				Main._ParametersCache.onlineNeutralSettlements.Remove(int.Parse(Main._ParametersCache.removeSettlementData.Split('│')[2]));
+
+				Main._ParametersCache.allSettlements.Remove(int.Parse(Main._ParametersCache.removeSettlementData.Split('│')[2]));
 			}
 
 			catch { }
-		}
-
-		public void FindOnlineFactionInWorld()
-		{
-			List<Faction> allFactions = Find.FactionManager.AllFactions.ToList();
-			Main._ParametersCache.faction = allFactions.Find(fetch => fetch.Name == "Open World Settlements");
 		}
 
         public void HandleSettlementsLocation()
@@ -62,59 +61,41 @@ namespace OpenWorld
 			//Get existing settlements
 			foreach (Settlement st in Find.WorldObjects.Settlements)
 			{
-				if (st.Faction == Main._ParametersCache.faction)
+				if (st.Faction == Main._ParametersCache.neutralFaction ||
+					st.Faction == Main._ParametersCache.allyFaction ||
+					st.Faction == Main._ParametersCache.enemyFaction)
 				{
-					Settlement dummySettlement = new Settlement();
-					dummySettlement.Tile = st.Tile;
-					dummySettlement.Name = st.Name;
-
-					existingSettlements.Add(dummySettlement);
+					existingSettlements.Add(st);
 				}
 			}
 
 			//Get server settlements
-			foreach (KeyValuePair<int, List<string>> pair in Main._ParametersCache.onlineSettlements)
+			foreach (KeyValuePair<int, List<string>> pair in Main._ParametersCache.allSettlements)
 			{
-				Settlement dummySettlement = new Settlement();
+				Settlement dummySettlement = (Settlement)WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
 				dummySettlement.Tile = pair.Key;
 				dummySettlement.Name = pair.Value[0];
+
+				if (pair.Value[1] == "0") dummySettlement.SetFaction(Main._ParametersCache.neutralFaction);
+				else if (pair.Value[1] == "1") dummySettlement.SetFaction(Main._ParametersCache.allyFaction);
+				else if (pair.Value[1] == "2") dummySettlement.SetFaction(Main._ParametersCache.enemyFaction);
 
 				serverSettlements.Add(dummySettlement);
 			}
 
-			//Remove old settlements
 			foreach (Settlement settlement in existingSettlements)
-			{
-				Settlement dummySettlement = null;
-				dummySettlement = serverSettlements.Find(fetch => fetch.Tile == settlement.Tile);
-
-				if (dummySettlement != null) continue;
-				else
-				{
-					Settlement settlementToRemove = Find.WorldObjects.Settlements.Find(fetch => fetch.Tile == settlement.Tile);
-					Find.WorldObjects.Remove(settlementToRemove);
-				}
+            {
+				Settlement settlementToRemove = Find.WorldObjects.Settlements.Find(fetch => fetch.Tile == settlement.Tile);
+				Find.WorldObjects.Remove(settlementToRemove);
 			}
 
-			//Add new settlements
 			foreach (Settlement settlement in serverSettlements)
-			{
-				Settlement dummySettlement = null;
-				dummySettlement = existingSettlements.Find(fetch => fetch.Tile == settlement.Tile);
-
-				if (dummySettlement != null) continue;
-				else
-				{
-					Settlement newSettlement = (Settlement)WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
-					newSettlement.SetFaction(Main._ParametersCache.faction);
-					newSettlement.Tile = settlement.Tile;
-					newSettlement.Name = settlement.Name + "'s Settlement";
-					Find.WorldObjects.Add(newSettlement);
-				}
+            {
+                Find.WorldObjects.Add(settlement);
 			}
 		}
 
-        public void HandleRoadGeneration()
+		public void HandleRoadGeneration()
         {
 			if (Main._ParametersCache.roadMode == 0) return;
 

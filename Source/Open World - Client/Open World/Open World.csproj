@@ -84,6 +84,8 @@
     <Compile Include="Categories\MPChat.cs" />
     <Compile Include="Categories\MPGame.cs" />
     <Compile Include="Categories\MPWorld.cs" />
+    <Compile Include="Dialogs\Factions\Dialog_MPFactionInvite.cs" />
+    <Compile Include="Dialogs\Factions\Dialog_MPFactionNotLeader.cs" />
     <Compile Include="Dialogs\Factions\Dialog_MPFactionNotInFaction.cs" />
     <Compile Include="Dialogs\Factions\Dialog_MPFactionAlreadyInFaction.cs" />
     <Compile Include="Dialogs\Factions\Dialog_MPFactionRecruit.cs" />
