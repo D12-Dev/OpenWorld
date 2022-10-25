@@ -39,6 +39,10 @@ namespace OpenWorld
             {
                 try { System.Diagnostics.Process.Start("https://github.com/TastyLollipop/OpenWorld"); } catch { }
             }
+            if (listingStandard.ButtonTextLabeled("Get To Tasty Lollipop's Patreon", "Open"))
+            {
+                try { System.Diagnostics.Process.Start("https://www.patreon.com/user?u=81586827"); } catch { }
+            }
 
             listingStandard.GapLine();
             listingStandard.Label("Mod Details");

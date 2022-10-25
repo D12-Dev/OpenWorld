@@ -656,8 +656,6 @@ namespace OpenWorld
 						Main._ParametersCache.focusedSettlement = __instance;
 						Main._ParametersCache.focusedCaravan = caravan;
 
-						//Main._MPRTSE.SetupRaidParameters();
-
 						Find.WindowStack.Add(new Dialog_MPNotImplemented());
 					}
 				};
@@ -675,6 +673,22 @@ namespace OpenWorld
 						Main._ParametersCache.focusedCaravan = caravan;
 
 						Find.WindowStack.Add(new Dialog_MPNotImplemented());
+					}
+				};
+
+				Command_Action command_Faction = new Command_Action
+				{
+					defaultLabel = "Faction Menu",
+					defaultDesc = "Open the faction menu",
+					icon = ContentFinder<Texture2D>.Get("UI/Icons/VisitorsHelp"),
+					action = delegate
+					{
+						if (!Networking.isConnectedToServer) return;
+
+						Main._ParametersCache.focusedSettlement = __instance;
+						Main._ParametersCache.focusedCaravan = caravan;
+
+						Find.WindowStack.Add(new Dialog_MPFactionOnPlayer());
 					}
 				};
 
@@ -767,6 +781,11 @@ namespace OpenWorld
 				gizmoList.Add(command_Barter);
 				gizmoList.Add(command_Gift);
 				gizmoList.Add(command_InvokeEvent);
+
+				if (Main._ParametersCache.hasFaction == true)
+                {
+					gizmoList.Add(command_Faction);
+                }
 
 				__result = gizmoList;
 			}

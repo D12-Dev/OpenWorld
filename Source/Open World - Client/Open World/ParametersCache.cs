@@ -15,18 +15,24 @@ namespace OpenWorld
         public int temperature;
         public int population;
 
-        //Player Details
+        //Player Faction
         public bool hasFaction;
         public string factionName;
-        public int factionMembers;
+        public Dictionary<string, int> factionMembers = new Dictionary<string, int>();
 
-        //GENERAL PURPOSE GOES HERE
-        public string gameSavePath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData).Replace("Roaming", "LocalLow") + "Ludeon Studios/RimWorld by Ludeon Studios/Saves" + "\\";
+        //Player Flags
         public bool pvpFlag;
         public bool offlinePvpFlag;
         public bool visitFlag;
         public bool secretFlag;
         public bool spyWarnFlag;
+
+        //Online Players
+        public List<string> playerList = new List<string>();
+        public int playerCount = 0;
+
+        //General Purpose
+        public string gameSavePath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData).Replace("Roaming", "LocalLow") + "Ludeon Studios/RimWorld by Ludeon Studios/Saves" + "\\";
         public Dialog_MPDisconnected __MPDisconnected;
 
         //Dialog_MPParameters
@@ -49,10 +55,6 @@ namespace OpenWorld
         public int profanityMode = 0;
         public Faction faction;
         public Dictionary<int, List<string>> onlineSettlements = new Dictionary<int, List<string>>();
-
-        //Players
-        public List<string> playerList = new List<string>();
-        public int playerCount = 0;
 
         //Dialog_MPBlackMarket
         public Dialog_MPBlackMarket __MPBlackMarket;

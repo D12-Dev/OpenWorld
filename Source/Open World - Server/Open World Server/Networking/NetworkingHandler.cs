@@ -184,33 +184,75 @@ namespace OpenWorldServer
 
         public static void FactionManagementHandle(ServerClient client, string data)
         {
-            string dataToSend = "";
-
             if (data == "FactionManagement│Refresh")
             {
-                dataToSend = "FactionManagement│Refresh";
-
-                Networking.SendData(client, dataToSend);
+                if (client.faction == null) return;
+                else Networking.SendData(client, FactionHandler.GetFactionDetails(client));
             }
 
-            else if (data == "FactionManagement│Create")
+            else if (data.StartsWith("FactionManagement│Create│"))
             {
+                if (client.faction != null) return;
 
+                string factionName = data.Split('│')[2];
+
+                Faction factionToFetch = Server.factionList.Find(fetch => fetch.name == factionName);
+                if (factionToFetch == null) FactionHandler.CreateFaction(factionName, client);
+                else Networking.SendData(client, "FactionManagement│NameInUse");
+            }
+
+            else if (data == "FactionManagement│Leave")
+            {
+                if (client.faction == null) return;
+                else FactionHandler.RemoveMember(client.faction, client);
             }
 
             else if (data == "FactionManagement│Disband")
             {
+                if (client.faction == null) return;
 
+                if (client != FactionHandler.GetFactionLeader(client.faction)) return;
+
+                foreach (KeyValuePair<ServerClient, FactionHandler.MemberRank> member in client.faction.members)
+                {
+                    ServerClient clientToRemove = member.Key;
+                    if (clientToRemove == client) continue;
+                    else FactionHandler.RemoveMember(client.faction, clientToRemove);
+                }
+
+                FactionHandler.RemoveMember(client.faction, client);
             }
 
-            else if (data == "FactionManagement│AddMember")
+            else if (data.StartsWith("FactionManagement│AddMember"))
             {
+                if (client.faction == null) return;
 
+                if (client != FactionHandler.GetFactionLeader(client.faction)) return;
+
+                string tileID = data.Split('│')[2];
+                if (!PlayerUtils.CheckForConnectedPlayers(tileID)) Networking.SendData(client, "PlayerNotConnected│");
+                else
+                {
+                    ServerClient memberToAdd = PlayerUtils.GetPlayerFromTile(tileID);
+                    if (memberToAdd.faction != null) Networking.SendData(client, "FactionManagement│AlreadyInFaction");
+                    else FactionHandler.AddMember(client.faction, memberToAdd);
+                }
             }
 
-            else if (data == "FactionManagement│RemoveMember")
+            else if (data.StartsWith("FactionManagement│RemoveMember"))
             {
+                if (client.faction == null) return;
 
+                if (client != FactionHandler.GetFactionLeader(client.faction)) return;
+
+                string tileID = data.Split('│')[2];
+                if (!PlayerUtils.CheckForConnectedPlayers(tileID)) Networking.SendData(client, "PlayerNotConnected│");
+                else
+                {
+                    ServerClient memberToRemove = PlayerUtils.GetPlayerFromTile(tileID);
+                    if (memberToRemove.faction != client.faction) Networking.SendData(client, "FactionManagement│NotInFaction");
+                    else FactionHandler.RemoveMember(client.faction, memberToRemove);
+                }
             }
 
             else if (data == "FactionManagement│ChangeMemberRank")

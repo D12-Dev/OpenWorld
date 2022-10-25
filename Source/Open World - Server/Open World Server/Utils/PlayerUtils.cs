@@ -43,6 +43,7 @@ namespace OpenWorldServer
                     client.pawnCount = savedClient.pawnCount;
                     client.wealth = savedClient.wealth;
                     client.isImmunized = savedClient.isImmunized;
+                    client.faction = savedClient.faction;
                     return;
                 }
             }
@@ -206,6 +207,11 @@ namespace OpenWorldServer
             }
 
             return false;
+        }
+
+        public static ServerClient GetPlayerFromTile(string tileID)
+        {
+            return Networking.connectedClients.Find(fetch => fetch.homeTileID == tileID);
         }
 
         public static bool CheckForPlayerShield(string tileID)

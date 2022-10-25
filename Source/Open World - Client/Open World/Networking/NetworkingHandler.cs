@@ -348,33 +348,35 @@ namespace OpenWorld
 
         public static void FactionManagementHandle(string data)
         {
-            if (data == "FactionManagement│Refresh")
+            if (data.StartsWith("FactionManagement│Details│"))
             {
-
+                FactionHandler.FactionDetailsHandle(data);
             }
 
-            else if (data == "FactionManagement│Kicked")
+            else if (data == "FactionManagement│Created")
             {
-
+                Find.WindowStack.Add(new Dialog_MPFactionCreated());
             }
 
-            else if (data.StartsWith("FactionManagement│Details│"))
+            else if (data == "FactionManagement│NameInUse")
             {
-                string factionName = data.Split('│')[2];
-                if (string.IsNullOrWhiteSpace(factionName))
-                {
-                    Main._ParametersCache.hasFaction = false;
-                    Main._ParametersCache.factionName = "";
-                }
-
-                else
-                {
-                    Main._ParametersCache.hasFaction = true;
-                    Main._ParametersCache.factionName = factionName;
-                }
-
-                Log.Message(Main._ParametersCache.hasFaction + " - " + Main._ParametersCache.factionName);
+                Find.WindowStack.Add(new Dialog_MPFactionNameInUse());
             }
+
+            else if (data == "FactionManagement│AlreadyInFaction")
+            {
+                Find.WindowStack.Add(new Dialog_MPFactionAlreadyInFaction());
+            }
+
+            else if (data == "FactionManagement│NotInFaction")
+            {
+                Find.WindowStack.Add(new Dialog_MPFactionNotInFaction());
+            }
+        }
+
+        public static void PlayerNotConnectedHandle(string data)
+        {
+            Find.WindowStack.Add(new Dialog_MPPlayerNotConnected());
         }
 
         public static void DisconnectHandle(string data)

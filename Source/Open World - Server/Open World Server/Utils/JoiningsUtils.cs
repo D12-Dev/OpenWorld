@@ -85,7 +85,7 @@ namespace OpenWorldServer
             ServerUtils.SendPlayerList(client);
             Thread.Sleep(100);
 
-            Networking.SendData(client, GetFactionToSend(client));
+            Networking.SendData(client, FactionHandler.GetFactionDetails(client));
             Thread.Sleep(100);
 
             Networking.SendData(client, GetGiftsToSend(client));
@@ -184,19 +184,6 @@ namespace OpenWorldServer
             int modVerifyInt = Server.usingModVerification ? 1 : 0;
 
             return dataToSend + devInt + "│" + wipeInt + "│" + roadInt + "│" + chatInt + "│" + profanityInt + "│" + modVerifyInt + "│" + name;
-        }
-
-        public static string GetFactionToSend(ServerClient client)
-        {
-            string dataToSend = "FactionManagement│Details│";
-
-            if (client.faction == null) return dataToSend;
-
-            else
-            {
-                dataToSend += client.faction.name + "│";
-                return dataToSend;
-            }
         }
 
         public static string GetGiftsToSend(ServerClient client)

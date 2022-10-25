@@ -16,9 +16,9 @@ namespace OpenWorld
 
             else if (threadID == 1)
             {
-                Thread CheckThread = new Thread(() => Networking.CheckConnection());
+                Thread CheckThread = new Thread(() => Networking.Heartbeat());
                 CheckThread.IsBackground = true;
-                CheckThread.Name = "Check Thread";
+                CheckThread.Name = "Heartbeat Thread";
                 CheckThread.Start();
             }
 
