@@ -15,7 +15,7 @@ namespace OpenWorld
         public override Vector2 InitialSize => new Vector2(350f, 150f);
 
         private string windowTitle = "Error!";
-        private string windowDescription = "That player not in your faction";
+        private string windowDescription = "That player is not in your faction";
 
         private float buttonX = 150f;
         private float buttonY = 38f;

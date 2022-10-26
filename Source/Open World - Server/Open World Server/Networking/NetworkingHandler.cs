@@ -272,7 +272,8 @@ namespace OpenWorldServer
                     Faction factionToCheck = Server.factionList.Find(fetch => fetch.name == client.faction.name);
                     ServerClient memberToRemove = Server.savedClients.Find(fetch => fetch.homeTileID == tileID);
 
-                    if (memberToRemove.faction != factionToCheck) Networking.SendData(client, "FactionManagement│NotInFaction");
+                    if (memberToRemove.faction == null) Networking.SendData(client, "FactionManagement│NotInFaction");
+                    else if (memberToRemove.faction.name != factionToCheck.name) Networking.SendData(client, "FactionManagement│NotInFaction");
                     else FactionHandler.RemoveMember(factionToCheck, memberToRemove);
                 }
 
@@ -280,7 +281,8 @@ namespace OpenWorldServer
                 {
                     ServerClient memberToRemove = PlayerUtils.GetPlayerFromTile(tileID);
 
-                    if (memberToRemove.faction != client.faction) Networking.SendData(client, "FactionManagement│NotInFaction");
+                    if (memberToRemove.faction == null) Networking.SendData(client, "FactionManagement│NotInFaction");
+                    else if (memberToRemove.faction != client.faction) Networking.SendData(client, "FactionManagement│NotInFaction");
                     else FactionHandler.RemoveMember(client.faction, memberToRemove);
                 }
             }

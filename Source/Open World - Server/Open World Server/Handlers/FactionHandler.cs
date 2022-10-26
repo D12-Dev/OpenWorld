@@ -195,14 +195,22 @@ namespace OpenWorldServer
 
         public static void AddMember(Faction faction, ServerClient memberToAdd)
         {
-            memberToAdd.faction = faction;
-
-            ServerClient clientToSave = Server.savedClients.Find(fetch => fetch.username == memberToAdd.username);
-            clientToSave.faction = faction;
-            PlayerUtils.SavePlayer(clientToSave);
-
             faction.members.Add(memberToAdd, MemberRank.Member);
             SaveFaction(faction);
+
+            ServerClient connected = Networking.connectedClients.Find(fetch => fetch.username == memberToAdd.username);
+            if (connected != null)
+            {
+                connected.faction = faction;
+                Networking.SendData(connected, GetFactionDetails(connected));
+            }
+
+            ServerClient saved = Server.savedClients.Find(fetch => fetch.username == memberToAdd.username);
+            if (saved != null)
+            {
+                saved.faction = faction;
+                PlayerUtils.SavePlayer(saved);
+            }
 
             UpdateAllPlayersInFaction(faction);
         }
@@ -218,18 +226,18 @@ namespace OpenWorldServer
                 }
             }
 
-            ServerClient saved = Server.savedClients.Find(fetch => fetch.username == memberToRemove.username);
-            if (saved != null)
-            {
-                saved.faction = null;
-                PlayerUtils.SavePlayer(saved);
-            }
-
             ServerClient connected = Networking.connectedClients.Find(fetch => fetch.username == memberToRemove.username);
             if (connected != null)
             {
                 connected.faction = null;
                 Networking.SendData(connected, GetFactionDetails(connected));
+            }
+
+            ServerClient saved = Server.savedClients.Find(fetch => fetch.username == memberToRemove.username);
+            if (saved != null)
+            {
+                saved.faction = null;
+                PlayerUtils.SavePlayer(saved);
             }
 
             if (faction.members.Count > 0)

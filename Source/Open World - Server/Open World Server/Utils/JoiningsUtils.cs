@@ -154,9 +154,9 @@ namespace OpenWorldServer
                     if (pair.Value[0] == client.username) continue;
 
                     int factionValue = 0;
-                    if (client.faction == null) factionValue = 0;
 
                     ServerClient clientToCompare = Server.savedClients.Find(fetch => fetch.username == pair.Value[0]);
+                    if (client.faction == null) factionValue = 0;
                     if (clientToCompare.faction == null) factionValue = 0;
                     else if (client.faction != null && clientToCompare.faction != null)
                     {

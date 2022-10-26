@@ -347,23 +347,6 @@ namespace OpenWorldServer
             string tileToSend = data.Split('│')[1];
             string dataToSend = "GiftedItems│" + data.Split('│')[2];
 
-            try
-            {
-                string sendMode = data.Split('│')[3];
-
-                if (!string.IsNullOrWhiteSpace(sendMode) && sendMode == "Pod")
-                {
-                    foreach (ServerClient sc in Networking.connectedClients)
-                    {
-                        if (sc == invoker) continue;
-                        if (sc.homeTileID == tileToSend) continue;
-
-                        Networking.SendData(sc, "│RenderTransportPod│" + invoker.homeTileID + "│" + tileToSend + "│");
-                    }
-                }
-            }
-            catch { }
-
             foreach (ServerClient sc in Networking.connectedClients)
             {
                 if (sc.homeTileID == tileToSend)
@@ -381,7 +364,7 @@ namespace OpenWorldServer
                 if (sc.homeTileID == tileToSend)
                 {
                     sc.giftString.Add(dataToSend);
-                    PlayerUtils.SavePlayer(sc);
+                    SavePlayer(sc);
                     ConsoleUtils.LogToConsole("Gift Done Between [" + invoker.username + "] And [" + sc.username + "] But Was Offline. Saving");
                     return;
                 }

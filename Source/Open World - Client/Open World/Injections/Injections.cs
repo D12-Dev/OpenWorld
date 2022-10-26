@@ -551,7 +551,7 @@ namespace OpenWorld
 			for (int i = 0; i < settlements.Count; i++)
 			{
 				Settlement settlement = settlements[i];
-				if (settlement.Faction == null || settlement.Faction != Main._ParametersCache.enemyFaction || settlement.Faction == Faction.OfPlayer || settlement.Faction.def.permanentEnemy || settlement.Faction.PlayerGoodwill == -100)
+				if (settlement.Faction == null || Main._ParametersCache.allFactions.Contains(settlement.Faction) || settlement.Faction == Faction.OfPlayer || settlement.Faction.def.permanentEnemy || settlement.Faction.PlayerGoodwill == -100)
 				{
 					continue;
 				}

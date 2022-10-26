@@ -39,13 +39,16 @@ namespace OpenWorld
             Pawn playerNegotiator = null;
             this.rebarter = rebarter;
 
+            //IF IT BREAKS IT'S PROBABLY IN HERE
+            //EITHER NO SETTLEMENT OR NO PAWNS IN SETTLEMENT
+
             if (!rebarter)
             {
                 playerNegotiator = BestCaravanPawnUtility.FindBestNegotiator(caravan, settlement.Faction, settlement.TraderKind);
             }
             else
             {
-                settlement = Find.WorldObjects.Settlements.Find(fetch => Main._ParametersCache.allFactions.Contains(settlement.Faction) && fetch.Tile == int.Parse(invoker));
+                settlement = Find.WorldObjects.Settlements.Find(fetch => fetch.Tile == int.Parse(invoker));
                 Main._ParametersCache.focusedSettlement = settlement;
 
                 playerNegotiator = Find.AnyPlayerHomeMap.mapPawns.AllPawns.Find(fetch => fetch.IsColonist && fetch.IsSociallyProper(fetch));

@@ -61,8 +61,7 @@ namespace OpenWorld
 
             Text.Font = GameFont.Small;
 
-            try { GenerateList(new Rect(rect.x, itemListDif, rect.width, 160f)); }
-            catch { }
+            GenerateList(new Rect(rect.x, itemListDif, rect.width, 160f));
 
             Text.Font = GameFont.Medium;
             if (Widgets.ButtonText(new Rect(new Vector2(rect.x, rect.yMax - buttonY), new Vector2(buttonX, buttonY)), "Accept"))

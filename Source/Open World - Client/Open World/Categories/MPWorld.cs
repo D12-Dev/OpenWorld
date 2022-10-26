@@ -43,11 +43,15 @@ namespace OpenWorld
 
 				Settlement toDestroy = settlementList.Find(item => item.Tile == int.Parse(Main._ParametersCache.removeSettlementData.Split('│')[2]));
 
+				int settlementTile = int.Parse(Main._ParametersCache.removeSettlementData.Split('│')[2]);
+
+				if (toDestroy.Faction == Main._ParametersCache.neutralFaction) Main._ParametersCache.onlineNeutralSettlements.Remove(settlementTile);
+				else if (toDestroy.Faction == Main._ParametersCache.allyFaction) Main._ParametersCache.onlineAllySettlements.Remove(settlementTile);
+				else if (toDestroy.Faction == Main._ParametersCache.enemyFaction) Main._ParametersCache.onlineEnemySettlements.Remove(settlementTile);
+
+				Main._ParametersCache.allSettlements.Remove(settlementTile);
+
 				Find.WorldObjects.Remove(toDestroy);
-
-				Main._ParametersCache.onlineNeutralSettlements.Remove(int.Parse(Main._ParametersCache.removeSettlementData.Split('│')[2]));
-
-				Main._ParametersCache.allSettlements.Remove(int.Parse(Main._ParametersCache.removeSettlementData.Split('│')[2]));
 			}
 
 			catch { }
@@ -69,6 +73,7 @@ namespace OpenWorld
 				}
 			}
 
+			//Can probably split this into 3 separate loops
 			//Get server settlements
 			foreach (KeyValuePair<int, List<string>> pair in Main._ParametersCache.allSettlements)
 			{
