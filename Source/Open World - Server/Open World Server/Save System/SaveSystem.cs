@@ -9,7 +9,7 @@ namespace OpenWorldServer
         public static void SaveBannedIPs(Dictionary<string, string> IPs)
         {
             string folderPath = Server.mainFolderPath;
-            string filepath = folderPath + Path.DirectorySeparatorChar + "Banned IPs.data";
+            string filepath = folderPath + Path.DirectorySeparatorChar + "bans_ip.dat";
 
             BinaryFormatter formatter = new BinaryFormatter();
 
@@ -24,7 +24,7 @@ namespace OpenWorldServer
 
         public static BanDataHolder LoadBannedIPs()
         {
-            string path = Server.mainFolderPath + Path.DirectorySeparatorChar + "Banned IPs.data";
+            string path = Server.mainFolderPath + Path.DirectorySeparatorChar + "bans_ip.dat";
 
             BinaryFormatter formatter = new BinaryFormatter();
 
