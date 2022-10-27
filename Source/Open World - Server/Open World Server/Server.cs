@@ -6,6 +6,9 @@ namespace OpenWorldServer
     [System.Serializable]
     public static class Server
     {
+        //Meta
+        public static bool exit = false;
+
         //Paths
         public static string mainFolderPath;
         public static string serverSettingsPath;
@@ -80,7 +83,7 @@ namespace OpenWorldServer
 
             Threading.GenerateThreads(0);
 
-            while (true) ListenForCommands();
+            while (!exit) ListenForCommands();
         }
 
         public static void ListenForCommands()

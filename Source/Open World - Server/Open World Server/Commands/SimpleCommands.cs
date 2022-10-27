@@ -129,7 +129,6 @@ namespace OpenWorldServer
             Console.WriteLine("");
         }
 
-        //Check this one
         public static void ExitCommand()
         {
             List<ServerClient> clientsToKick = new List<ServerClient>();
@@ -145,7 +144,7 @@ namespace OpenWorldServer
                 sc.disconnectFlag = true;
             }
 
-            Environment.Exit(0);
+            Server.exit = true;
         }
 
         public static void ClearCommand()
