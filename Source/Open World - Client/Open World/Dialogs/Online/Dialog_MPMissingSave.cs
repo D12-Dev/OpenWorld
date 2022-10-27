@@ -10,17 +10,17 @@ using Verse.Profile;
 
 namespace OpenWorld
 {
-    public class Dialog_MPFactionNotLeader : Window
+    public class Dialog_MPMissingSave : Window
     {
         public override Vector2 InitialSize => new Vector2(350f, 150f);
 
         private string windowTitle = "Error!";
-        private string windowDescription = "You are not the leader of the faction";
+        private string windowDescription = "You need an existing server save to join";
 
         private float buttonX = 150f;
         private float buttonY = 38f;
 
-        public Dialog_MPFactionNotLeader()
+        public Dialog_MPMissingSave()
         {
             soundAppear = SoundDefOf.CommsWindow_Open;
             soundClose = SoundDefOf.CommsWindow_Close;

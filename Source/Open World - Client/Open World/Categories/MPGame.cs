@@ -2,6 +2,7 @@
 using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -54,6 +55,13 @@ namespace OpenWorld
 		public void LoadMultiplayerGame()
 		{
 			string saveName = Main._ParametersCache.onlineFileSaveName + " - " + Main._ParametersCache.connectedServerIdentifier + " - " + Main._ParametersCache.usernameText;
+
+			if (!File.Exists(Main._ParametersCache.gameSavePath + Path.DirectorySeparatorChar + saveName + ".rws"))
+            {
+				Find.WindowStack.Add(new Dialog_MPMissingSave());
+				Networking.DisconnectFromServer();
+				return;
+            }
 
 			Main._ParametersCache.isPlayingOnline = true;
 

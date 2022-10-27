@@ -123,7 +123,6 @@ namespace OpenWorldServer
             Server.factionList.Remove(factionToDisband);
 
             string factionSavePath = Server.factionsFolderPath + Path.DirectorySeparatorChar + factionToDisband.name + ".bin";
-            Debug.WriteLine(factionSavePath);
             File.Delete(factionSavePath);
         }
 
@@ -202,7 +201,8 @@ namespace OpenWorldServer
             if (connected != null)
             {
                 connected.faction = faction;
-                Networking.SendData(connected, GetFactionDetails(connected));
+                //Don't need to send the data here since it's gonna be done down bellow
+                //Networking.SendData(connected, GetFactionDetails(connected));
             }
 
             ServerClient saved = Server.savedClients.Find(fetch => fetch.username == memberToAdd.username);
@@ -272,33 +272,81 @@ namespace OpenWorldServer
             DisbandFaction(faction);
         }
 
+        public static void PromoteMember(Faction faction, ServerClient memberToPromote)
+        {
+            ServerClient toPromote = null;
+            MemberRank previousRank = 0;
+
+            foreach (KeyValuePair<ServerClient, MemberRank> pair in faction.members)
+            {
+                if (pair.Key.username == memberToPromote.username)
+                {
+                    toPromote = pair.Key;
+                    previousRank = pair.Value;
+                    break;
+                }
+            }
+
+            if (previousRank > 0) return;
+
+            faction.members.Remove(toPromote);
+
+            faction.members.Add(memberToPromote, MemberRank.Moderator);
+
+            SaveFaction(faction);
+            UpdateAllPlayersInFaction(faction);
+        }
+
+        public static void DemoteMember(Faction faction, ServerClient memberToPromote)
+        {
+            ServerClient toDemote = null;
+            MemberRank previousRank = 0;
+
+            foreach (KeyValuePair<ServerClient, MemberRank> pair in faction.members)
+            {
+                if (pair.Key.username == memberToPromote.username)
+                {
+                    toDemote = pair.Key;
+                    previousRank = pair.Value;
+                    break;
+                }
+            }
+
+            if (previousRank == 0) return;
+
+            faction.members.Remove(toDemote);
+
+            faction.members.Add(memberToPromote, MemberRank.Member);
+
+            SaveFaction(faction);
+            UpdateAllPlayersInFaction(faction);
+        }
+
         public static void UpdateAllPlayersInFaction(Faction faction)
         {
-            foreach(ServerClient client in Networking.connectedClients)
+            ServerClient[] dummyfactionMembers = faction.members.Keys.ToArray();
+
+            foreach (ServerClient dummy in dummyfactionMembers)
             {
-                if (client.faction == null) continue;
-                if (client.faction.name == faction.name)
+                ServerClient connected = Networking.connectedClients.Find(fetch => fetch.username == dummy.username);
+                if (connected != null)
                 {
-                    Networking.SendData(client, GetFactionDetails(client));
+                    Networking.SendData(connected, GetFactionDetails(connected));
                 }
             }
         }
 
-        public static void ChangeMemberRank(Faction faction, ServerClient memberToChange, MemberRank newRank)
+        public static MemberRank GetMemberPowers(Faction faction, ServerClient memberToCheck)
         {
-            faction.members[memberToChange] = newRank;
-
-            SaveFaction(faction);
-        }
-
-        public static string GetFactionLeader(Faction faction)
-        {
-            foreach (KeyValuePair<ServerClient, MemberRank> member in faction.members)
+            foreach (KeyValuePair<ServerClient, MemberRank> pair in faction.members)
             {
-                if (member.Value == MemberRank.Leader) return member.Key.username;
+                if (pair.Key.username == memberToCheck.username)
+                {
+                    return pair.Value;
+                }
             }
 
-            return null;
+            return MemberRank.Member;
         }
     }
 }

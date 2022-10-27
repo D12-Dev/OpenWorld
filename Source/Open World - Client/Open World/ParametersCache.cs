@@ -2,6 +2,7 @@
 using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Verse;
 
 namespace OpenWorld
@@ -15,16 +16,11 @@ namespace OpenWorld
         public int temperature;
         public int population;
 
-        //Planet Factions
-        public List<Faction> allFactions = new List<Faction>();
-        public Faction neutralFaction;
-        public Faction allyFaction;
-        public Faction enemyFaction;
-
-        //Player Faction
-        public bool hasFaction;
-        public string factionName;
-        public Dictionary<string, int> factionMembers = new Dictionary<string, int>();
+        //Server Parameters
+        public int roadMode = 0;
+        public int chatMode = 0;
+        public int modVerificationMode = 0;
+        public int profanityMode = 0;
 
         //Player Flags
         public bool pvpFlag;
@@ -33,12 +29,29 @@ namespace OpenWorld
         public bool secretFlag;
         public bool spyWarnFlag;
 
+        //Planet Factions
+        public List<Faction> allFactions = new List<Faction>();
+        public Faction onlineNeutralFaction;
+        public Faction onlineAllyFaction;
+        public Faction onlineEnemyFaction;
+
+        //Online Player Faction
+        public bool hasFaction;
+        public string factionName;
+        public Dictionary<string, int> factionMembers = new Dictionary<string, int>();
+
+        //Online Settlements Lists
+        public Dictionary<int, List<string>> allSettlements = new Dictionary<int, List<string>>();
+        public Dictionary<int, List<string>> onlineNeutralSettlements = new Dictionary<int, List<string>>();
+        public Dictionary<int, List<string>> onlineAllySettlements = new Dictionary<int, List<string>>();
+        public Dictionary<int, List<string>> onlineEnemySettlements = new Dictionary<int, List<string>>();
+
         //Online Players
         public List<string> playerList = new List<string>();
         public int playerCount = 0;
 
         //General Purpose
-        public string gameSavePath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData).Replace("Roaming", "LocalLow") + "Ludeon Studios/RimWorld by Ludeon Studios/Saves" + "\\";
+        public string gameSavePath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData).Replace("Roaming", "LocalLow") + Path.DirectorySeparatorChar + "Ludeon Studios" + Path.DirectorySeparatorChar + "RimWorld by Ludeon Studios" + Path.DirectorySeparatorChar + "Saves";
         public Dialog_MPDisconnected __MPDisconnected;
 
         //Dialog_MPParameters
@@ -55,14 +68,6 @@ namespace OpenWorld
         public bool isGeneratingNewOnlineGame = false;
         public bool isPlayingOnline = false;
         public bool isAdmin = false;
-        public int roadMode = 0;
-        public int chatMode = 0;
-        public int modVerificationMode = 0;
-        public int profanityMode = 0;
-        public Dictionary<int, List<string>> allSettlements = new Dictionary<int, List<string>>();
-        public Dictionary<int, List<string>> onlineNeutralSettlements = new Dictionary<int, List<string>>();
-        public Dictionary<int, List<string>> onlineAllySettlements = new Dictionary<int, List<string>>();
-        public Dictionary<int, List<string>> onlineEnemySettlements = new Dictionary<int, List<string>>();
 
         //Dialog_MPBlackMarket
         public Dialog_MPBlackMarket __MPBlackMarket;
@@ -87,10 +92,7 @@ namespace OpenWorld
         public string[] cachedItems;
         public bool awaitingRebarter;
 
-        //Dialog_MPServerList
-        public Dialog_MPServerList __MPServerList;
-
-        //MPGame
+        //Letters
         public string letterTitle;
         public string letterDescription;
         public LetterDef letterType;
@@ -98,10 +100,9 @@ namespace OpenWorld
         //Injections
         public Settlement focusedSettlement;
         public Caravan focusedCaravan;
+        public int focusedTile;
         public SoundDef soundToUse;
         public string forcedEvent;
-        public string addSettlementData;
-        public string removeSettlementData;
         public string receiveGiftsData;
         public string serverStatusString;
         public string transferMode;

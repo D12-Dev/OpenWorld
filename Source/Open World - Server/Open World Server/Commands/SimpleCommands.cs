@@ -269,46 +269,6 @@ namespace OpenWorldServer
             Console.WriteLine("");
         }
 
-        public static void CreateTestFaction()
-        {
-            Console.Clear();
-            ConsoleUtils.WriteWithTime("Creating Test Faction");
-            Console.WriteLine();
-
-            //Create test leader
-
-            ServerClient leaderClient = new ServerClient(null);
-            leaderClient.username = "Epic Faction Leader Dude";
-
-            //Create test faction
-
-            string factionName = "test";
-            FactionHandler.CreateFaction(factionName, leaderClient);
-
-            //Create test members
-
-            ServerClient dummyClient1 = new ServerClient(null);
-            dummyClient1.username = "Normal dude 1";
-
-            ServerClient dummyClient2 = new ServerClient(null);
-            dummyClient2.username = "Normal dude 2";
-
-            ServerClient dummyClient3 = new ServerClient(null);
-            dummyClient3.username = "Normal dude 3";
-
-            FactionHandler.AddMember(leaderClient.faction, dummyClient1);
-            FactionHandler.AddMember(leaderClient.faction, dummyClient2);
-            FactionHandler.AddMember(leaderClient.faction, dummyClient3);
-
-            //Create test moderator
-
-            ServerClient moderatorClient = new ServerClient(null);
-            moderatorClient.username = "Amazing moderator dude";
-
-            FactionHandler.AddMember(leaderClient.faction, moderatorClient);
-            FactionHandler.ChangeMemberRank(moderatorClient.faction, moderatorClient, FactionHandler.MemberRank.Moderator);
-        }
-
         //Check this one
         public static void AdminListCommand()
         {

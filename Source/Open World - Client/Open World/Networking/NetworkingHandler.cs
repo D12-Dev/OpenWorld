@@ -25,37 +25,7 @@ namespace OpenWorld
 
         public static void SettlementsHandle(string data)
         {
-            data = data.Remove(0, 12);
-
-            Main._ParametersCache.allSettlements.Clear();
-            Main._ParametersCache.onlineNeutralSettlements.Clear();
-            Main._ParametersCache.onlineAllySettlements.Clear();
-            Main._ParametersCache.onlineEnemySettlements.Clear();
-
-            string[] settlementsToLoad = data.Split('│');
-
-            foreach (string str in settlementsToLoad)
-            {
-                if (string.IsNullOrWhiteSpace(str)) continue;
-
-                int settlementTile = int.Parse(str.Split(':')[0]);
-                string settlementName = str.Split(':')[1];
-                int settlementFactionValue = int.Parse(str.Split(':')[2]);
-
-                List<string> settlementDetails = new List<string>()
-                {
-                    settlementName,
-                    settlementFactionValue.ToString()
-                };
-
-                if (settlementFactionValue == 0) Main._ParametersCache.onlineNeutralSettlements.Add(settlementTile, settlementDetails);
-                else if (settlementFactionValue == 1) Main._ParametersCache.onlineAllySettlements.Add(settlementTile, settlementDetails);
-                else if (settlementFactionValue == 2) Main._ParametersCache.onlineEnemySettlements.Add(settlementTile, settlementDetails);
-            }
-
-            Main._ParametersCache.allSettlements.AddRange(Main._ParametersCache.onlineNeutralSettlements);
-            Main._ParametersCache.allSettlements.AddRange(Main._ParametersCache.onlineAllySettlements);
-            Main._ParametersCache.allSettlements.AddRange(Main._ParametersCache.onlineEnemySettlements);
+            SettlementHandler.GetSettlementsFromServer(data);
         }
 
         public static void VariablesHandle(string data)
@@ -137,16 +107,12 @@ namespace OpenWorld
         {
             if (data.StartsWith("SettlementBuilder│AddSettlement│"))
             {
-                Main._ParametersCache.addSettlementData = data;
-
-                Main._MPWorld.AddSettlementInWorld();
+                SettlementHandler.AddSettlementInWorld(data);
             }
 
             else if (data.StartsWith("SettlementBuilder│RemoveSettlement│"))
             {
-                Main._ParametersCache.removeSettlementData = data;
-
-                Main._MPWorld.RemoveSettlementInWorld();
+                SettlementHandler.RemoveSettlementInWorld(data);
             }
         }
 
@@ -384,9 +350,9 @@ namespace OpenWorld
                 Find.WindowStack.Add(new Dialog_MPFactionNotInFaction());
             }
 
-            else if (data == "FactionManagement│NotTheLeader")
+            else if (data == "FactionManagement│NoPowers")
             {
-                Find.WindowStack.Add(new Dialog_MPFactionNotLeader());
+                Find.WindowStack.Add(new Dialog_MPFactionNoPower());
             }
 
             else if (data.StartsWith("FactionManagement│Invite"))

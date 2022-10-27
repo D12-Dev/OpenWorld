@@ -54,6 +54,7 @@ namespace OpenWorldServer
 
         private static void SendNewGameData(ServerClient client)
         {
+            //We give saved data back to return data that is not removed at new creation
             PlayerUtils.GiveSavedDataToPlayer(client);
             PlayerUtils.SaveNewPlayerFile(client.username, client.password);
 

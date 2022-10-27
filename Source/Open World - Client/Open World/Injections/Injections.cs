@@ -237,7 +237,7 @@ namespace OpenWorld
 
 				Main._MPGame.SendPlayerSettlementData(__instance);
 
-				FactionHandler.FindOnlineFactionInWorld();
+				FactionHandler.FindOnlineFactionsInWorld();
 			}
 		}
 	}
@@ -249,11 +249,11 @@ namespace OpenWorld
 		[HarmonyPostfix]
 		public static void GetIDFromExistingGame(Game __instance)
 		{
-			FactionHandler.FindOnlineFactionInWorld();
+			FactionHandler.FindOnlineFactionsInWorld();
 
 			if (Main._ParametersCache.isPlayingOnline)
 			{
-				Main._MPWorld.HandleSettlementsLocation();
+				SettlementHandler.ManageSettlementsInWorld();
 
 				Main._MPWorld.HandleRoadGeneration();
 
@@ -281,45 +281,45 @@ namespace OpenWorld
 			{
 				if (item.defName == "OnlineNeutral")
 				{
-					Main._ParametersCache.neutralFaction = FactionGenerator.NewGeneratedFaction(new FactionGeneratorParms(item));
-					Find.FactionManager.Add(Main._ParametersCache.neutralFaction);
+					Main._ParametersCache.onlineNeutralFaction = FactionGenerator.NewGeneratedFaction(new FactionGeneratorParms(item));
+					Find.FactionManager.Add(Main._ParametersCache.onlineNeutralFaction);
 
 					foreach (KeyValuePair<int, List<string>> pair in Main._ParametersCache.onlineNeutralSettlements)
 					{
 						Settlement settlement = (Settlement)WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
 						settlement.Name = pair.Value[0] + "'s Settlement";
 						settlement.Tile = pair.Key;
-						settlement.SetFaction(Main._ParametersCache.neutralFaction);
+						settlement.SetFaction(Main._ParametersCache.onlineNeutralFaction);
 						Find.WorldObjects.Add(settlement);
 					}
 				}
 
 				else if (item.defName == "OnlineAlly")
 				{
-					Main._ParametersCache.allyFaction = FactionGenerator.NewGeneratedFaction(new FactionGeneratorParms(item));
-					Find.FactionManager.Add(Main._ParametersCache.allyFaction);
+					Main._ParametersCache.onlineAllyFaction = FactionGenerator.NewGeneratedFaction(new FactionGeneratorParms(item));
+					Find.FactionManager.Add(Main._ParametersCache.onlineAllyFaction);
 
 					foreach (KeyValuePair<int, List<string>> pair in Main._ParametersCache.onlineAllySettlements)
 					{
 						Settlement settlement = (Settlement)WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
-						settlement.Tile = pair.Key;
 						settlement.Name = pair.Value[0] + "'s Settlement";
-						settlement.SetFaction(Main._ParametersCache.allyFaction);
+						settlement.Tile = pair.Key;
+						settlement.SetFaction(Main._ParametersCache.onlineAllyFaction);
 						Find.WorldObjects.Add(settlement);
 					}
 				}
 
 				else if (item.defName == "OnlineEnemy")
 				{
-					Main._ParametersCache.enemyFaction = FactionGenerator.NewGeneratedFaction(new FactionGeneratorParms(item));
-					Find.FactionManager.Add(Main._ParametersCache.enemyFaction);
+					Main._ParametersCache.onlineEnemyFaction = FactionGenerator.NewGeneratedFaction(new FactionGeneratorParms(item));
+					Find.FactionManager.Add(Main._ParametersCache.onlineEnemyFaction);
 
 					foreach (KeyValuePair<int, List<string>> pair in Main._ParametersCache.onlineEnemySettlements)
 					{
 						Settlement settlement = (Settlement)WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
 						settlement.Name = pair.Value[0] + "'s Settlement";
 						settlement.Tile = pair.Key;
-						settlement.SetFaction(Main._ParametersCache.enemyFaction);
+						settlement.SetFaction(Main._ParametersCache.onlineEnemyFaction);
 						Find.WorldObjects.Add(settlement);
 					}
 				}
@@ -546,12 +546,16 @@ namespace OpenWorld
 		[HarmonyPrefix]
 		public static bool PreventGoodwillChange(ref int tile, ref List<Pair<Settlement, int>> outOffsets)
 		{
+			FactionHandler.FindOnlineFactionsInWorld();
+
 			int maxDist = SettlementProximityGoodwillUtility.MaxDist;
 			List<Settlement> settlements = Find.WorldObjects.Settlements;
 			for (int i = 0; i < settlements.Count; i++)
 			{
 				Settlement settlement = settlements[i];
-				if (settlement.Faction == null || Main._ParametersCache.allFactions.Contains(settlement.Faction) || settlement.Faction == Faction.OfPlayer || settlement.Faction.def.permanentEnemy || settlement.Faction.PlayerGoodwill == -100)
+				if (Main._ParametersCache.allFactions.Contains(settlement.Faction) || 
+					settlement.Faction == Faction.OfPlayer || 
+					settlement.Faction.def.permanentEnemy)
 				{
 					continue;
 				}
@@ -844,6 +848,43 @@ namespace OpenWorld
 					}
 				}
 
+				__result = gizmoList;
+			}
+
+			else return;
+		}
+	}
+
+	//Get All World Map Gizmos For Globe
+	[HarmonyPatch(typeof(Caravan), "GetGizmos")]
+	public static class SetGlobeGizmos
+	{
+		[HarmonyPostfix]
+		public static void SetGizmos(ref IEnumerable<Gizmo> __result, Caravan __instance)
+		{
+			if (Networking.isConnectedToServer && Main._ParametersCache.hasFaction)
+			{
+				List<WorldObject> worldObjects = Find.WorldObjects.AllWorldObjects;
+
+				WorldObject objectToFind = worldObjects.Find(fetch => fetch.Tile == __instance.Tile && fetch != __instance);
+
+				if (objectToFind != null) return;
+
+				List<Gizmo> gizmoList = __result.ToList();
+
+				Command_Action Command_BuildOnlineSite = new Command_Action
+				{
+					defaultLabel = "Build Faction Site",
+					defaultDesc = "Build an utility site for your faction",
+					icon = ContentFinder<Texture2D>.Get("UI/Commands/Install"),
+					action = delegate
+					{
+						Main._ParametersCache.focusedTile = __instance.Tile;
+						Find.WindowStack.Add(new Dialog_MPFactionSiteBuilding());
+					}
+				};
+
+				gizmoList.Add(Command_BuildOnlineSite);
 				__result = gizmoList;
 			}
 

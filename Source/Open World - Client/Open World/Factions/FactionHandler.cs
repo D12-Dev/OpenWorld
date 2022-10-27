@@ -47,16 +47,18 @@ namespace OpenWorld
             Main._ParametersCache.factionMembers.Clear();
         }
 
-        public static void FindOnlineFactionInWorld()
+        public static void FindOnlineFactionsInWorld()
         {
-            List<Faction> factions = Find.FactionManager.AllFactions.ToList();
-            Main._ParametersCache.neutralFaction = factions.Find(fetch => fetch.Name == "Open World Settlements Neutral");
-            Main._ParametersCache.allyFaction = factions.Find(fetch => fetch.Name == "Open World Settlements Ally");
-            Main._ParametersCache.enemyFaction = factions.Find(fetch => fetch.Name == "Open World Settlements Enemy");
+            if (Main._ParametersCache.allFactions.Count > 0) return;
 
-            Main._ParametersCache.allFactions.Add(Main._ParametersCache.neutralFaction);
-            Main._ParametersCache.allFactions.Add(Main._ParametersCache.allyFaction);
-            Main._ParametersCache.allFactions.Add(Main._ParametersCache.enemyFaction);
+            List<Faction> factions = Find.FactionManager.AllFactions.ToList();
+            Main._ParametersCache.onlineNeutralFaction = factions.Find(fetch => fetch.Name == "Open World Settlements Neutral");
+            Main._ParametersCache.onlineAllyFaction = factions.Find(fetch => fetch.Name == "Open World Settlements Ally");
+            Main._ParametersCache.onlineEnemyFaction = factions.Find(fetch => fetch.Name == "Open World Settlements Enemy");
+
+            Main._ParametersCache.allFactions.Add(Main._ParametersCache.onlineNeutralFaction);
+            Main._ParametersCache.allFactions.Add(Main._ParametersCache.onlineAllyFaction);
+            Main._ParametersCache.allFactions.Add(Main._ParametersCache.onlineEnemyFaction);
         }
     }
 }

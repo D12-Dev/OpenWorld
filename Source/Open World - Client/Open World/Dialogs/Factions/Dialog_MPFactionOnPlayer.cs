@@ -19,6 +19,9 @@ namespace OpenWorld
         private float buttonX = 150f;
         private float buttonY = 38f;
 
+        bool inRecruit;
+        bool inRank;
+
         public Dialog_MPFactionOnPlayer()
         {
             soundAppear = SoundDefOf.CommsWindow_Open;
@@ -38,19 +41,71 @@ namespace OpenWorld
 
             Widgets.DrawLineHorizontal(rect.xMin, (rect.y + Text.CalcSize(windowTitle).y + 10), rect.width);
 
-            if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX / 2), rect.yMax - buttonY * 3 - 20), new Vector2(buttonX, buttonY)), "Recruit"))
+            HandleWindowContents(rect);
+        }
+
+        private void HandleWindowContents(Rect rect)
+        {
+            float centeredX = rect.width / 2;
+
+            if (inRecruit)
             {
-                Find.WindowStack.Add(new Dialog_MPFactionRecruit(this));
+                windowTitle = "Recruitment Options";
+
+                if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX / 2) * 2, rect.yMax - buttonY * 3 - 20), new Vector2(buttonX * 2, buttonY)), "Recruit"))
+                {
+                    Find.WindowStack.Add(new Dialog_MPFactionRecruit(this));
+                }
+
+                if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX / 2) * 2, rect.yMax - buttonY * 2 - 10), new Vector2(buttonX * 2, buttonY)), "Kick"))
+                {
+                    Find.WindowStack.Add(new Dialog_MPFactionKick(this));
+                }
+
+                if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX / 2) * 1.5f, rect.yMax - buttonY), new Vector2(buttonX * 1.5f, buttonY)), "Back"))
+                {
+                    inRecruit = false;
+                }
             }
 
-            if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX / 2), rect.yMax - buttonY * 2 - 10), new Vector2(buttonX, buttonY)), "Kick"))
+            else if (inRank)
             {
-                Find.WindowStack.Add(new Dialog_MPFactionKick(this));
+                windowTitle = "Rank Options";
+
+                if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX / 2) * 2, rect.yMax - buttonY * 3 - 20), new Vector2(buttonX * 2, buttonY)), "Promote"))
+                {
+                    Find.WindowStack.Add(new Dialog_MPFactionPromote(this));
+                }
+
+                if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX / 2) * 2, rect.yMax - buttonY * 2 - 10), new Vector2(buttonX * 2, buttonY)), "Demote"))
+                {
+                    Find.WindowStack.Add(new Dialog_MPFactionDemote(this));
+                }
+
+                if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX / 2) * 1.5f, rect.yMax - buttonY), new Vector2(buttonX * 1.5f, buttonY)), "Back"))
+                {
+                    inRank = false;
+                }
             }
 
-            if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX / 2), rect.yMax - buttonY), new Vector2(buttonX, buttonY)), "Close"))
+            else
             {
-                this.Close();
+                windowTitle = "Faction Options";
+
+                if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX / 2) * 2, rect.yMax - buttonY * 3 - 20), new Vector2(buttonX * 2, buttonY)), "Recruitment"))
+                {
+                    inRecruit = true;
+                }
+
+                if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX / 2) * 2, rect.yMax - buttonY * 2 - 10), new Vector2(buttonX * 2, buttonY)), "Rank"))
+                {
+                    inRank = true;
+                }
+
+                if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX / 2) * 1.5f, rect.yMax - buttonY), new Vector2(buttonX * 1.5f, buttonY)), "Close"))
+                {
+                    Close();
+                }
             }
         }
     }

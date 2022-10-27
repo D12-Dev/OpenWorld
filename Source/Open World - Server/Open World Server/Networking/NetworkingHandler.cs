@@ -209,9 +209,9 @@ namespace OpenWorldServer
             {
                 if (client.faction == null) return;
 
-                if (client.username != FactionHandler.GetFactionLeader(client.faction))
+                if (FactionHandler.GetMemberPowers(client.faction, client) != FactionHandler.MemberRank.Leader)
                 {
-                    Networking.SendData(client, "FactionManagement│NotTheLeader");
+                    Networking.SendData(client, "FactionManagement│NoPowers");
                     return;
                 }
 
@@ -240,9 +240,9 @@ namespace OpenWorldServer
             {
                 if (client.faction == null) return;
 
-                if (client.username != FactionHandler.GetFactionLeader(client.faction))
+                if (FactionHandler.GetMemberPowers(client.faction, client) == FactionHandler.MemberRank.Member)
                 {
-                    Networking.SendData(client, "FactionManagement│NotTheLeader");
+                    Networking.SendData(client, "FactionManagement│NoPowers");
                     return;
                 }
 
@@ -260,9 +260,9 @@ namespace OpenWorldServer
             {
                 if (client.faction == null) return;
 
-                if (client.username != FactionHandler.GetFactionLeader(client.faction))
+                if (FactionHandler.GetMemberPowers(client.faction, client) == FactionHandler.MemberRank.Member)
                 {
-                    Networking.SendData(client, "FactionManagement│NotTheLeader");
+                    Networking.SendData(client, "FactionManagement│NoPowers");
                     return;
                 }
 
@@ -287,9 +287,68 @@ namespace OpenWorldServer
                 }
             }
 
-            else if (data == "FactionManagement│ChangeMemberRank")
+            else if (data.StartsWith("FactionManagement│PromoteMember"))
             {
+                if (client.faction == null) return;
 
+                if (FactionHandler.GetMemberPowers(client.faction, client) != FactionHandler.MemberRank.Leader)
+                {
+                    Networking.SendData(client, "FactionManagement│NoPowers");
+                    return;
+                }
+
+                string tileID = data.Split('│')[2];
+
+                if (!PlayerUtils.CheckForConnectedPlayers(tileID))
+                {
+                    Faction factionToCheck = Server.factionList.Find(fetch => fetch.name == client.faction.name);
+                    ServerClient memberToPromote = Server.savedClients.Find(fetch => fetch.homeTileID == tileID);
+
+                    if (memberToPromote.faction == null) Networking.SendData(client, "FactionManagement│NotInFaction");
+                    else if (memberToPromote.faction.name != factionToCheck.name) Networking.SendData(client, "FactionManagement│NotInFaction");
+                    else FactionHandler.PromoteMember(factionToCheck, memberToPromote);
+                }
+
+                else
+                {
+                    ServerClient memberToPromote = PlayerUtils.GetPlayerFromTile(tileID);
+
+                    if (memberToPromote.faction == null) Networking.SendData(client, "FactionManagement│NotInFaction");
+                    else if (memberToPromote.faction != client.faction) Networking.SendData(client, "FactionManagement│NotInFaction");
+                    else FactionHandler.PromoteMember(client.faction, memberToPromote);
+                }
+            }
+
+            else if (data.StartsWith("FactionManagement│DemoteMember"))
+            {
+                if (client.faction == null) return;
+
+                if (FactionHandler.GetMemberPowers(client.faction, client) != FactionHandler.MemberRank.Leader)
+                {
+                    Networking.SendData(client, "FactionManagement│NoPowers");
+                    return;
+                }
+
+                string tileID = data.Split('│')[2];
+
+                if (!PlayerUtils.CheckForConnectedPlayers(tileID))
+                {
+                    Faction factionToCheck = Server.factionList.Find(fetch => fetch.name == client.faction.name);
+                    ServerClient memberToDemote = Server.savedClients.Find(fetch => fetch.homeTileID == tileID);
+
+                    if (memberToDemote.faction == null) Networking.SendData(client, "FactionManagement│NotInFaction");
+                    else if (memberToDemote.faction.name != factionToCheck.name) Networking.SendData(client, "FactionManagement│NotInFaction");
+                    else FactionHandler.DemoteMember(factionToCheck, memberToDemote);
+                }
+
+                else
+                {
+                    ServerClient memberToDemote = PlayerUtils.GetPlayerFromTile(tileID);
+
+                    if (memberToDemote.faction == null) Networking.SendData(client, "FactionManagement│NotInFaction");
+                    else if (memberToDemote.faction != client.faction) Networking.SendData(client, "FactionManagement│NotInFaction");
+                    else FactionHandler.DemoteMember(client.faction, memberToDemote);
+                }
             }
         }
     }

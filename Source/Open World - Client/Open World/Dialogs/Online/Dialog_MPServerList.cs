@@ -28,8 +28,6 @@ namespace OpenWorld
 
         public Dialog_MPServerList()
         {
-            Main._ParametersCache.__MPServerList = this;
-
             soundAppear = SoundDefOf.CommsWindow_Open;
             soundClose = SoundDefOf.CommsWindow_Close;
             absorbInputAroundWindow = true;
@@ -98,7 +96,7 @@ namespace OpenWorld
             Widgets.Label(rect, toShow);
             if (Widgets.ButtonText(new Rect(new Vector2(rect.xMax - moreButtonX, rect.y), new Vector2(moreButtonX, moreButtonY)), "Info"))
             {
-                Find.WindowStack.Add(new Dialog_MPServerDescription(details));
+                Find.WindowStack.Add(new Dialog_MPServerDescription(details, this));
             }
 
             Text.Font = GameFont.Medium;

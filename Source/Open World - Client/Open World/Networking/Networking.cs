@@ -56,8 +56,12 @@ namespace OpenWorld
 
         private static void ListenToServer()
         {
-            if (!Main._ParametersCache.isLoadingExistingGame) SendData("Connect│" + username + "│" + password + "│" + Main._ParametersCache.versionCode + "│" + "NewGame" + "│" + Main._MPGame.GetCompactedModList());
-            else SendData("Connect│" + username + "│" + password + "│" + Main._ParametersCache.versionCode + "│" + "LoadGame" + "│" + Main._MPGame.GetCompactedModList());
+            string connectionData = "";
+
+            if (!Main._ParametersCache.isLoadingExistingGame) connectionData = "Connect│" + username + "│" + password + "│" + Main._ParametersCache.versionCode + "│" + "NewGame" + "│" + Main._MPGame.GetCompactedModList();
+            else connectionData = "Connect│" + username + "│" + password + "│" + Main._ParametersCache.versionCode + "│" + "LoadGame" + "│" + Main._MPGame.GetCompactedModList();
+
+            SendData(connectionData);
 
             while (true)
             {

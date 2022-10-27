@@ -33,9 +33,12 @@ namespace OpenWorld
 
         private List<string> serverDetails;
 
-        public Dialog_MPServerDescription(List<string> details)
+        private Dialog_MPServerList MPServerList;
+
+        public Dialog_MPServerDescription(List<string> details, Dialog_MPServerList MPServerList)
         {
             serverDetails = details;
+            this.MPServerList = MPServerList;
 
             name = serverDetails[1];
             name = name.Remove(name.Count() - 1, 1);
@@ -121,7 +124,7 @@ namespace OpenWorld
 
                 Main._ParametersCache.ipText = ipToJoin;
                 Main._ParametersCache.portText = portToJoin;
-                Main._ParametersCache.__MPServerList.Close();
+                MPServerList.Close();
                 Close();
             }
 

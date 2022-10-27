@@ -19,6 +19,7 @@ namespace OpenWorld
         private Vector2 scrollPosition = Vector2.zero;
 
         private string windowTitle = "Faction Menu";
+        private string windowDescription = "Manage your faction from here";
 
         private float buttonX = 150f;
         private float buttonY = 38f;
@@ -56,6 +57,10 @@ namespace OpenWorld
         {
             float centeredX = rect.width / 2;
 
+            float windowDescriptionDif = Text.CalcSize(windowDescription).y + StandardMargin;
+
+            float descriptionLineDif = windowDescriptionDif + Text.CalcSize(windowDescription).y;
+
             if (inCreateWindow)
             {
                 string line1 = "Name Your Faction";
@@ -80,23 +85,22 @@ namespace OpenWorld
 
             else if (inOptionsWindow)
             {
-                string line1 = "Options";
+                windowDescription = "Available options for your faction";
 
-                Widgets.Label(new Rect(centeredX - Text.CalcSize(line1).x / 2, rect.y + 50, Text.CalcSize(line1).x, Text.CalcSize(line1).y), line1);
+                Text.Font = GameFont.Small;
+                Widgets.Label(new Rect(centeredX - Text.CalcSize(windowDescription).x / 2, windowDescriptionDif, Text.CalcSize(windowDescription).x, Text.CalcSize(windowDescription).y), windowDescription);
+                Text.Font = GameFont.Medium;
 
-                if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX * 2 / 2), rect.y + 85), new Vector2(buttonX * 2, buttonY)), "Leave Faction"))
+                Widgets.DrawLineHorizontal(rect.x, descriptionLineDif, rect.width);
+
+                if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX * 2 / 2), rect.y + 90), new Vector2(buttonX * 2, buttonY)), "Leave Faction"))
                 {
                     Find.WindowStack.Add(new Dialog_MPFactionLeave(this));
                 }
 
-                if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX * 2 / 2), rect.y + 125), new Vector2(buttonX * 2, buttonY)), "Disband Faction"))
+                if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX * 2 / 2), rect.y + 135), new Vector2(buttonX * 2, buttonY)), "Disband Faction"))
                 {
                     Find.WindowStack.Add(new Dialog_MPFactionDisband(this));
-                }
-
-                if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX * 2 / 2), rect.y + 165), new Vector2(buttonX * 2, buttonY)), "X"))
-                {
-                    
                 }
 
                 if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX / 2), rect.yMax - buttonY), new Vector2(buttonX, buttonY)), "Back"))
@@ -107,9 +111,13 @@ namespace OpenWorld
 
             else if (inMembersWindow)
             {
-                string line1 = "Member List [" + Main._ParametersCache.factionMembers.Count() + "]";
+                windowDescription = "Your faction member count: [" + Main._ParametersCache.factionMembers.Count() + "]";
 
-                Widgets.Label(new Rect(centeredX - Text.CalcSize(line1).x / 2, rect.y + 50, Text.CalcSize(line1).x, Text.CalcSize(line1).y), line1);
+                Text.Font = GameFont.Small;
+                Widgets.Label(new Rect(centeredX - Text.CalcSize(windowDescription).x / 2, windowDescriptionDif, Text.CalcSize(windowDescription).x, Text.CalcSize(windowDescription).y), windowDescription);
+                Text.Font = GameFont.Medium;
+
+                Widgets.DrawLineHorizontal(rect.x, descriptionLineDif, rect.width);
 
                 GenerateList(new Rect(new Vector2(centeredX - rect.width / 2, rect.y + 85), new Vector2(rect.width, rect.height)));
 
@@ -145,9 +153,17 @@ namespace OpenWorld
 
             else
             {
-                string line1 = Main._ParametersCache.factionName;
+                string windowDescription = "Manage your faction from here";
 
-                Widgets.Label(new Rect(centeredX - Text.CalcSize(line1).x / 2, rect.y + 50, Text.CalcSize(line1).x, Text.CalcSize(line1).y), line1);
+                string factionName = Main._ParametersCache.factionName;
+
+                Text.Font = GameFont.Small;
+                Widgets.Label(new Rect(centeredX - Text.CalcSize(windowDescription).x / 2, windowDescriptionDif, Text.CalcSize(windowDescription).x, Text.CalcSize(windowDescription).y), windowDescription);
+                Text.Font = GameFont.Medium;
+
+                Widgets.DrawLineHorizontal(rect.x, descriptionLineDif, rect.width);
+
+                Widgets.Label(new Rect(centeredX - Text.CalcSize(factionName).x / 2, rect.y + 80, Text.CalcSize(factionName).x, Text.CalcSize(factionName).y), factionName);
 
                 if (Widgets.ButtonText(new Rect(new Vector2(rect.xMin, rect.yMax - buttonY * 2 - 10), new Vector2(buttonX, buttonY)), "Members"))
                 {
@@ -231,7 +247,7 @@ namespace OpenWorld
         {
             string iconPath = "";
             if (memberValue == 0) iconPath = "UI/Designators/Strip";
-            else if (memberValue == 1) iconPath = "";
+            else if (memberValue == 1) iconPath = "UI/Designators/Strip";
             else if (memberValue == 2) iconPath = "UI/Designators/Claim";
 
             return ContentFinder<Texture2D>.Get(iconPath);

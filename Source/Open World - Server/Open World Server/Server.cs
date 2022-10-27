@@ -101,7 +101,6 @@ namespace OpenWorldServer
                 {"reload", SimpleCommands.ReloadCommand},
                 {"status", SimpleCommands.StatusCommand},
                 {"eventlist", SimpleCommands.EventListCommand},
-                {"factiont", SimpleCommands.CreateTestFaction},
                 {"chat", SimpleCommands.ChatCommand},
                 {"list", SimpleCommands.ListCommand},
                 {"settlements", SimpleCommands.SettlementsCommand},
