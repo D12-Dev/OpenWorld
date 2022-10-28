@@ -28,6 +28,11 @@ namespace OpenWorld
             SettlementHandler.GetSettlementsFromServer(data);
         }
 
+        public static void FactionStructuresHandle(string data)
+        {
+            FactionHandler.GetFactionStructuresFromServer(data);
+        }
+
         public static void VariablesHandle(string data)
         {
             data = data.Remove(0, 10);
@@ -105,14 +110,27 @@ namespace OpenWorld
 
         public static void SettlementBuilderHandle(string data)
         {
-            if (data.StartsWith("SettlementBuilder│AddSettlement│"))
+            if (data.StartsWith("SettlementBuilder│AddSettlement"))
             {
                 SettlementHandler.AddSettlementInWorld(data);
             }
 
-            else if (data.StartsWith("SettlementBuilder│RemoveSettlement│"))
+            else if (data.StartsWith("SettlementBuilder│RemoveSettlement"))
             {
                 SettlementHandler.RemoveSettlementInWorld(data);
+            }
+        }
+
+        public static void FactionStructureBuilderHandler(string data)
+        {
+            if (data.StartsWith("FactionStructureBuilder│AddStructure"))
+            {
+                FactionHandler.AddFactionStructureInWorld(data);
+            }
+
+            else if (data.StartsWith("FactionStructureBuilder│RemoveStructure"))
+            {
+                FactionHandler.RemoveFactionStructureInWorld(data);
             }
         }
 
@@ -120,11 +138,9 @@ namespace OpenWorld
         {
             if (data == "│SentEvent│Confirm│")
             {
-                Main._ParametersCache.silverAmount = 2500;
-
                 Main._ParametersCache.__MPBlackMarket.Close();
 
-                MPCaravan.TakeFundsFromCaravan();
+                MPCaravan.TakeFundsFromCaravan(2500);
             }
 
             else if (data == "│SentEvent│Deny│")
@@ -274,9 +290,7 @@ namespace OpenWorld
         {
             if (data.StartsWith("│SentSpy│Confirm│"))
             {
-                Main._ParametersCache.silverAmount = 150;
-
-                MPCaravan.TakeFundsFromCaravan();
+                MPCaravan.TakeFundsFromCaravan(150);
 
                 Find.WindowStack.Add(new Dialog_MPSpyResult(data.Split('│')[3]));
             }
@@ -360,11 +374,6 @@ namespace OpenWorld
                 string factionName = data.Split('│')[2];
 
                 Find.WindowStack.Add(new Dialog_MPFactionInvite(factionName));
-            }
-
-            else if (data == "FactionManagement│Kicked")
-            {
-                FactionHandler.FactionKickedHandle();
             }
         }
 

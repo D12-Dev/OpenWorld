@@ -35,6 +35,8 @@ namespace OpenWorld
         public Faction onlineAllyFaction;
         public Faction onlineEnemyFaction;
 
+        public Dictionary<int, List<int>> allFactionStructures = new Dictionary<int, List<int>>();
+
         //Online Player Faction
         public bool hasFaction;
         public string factionName;
@@ -72,7 +74,6 @@ namespace OpenWorld
         //Dialog_MPBlackMarket
         public Dialog_MPBlackMarket __MPBlackMarket;
         public string blackEventType;
-        public int silverAmount;
 
         //Dialog_MPGift
         public List<Tradeable> listToShowInGiftMenu = new List<Tradeable>();

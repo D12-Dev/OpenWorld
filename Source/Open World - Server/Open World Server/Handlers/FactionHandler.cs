@@ -11,10 +11,6 @@ namespace OpenWorldServer
 {
     public static class FactionHandler
     {
-        private const string membersFileName = "Members.txt";
-        private const string ranksFileName = "Ranks.txt";
-        private const string wealthFileName = "Wealth.txt";
-
         public enum MemberRank { Member, Moderator, Leader }
 
         public static void CheckFactions(bool newLine)
@@ -83,7 +79,7 @@ namespace OpenWorldServer
             s.Close();
             s.Dispose();
 
-            if (!Server.factionList.Contains(factionToSave)) Server.factionList.Add(factionToSave);
+            if (!Server.savedFactions.Contains(factionToSave)) Server.savedFactions.Add(factionToSave);
         }
 
         public static void LoadFactions(string[] factionFiles)
@@ -103,12 +99,12 @@ namespace OpenWorldServer
                     s.Close();
                     s.Dispose();
 
-                    if (!Server.factionList.Contains(factionToLoad)) Server.factionList.Add(factionToLoad);
+                    if (!Server.savedFactions.Contains(factionToLoad)) Server.savedFactions.Add(factionToLoad);
                 }
                 catch { failedToLoadFactions++; }
             }
 
-            ConsoleUtils.LogToConsole("Loaded [" + Server.factionList.Count() + "] Factions");
+            ConsoleUtils.LogToConsole("Loaded [" + Server.savedFactions.Count() + "] Factions");
 
             if (failedToLoadFactions > 0)
             {
@@ -120,47 +116,10 @@ namespace OpenWorldServer
 
         public static void DisbandFaction(Faction factionToDisband)
         {
-            Server.factionList.Remove(factionToDisband);
+            Server.savedFactions.Remove(factionToDisband);
 
             string factionSavePath = Server.factionsFolderPath + Path.DirectorySeparatorChar + factionToDisband.name + ".bin";
             File.Delete(factionSavePath);
-        }
-
-        public static string GetFactionName(Faction factionToLoad)
-        {
-            string factionFolder = factionToLoad.folderPath;
-
-            return Path.GetDirectoryName(factionFolder);
-        }
-
-        public static Dictionary<ServerClient, MemberRank> GetFactionMembers(Faction factionToLoad)
-        {
-            string factionFolder = factionToLoad.folderPath;
-            string membersFilePath = factionFolder + Path.DirectorySeparatorChar + membersFileName;
-
-            string[] allMembers = File.ReadAllLines(membersFilePath);
-            Dictionary<ServerClient, MemberRank> factionMembers = new Dictionary<ServerClient, MemberRank>();
-
-            foreach (string str in allMembers)
-            {
-                ServerClient clientToFind = Server.savedClients.Find(fetch => fetch.username == str);
-                MemberRank clientRank = (MemberRank)GetMemberRank(factionToLoad, clientToFind);
-
-                if (clientToFind != null) factionMembers.Add(clientToFind, MemberRank.Member);
-                else continue;
-            }
-
-            return factionMembers;
-        }
-
-        public static MemberRank GetMemberRank(Faction factionToLoad, ServerClient memberToCheck)
-        {
-            string factionFolder = factionToLoad.folderPath;
-            string rankFilePath = factionFolder + Path.DirectorySeparatorChar + ranksFileName;
-            string membersFilePath = factionFolder + Path.DirectorySeparatorChar + membersFileName;
-
-            int memberIndex = File.ReadAllLines(membersFilePath).ToList().IndexOf(memberToCheck.username);
-            return (MemberRank)int.Parse(File.ReadAllLines(rankFilePath)[memberIndex]);
         }
 
         public static string GetFactionDetails(ServerClient client)
@@ -171,7 +130,7 @@ namespace OpenWorldServer
 
             else
             {
-                Faction factionToCheck = Server.factionList.Find(fetch => fetch.name == client.faction.name);
+                Faction factionToCheck = Server.savedFactions.Find(fetch => fetch.name == client.faction.name);
 
                 dataToSend += factionToCheck.name + "│";
 
@@ -184,12 +143,28 @@ namespace OpenWorldServer
             }
         }
 
-        public static int GetFactionWealth(Faction factionToLoad)
+        public static string GetAllFactionStructures(ServerClient client)
         {
-            string factionFolder = factionToLoad.folderPath;
-            string wealthFilePath = factionFolder + Path.DirectorySeparatorChar + wealthFileName;
+            string dataToSend = "FactionStructures│";
 
-            return int.Parse(File.ReadAllLines(wealthFilePath)[0]);
+            int factionValue = 0;
+
+            foreach (Faction faction in Server.savedFactions)
+            {
+                if (client.faction == null) factionValue = 0;
+                if (client.faction != null)
+                {
+                    if (client.faction == faction) factionValue = 1;
+                    else factionValue = 2;
+                }
+
+                foreach (FactionStructure structure in faction.factionStructures)
+                {
+                    dataToSend += structure.structureTile + ":" + structure.structureType + ":" + factionValue + "»";
+                }
+            }
+
+            return dataToSend;
         }
 
         public static void AddMember(Faction faction, ServerClient memberToAdd)
@@ -212,7 +187,7 @@ namespace OpenWorldServer
                 PlayerUtils.SavePlayer(saved);
             }
 
-            UpdateAllPlayersInFaction(faction);
+            UpdateAllPlayerDetailsInFaction(faction);
         }
 
         public static void RemoveMember(Faction faction, ServerClient memberToRemove)
@@ -243,7 +218,7 @@ namespace OpenWorldServer
             if (faction.members.Count > 0)
             {
                 SaveFaction(faction);
-                UpdateAllPlayersInFaction(faction);
+                UpdateAllPlayerDetailsInFaction(faction);
             }
             else DisbandFaction(faction);
         }
@@ -294,7 +269,7 @@ namespace OpenWorldServer
             faction.members.Add(memberToPromote, MemberRank.Moderator);
 
             SaveFaction(faction);
-            UpdateAllPlayersInFaction(faction);
+            UpdateAllPlayerDetailsInFaction(faction);
         }
 
         public static void DemoteMember(Faction faction, ServerClient memberToPromote)
@@ -319,10 +294,10 @@ namespace OpenWorldServer
             faction.members.Add(memberToPromote, MemberRank.Member);
 
             SaveFaction(faction);
-            UpdateAllPlayersInFaction(faction);
+            UpdateAllPlayerDetailsInFaction(faction);
         }
 
-        public static void UpdateAllPlayersInFaction(Faction faction)
+        public static void UpdateAllPlayerDetailsInFaction(Faction faction)
         {
             ServerClient[] dummyfactionMembers = faction.members.Keys.ToArray();
 
@@ -347,6 +322,56 @@ namespace OpenWorldServer
             }
 
             return MemberRank.Member;
+        }
+
+        public static void BuildStructure(Faction faction, string tileID, string structureID)
+        {
+            FactionStructure structureToBuild = null;
+            int newStructureTile = int.Parse(tileID);
+            int newStructureIntValue = int.Parse(structureID);
+
+            FactionStructure presentStructure = faction.factionStructures.Find(fetch => fetch.structureTile == newStructureTile);
+            if (presentStructure != null) return;
+
+            if (newStructureIntValue == 0) structureToBuild = new FactionSilo(faction, newStructureTile);
+            else if (newStructureIntValue == 1) structureToBuild = new FactionMarketplace(faction, newStructureTile);
+            else if (newStructureIntValue == 2) structureToBuild = new FactionProductionSite(faction, newStructureTile);
+
+            if (structureToBuild == null) return;
+
+            faction.factionStructures.Add(structureToBuild);
+
+            SaveFaction(faction);
+
+            int factionValue = 0;
+            foreach(ServerClient client in Networking.connectedClients)
+            {
+                if (client.faction == null) factionValue = 0;
+                if (client.faction != null)
+                {
+                    if (client.faction == faction) factionValue = 1;
+                    else factionValue = 2;
+                }
+
+                Networking.SendData(client, "FactionStructureBuilder│AddStructure" + "│" + newStructureTile + "│" + newStructureIntValue + "│" + factionValue);
+            }
+        }
+
+        public static void DestroyStructure(Faction faction, string tileID)
+        {
+            int structureTile = int.Parse(tileID);
+
+            FactionStructure structureToDestroy = faction.factionStructures.Find(fetch => fetch.structureTile == structureTile);
+            if (structureToDestroy == null) return;
+
+            faction.factionStructures.Remove(structureToDestroy);
+
+            SaveFaction(faction);
+
+            foreach (ServerClient client in Networking.connectedClients)
+            {
+                Networking.SendData(client, "FactionStructureBuilder│RemoveStructure" + "│" + structureTile);
+            }
         }
     }
 }

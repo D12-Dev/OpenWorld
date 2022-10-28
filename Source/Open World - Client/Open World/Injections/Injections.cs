@@ -255,6 +255,8 @@ namespace OpenWorld
 			{
 				SettlementHandler.ManageSettlementsInWorld();
 
+				FactionHandler.ManageFactionStructuresInWorld();
+
 				Main._MPWorld.HandleRoadGeneration();
 
 				Main._MPGame.EnforceDificultyTweaks();
@@ -268,14 +270,14 @@ namespace OpenWorld
 		}
 	}
 
-	//Plant Settlements Of Other Players In The World
-	[HarmonyPatch(typeof(FactionGenerator), "GenerateFactionsIntoWorld")]
-	public static class SpawnSettlements
-	{
-		[HarmonyPrefix]
-		public static bool SpawnOnlineSettlements()
-		{
-			if (!Main._ParametersCache.isPlayingOnline) return true;
+	//Spawn All Online Materials Before Starting Site
+	[HarmonyPatch(typeof(Page_SelectStartingSite), "PreOpen")]
+	public static class SpawnOnlineMaterials
+    {
+		[HarmonyPostfix]
+		public static void SpawnMaterials()
+        {
+			if (!Main._ParametersCache.isPlayingOnline) return;
 
 			foreach (FactionDef item in DefDatabase<FactionDef>.AllDefs.OrderBy((FactionDef x) => x.hidden))
 			{
@@ -325,9 +327,32 @@ namespace OpenWorld
 				}
 			}
 
-			return true;
+			foreach (KeyValuePair<int, List<int>> pair in Main._ParametersCache.allFactionStructures)
+			{
+				string siteName = "";
+				if (pair.Value[0] == 0) siteName = "Resource Silo";
+				else if (pair.Value[0] == 1) siteName = "Marketplace";
+				else if (pair.Value[0] == 2) siteName = "Production Site";
+
+				Faction factionToGet = null;
+				if (pair.Value[1] == 0) factionToGet = Main._ParametersCache.onlineNeutralFaction;
+				else if (pair.Value[1] == 1) factionToGet = Main._ParametersCache.onlineAllyFaction;
+				else if (pair.Value[1] == 2) factionToGet = Main._ParametersCache.onlineEnemyFaction;
+
+				Site newSite = SiteMaker.MakeSite(sitePart: SitePartDefOf.Outpost,
+												  tile: pair.Key,
+												  threatPoints: 5000,
+												  faction: factionToGet);
+
+				newSite.customLabel = siteName;
+				Find.WorldObjects.Add(newSite);
+			}
+
+			FactionHandler.FindOnlineFactionsInWorld();
+
+			return;
 		}
-	}
+    }
 
 	//Get Tile ID Of New Settlement
 	[HarmonyPatch(typeof(SettleInEmptyTileUtility), "Settle")]
@@ -546,8 +571,6 @@ namespace OpenWorld
 		[HarmonyPrefix]
 		public static bool PreventGoodwillChange(ref int tile, ref List<Pair<Settlement, int>> outOffsets)
 		{
-			FactionHandler.FindOnlineFactionsInWorld();
-
 			int maxDist = SettlementProximityGoodwillUtility.MaxDist;
 			List<Settlement> settlements = Find.WorldObjects.Settlements;
 			for (int i = 0; i < settlements.Count; i++)
@@ -855,6 +878,24 @@ namespace OpenWorld
 		}
 	}
 
+	//Get All World Map Gizmos For Online Settlements
+	[HarmonyPatch(typeof(Site), "GetFloatMenuOptions")]
+	public static class SetSiteFloatingOptions
+	{
+		[HarmonyPostfix]
+		public static void SetFloatingOptions(Site __instance, ref IEnumerable<FloatMenuOption> __result)
+		{
+			if (Main._ParametersCache.allFactions.Contains(__instance.Faction))
+			{
+				var gizmoList = __result.ToList();
+				gizmoList.Clear();
+
+				__result = gizmoList;
+				return;
+			}
+		}
+	}
+
 	//Get All World Map Gizmos For Globe
 	[HarmonyPatch(typeof(Caravan), "GetGizmos")]
 	public static class SetGlobeGizmos
@@ -868,9 +909,62 @@ namespace OpenWorld
 
 				WorldObject objectToFind = worldObjects.Find(fetch => fetch.Tile == __instance.Tile && fetch != __instance);
 
-				if (objectToFind != null) return;
-
 				List<Gizmo> gizmoList = __result.ToList();
+
+				if (objectToFind != null)
+                {
+					if (objectToFind.def != WorldObjectDefOf.Site) return;
+					else
+                    {
+						Command_Action Command_AttackSite = new Command_Action
+						{
+							defaultLabel = "Attack site",
+							defaultDesc = "Attack this site",
+							icon = ContentFinder<Texture2D>.Get("UI/Commands/AttackSettlement"),
+							action = delegate
+							{
+								Main._ParametersCache.focusedTile = objectToFind.Tile;
+								Find.WindowStack.Add(new Dialog_MPNotImplemented());
+							}
+						};
+
+						Command_Action Command_AccessSite = new Command_Action
+						{
+							defaultLabel = "Access Site",
+							defaultDesc = "Access this site",
+							icon = ContentFinder<Texture2D>.Get("UI/Commands/Install"),
+							action = delegate
+							{
+								int siteType = 0;
+								foreach(KeyValuePair<int, List<int>> pair in Main._ParametersCache.allFactionStructures)
+                                {
+									if (pair.Key == objectToFind.Tile) siteType = pair.Value[0];
+                                }
+
+								Main._ParametersCache.focusedTile = objectToFind.Tile;
+								Find.WindowStack.Add(new Dialog_MPFactionSiteBuilt(siteType));
+							}
+						};
+
+						Command_Action Command_DemolishSite = new Command_Action
+						{
+							defaultLabel = "Demolish Site",
+							defaultDesc = "Demolish this site",
+							icon = ContentFinder<Texture2D>.Get("UI/Commands/AbandonHome"),
+							action = delegate
+							{
+								Main._ParametersCache.focusedTile = objectToFind.Tile;
+								Find.WindowStack.Add(new Dialog_MPFactionSiteDemolish());
+							}
+						};
+
+						gizmoList.Add(Command_AttackSite);
+						if (objectToFind.Faction == Main._ParametersCache.onlineAllyFaction) gizmoList.Add(Command_AccessSite);
+						if (objectToFind.Faction == Main._ParametersCache.onlineAllyFaction) gizmoList.Add(Command_DemolishSite);
+						__result = gizmoList;
+						return;
+					}
+                }
 
 				Command_Action Command_BuildOnlineSite = new Command_Action
 				{
@@ -880,6 +974,7 @@ namespace OpenWorld
 					action = delegate
 					{
 						Main._ParametersCache.focusedTile = __instance.Tile;
+						Main._ParametersCache.focusedCaravan = __instance;
 						Find.WindowStack.Add(new Dialog_MPFactionSiteBuilding());
 					}
 				};

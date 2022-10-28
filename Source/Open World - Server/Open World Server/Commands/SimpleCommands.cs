@@ -386,11 +386,11 @@ namespace OpenWorldServer
             Console.WriteLine("");
 
             Console.ForegroundColor = ConsoleColor.Green;
-            ConsoleUtils.WriteWithTime("Saved Factions: " + Server.factionList.Count);
+            ConsoleUtils.WriteWithTime("Saved Factions: " + Server.savedFactions.Count);
             Console.ForegroundColor = ConsoleColor.White;
 
-            if (Server.factionList.Count == 0) ConsoleUtils.WriteWithTime("No Factions Saved");
-            else foreach (Faction savedFaction in Server.factionList)
+            if (Server.savedFactions.Count == 0) ConsoleUtils.WriteWithTime("No Factions Saved");
+            else foreach (Faction savedFaction in Server.savedFactions)
             {
                 ConsoleUtils.WriteWithTime(savedFaction.name);
             }

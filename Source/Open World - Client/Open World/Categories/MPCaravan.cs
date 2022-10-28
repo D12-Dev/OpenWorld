@@ -14,36 +14,42 @@ namespace OpenWorld
 {
     public static class MPCaravan
     {
-		public static void TakeFundsFromCaravan()
+		public static bool TakeFundsFromCaravan(int silverNeeded)
 		{
-			int q = 0;
+			List<Thing> caravanSilver = CaravanInventoryUtility.AllInventoryItems(Main._ParametersCache.focusedCaravan)
+				.Where((Thing x) => x.def == ThingDefOf.Silver).ToList();
 
-			foreach (Thing item in CaravanInventoryUtility.AllInventoryItems(Main._ParametersCache.focusedCaravan).ToList())
-			{
-				if (q == Main._ParametersCache.silverAmount)
-				{
-					Main._ParametersCache.silverAmount = 0;
-					Injections.thingsToDoInUpdate.Add(Main._MPGame.ForceSave);
-					return;
-				}
+			int silverInCaravan = 0;
+			foreach(Thing silverStack in caravanSilver) silverInCaravan += silverStack.stackCount;
 
-				if (item.def == ThingDefOf.Silver)
-				{
-					if (q + item.stackCount > Main._ParametersCache.silverAmount)
-					{
-						int countToTake = Main._ParametersCache.silverAmount - q;
-
-						q += countToTake;
-						item.holdingOwner.Take(item, countToTake);
+			if (silverInCaravan < silverNeeded) return false;
+			else
+            {
+				int takenSilver = 0;
+				foreach(Thing silverStack in caravanSilver)
+                {
+					if (takenSilver + silverStack.stackCount > silverNeeded)
+                    {
+						silverStack.holdingOwner.Take(silverStack, silverNeeded - takenSilver);
+						Injections.thingsToDoInUpdate.Add(Main._MPGame.ForceSave);
+						return true;
 					}
 
-					else
-					{
-						q += item.stackCount;
-						item.holdingOwner.Take(item, item.stackCount);
+					else if (takenSilver + silverStack.stackCount < silverNeeded)
+                    {
+						silverStack.holdingOwner.Take(silverStack, silverStack.stackCount);
+						takenSilver += silverStack.stackCount;
 					}
-				}
-			}
+
+					if (takenSilver == silverNeeded)
+                    {
+						Injections.thingsToDoInUpdate.Add(Main._MPGame.ForceSave);
+						return true;
+					}
+                }
+            }
+
+			return false;
 		}
 
 		public static void GiveFundsToCaravan()

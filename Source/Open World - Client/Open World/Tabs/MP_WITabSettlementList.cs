@@ -43,7 +43,6 @@ namespace OpenWorld
             var orderedDictionary = Main._ParametersCache.allSettlements.OrderBy(x => x.Value[0]);
             if (!Main._ParametersCache.isPlayingOnline)
             {
-                FactionHandler.FindOnlineFactionsInWorld();
                 Dictionary<int, List<string>> localOnlineSettlements = new Dictionary<int, List<string>>();
                 foreach (Settlement st in Find.WorldObjects.Settlements)
                 {

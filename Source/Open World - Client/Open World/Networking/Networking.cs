@@ -87,6 +87,11 @@ namespace OpenWorld
                             NetworkingHandler.SettlementsHandle(data);
                         }
 
+                        else if (data.StartsWith("FactionStructures│"))
+                        {
+                            NetworkingHandler.FactionStructuresHandle(data);
+                        }
+
                         else if (data.StartsWith("Variables│"))
                         {
                             NetworkingHandler.VariablesHandle(data);
@@ -125,6 +130,11 @@ namespace OpenWorld
                         else if (data.StartsWith("SettlementBuilder│"))
                         {
                             NetworkingHandler.SettlementBuilderHandle(data);
+                        }
+
+                        else if (data.StartsWith("FactionStructureBuilder│"))
+                        {
+                            NetworkingHandler.FactionStructureBuilderHandler(data);
                         }
 
                         else if (data.StartsWith("│SentEvent│"))

@@ -589,7 +589,7 @@ namespace OpenWorldServer
 
             else
             {
-                Faction factionToSearch = Server.factionList.Find(fetch => fetch.name == commandData);
+                Faction factionToSearch = Server.savedFactions.Find(fetch => fetch.name == commandData);
 
                 if (factionToSearch == null)
                 {
@@ -607,7 +607,7 @@ namespace OpenWorldServer
 
                     foreach (KeyValuePair<ServerClient, FactionHandler.MemberRank> member in factionToSearch.members)
                     {
-                        ConsoleUtils.WriteWithTime(member.Key.username + " - " + member.Value);
+                        ConsoleUtils.WriteWithTime("[" + member.Value + "]" + " - " + member.Key.username);
                     }
 
                     Console.WriteLine();
@@ -622,7 +622,11 @@ namespace OpenWorldServer
                     ConsoleUtils.WriteWithTime("Structures:");
                     Console.ForegroundColor = ConsoleColor.White;
 
-                    ConsoleUtils.WriteWithTime("TODO");
+                    if (factionToSearch.factionStructures.Count == 0) ConsoleUtils.WriteWithTime("No Structures");
+                    else foreach (FactionStructure structure in factionToSearch.factionStructures)
+                    {
+                        ConsoleUtils.WriteWithTime("[" + structure.structureTile + "]" + " - " + structure.structureName);
+                    }
 
                     Console.WriteLine();
                 }

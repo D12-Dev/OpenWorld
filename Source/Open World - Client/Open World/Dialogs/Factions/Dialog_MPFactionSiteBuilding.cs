@@ -60,7 +60,7 @@ namespace OpenWorld
 
                 string siteDescription = "Global faction storage";
 
-                string materialList = "a\nb\nc\nd\ne";
+                string materialList = "Cost: 5000x silver";
 
                 Text.Font = GameFont.Small;
                 Widgets.Label(new Rect(centeredX - Text.CalcSize(windowDescription).x / 2, windowDescriptionDif, Text.CalcSize(windowDescription).x, Text.CalcSize(windowDescription).y), windowDescription);
@@ -74,7 +74,8 @@ namespace OpenWorld
 
                 if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX / 2) * 2, rect.yMax - buttonY * 2 - 10), new Vector2(buttonX * 2, buttonY)), "Build"))
                 {
-
+                    Find.WindowStack.Add(new Dialog_MPFactionSiteBuild(0, 5000));
+                    Close();
                 }
 
                 if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX / 2) * 1.5f, rect.yMax - buttonY), new Vector2(buttonX * 1.5f, buttonY)), "Back"))
@@ -89,7 +90,7 @@ namespace OpenWorld
 
                 string siteDescription = "Global trading between members";
 
-                string materialList = "a\nb\nc\nd\ne";
+                string materialList = "Cost: 7500x silver";
 
                 Text.Font = GameFont.Small;
                 Widgets.Label(new Rect(centeredX - Text.CalcSize(windowDescription).x / 2, windowDescriptionDif, Text.CalcSize(windowDescription).x, Text.CalcSize(windowDescription).y), windowDescription);
@@ -103,7 +104,8 @@ namespace OpenWorld
 
                 if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX / 2) * 2, rect.yMax - buttonY * 2 - 10), new Vector2(buttonX * 2, buttonY)), "Build"))
                 {
-
+                    Find.WindowStack.Add(new Dialog_MPFactionSiteBuild(1, 7500));
+                    Close();
                 }
 
                 if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX / 2) * 1.5f, rect.yMax - buttonY), new Vector2(buttonX * 1.5f, buttonY)), "Back"))
@@ -116,9 +118,9 @@ namespace OpenWorld
             {
                 windowDescription = "About production site construction";
 
-                string siteDescription = "Pasive material generation";
+                string siteDescription = "Passive material generation";
 
-                string materialList = "a\nb\nc\nd\ne";
+                string materialList = "Cost: 10000x silver";
 
                 Text.Font = GameFont.Small;
                 Widgets.Label(new Rect(centeredX - Text.CalcSize(windowDescription).x / 2, windowDescriptionDif, Text.CalcSize(windowDescription).x, Text.CalcSize(windowDescription).y), windowDescription);
@@ -132,7 +134,8 @@ namespace OpenWorld
 
                 if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX / 2) * 2, rect.yMax - buttonY * 2 - 10), new Vector2(buttonX * 2, buttonY)), "Build"))
                 {
-
+                    Find.WindowStack.Add(new Dialog_MPFactionSiteBuild(2, 10000));
+                    Close();
                 }
 
                 if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX / 2) * 1.5f, rect.yMax - buttonY), new Vector2(buttonX * 1.5f, buttonY)), "Back"))

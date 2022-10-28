@@ -66,7 +66,7 @@ namespace OpenWorldServer
 
                 if (playerToLoad.faction != null)
                 {
-                    Faction factionToFech = Server.factionList.Find(fetch => fetch.name == playerToLoad.faction.name);
+                    Faction factionToFech = Server.savedFactions.Find(fetch => fetch.name == playerToLoad.faction.name);
                     if (factionToFech == null)
                     {
                         playerToLoad.faction = null;
@@ -116,7 +116,7 @@ namespace OpenWorldServer
 
             if (savedClient.faction != null)
             {
-                Faction factionToGive = Server.factionList.Find(fetch => fetch.name == savedClient.faction.name);
+                Faction factionToGive = Server.savedFactions.Find(fetch => fetch.name == savedClient.faction.name);
                 if (factionToGive != null) client.faction = factionToGive;
                 else client.faction = null;
             }

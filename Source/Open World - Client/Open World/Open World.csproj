@@ -85,6 +85,9 @@
     <Compile Include="Categories\MPGame.cs" />
     <Compile Include="Categories\MPWorld.cs" />
     <Compile Include="Dialogs\Factions\Dialog_MPFactionInvite.cs" />
+    <Compile Include="Dialogs\Factions\Dialog_MPFactionSiteBuild.cs" />
+    <Compile Include="Dialogs\Factions\Dialog_MPFactionSiteBuilt.cs" />
+    <Compile Include="Dialogs\Factions\Dialog_MPFactionSiteDemolish.cs" />
     <Compile Include="Dialogs\Factions\Dialog_MPFactionSiteBuilding.cs" />
     <Compile Include="Dialogs\Online\Dialog_MPMissingSave.cs" />
     <Compile Include="Dialogs\Factions\Dialog_MPFactionPromote.cs" />

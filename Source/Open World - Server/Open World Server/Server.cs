@@ -56,7 +56,7 @@ namespace OpenWorldServer
         public static List<string> adminList = new List<string>();
         public static List<string> chatCache = new List<string>();
         public static Dictionary<string, string> bannedIPs = new Dictionary<string, string>();
-        public static List<Faction> factionList = new List<Faction>();
+        public static List<Faction> savedFactions = new List<Faction>();
 
         //World Parameters
         public static float globeCoverage;

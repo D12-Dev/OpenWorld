@@ -110,7 +110,7 @@ namespace OpenWorld
 			foreach (KeyValuePair<int, List<string>> pair in Main._ParametersCache.onlineNeutralSettlements)
 			{
 				Settlement neutralSettlement = (Settlement)WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
-				neutralSettlement.Name = pair.Value[0];
+				neutralSettlement.Name = pair.Value[0] + "'s Settlement";
 				neutralSettlement.Tile = pair.Key;
 				neutralSettlement.SetFaction(Main._ParametersCache.onlineNeutralFaction);
 
@@ -120,7 +120,7 @@ namespace OpenWorld
 			foreach (KeyValuePair<int, List<string>> pair in Main._ParametersCache.onlineAllySettlements)
 			{
 				Settlement allySettlement = (Settlement)WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
-				allySettlement.Name = pair.Value[0];
+				allySettlement.Name = pair.Value[0] + "'s Settlement";
 				allySettlement.Tile = pair.Key;
 				allySettlement.SetFaction(Main._ParametersCache.onlineAllyFaction);
 
@@ -130,7 +130,7 @@ namespace OpenWorld
 			foreach (KeyValuePair<int, List<string>> pair in Main._ParametersCache.onlineEnemySettlements)
 			{
 				Settlement enemySettlement = (Settlement)WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
-				enemySettlement.Name = pair.Value[0];
+				enemySettlement.Name = pair.Value[0] + "'s Settlement";
 				enemySettlement.Tile = pair.Key;
 				enemySettlement.SetFaction(Main._ParametersCache.onlineEnemyFaction);
 
@@ -144,9 +144,9 @@ namespace OpenWorld
 			}
 
 			foreach (Settlement settlement in serverSettlements)
-			{
-				Find.WorldObjects.Add(settlement);
-			}
-		}
+            {
+                Find.WorldObjects.Add(settlement);
+            }
+        }
 	}
 }
