@@ -176,7 +176,7 @@ namespace OpenWorldServer
         {
             Server.bannedIPs.Clear();
 
-            if (!File.Exists(Server.mainFolderPath + Path.DirectorySeparatorChar + "Banned IPs.data"))
+            if (!File.Exists(Server.mainFolderPath + Path.DirectorySeparatorChar + "bans_ip.dat"))
             {
                 ConsoleUtils.LogToConsole("No Bans File Found, Ignoring");
                 return;
@@ -184,7 +184,7 @@ namespace OpenWorldServer
 
             BanDataHolder list = SaveSystem.LoadBannedIPs();
             {
-                Server.bannedIPs = list.bannedIPs;
+                Server.bannedIPs = list.BannedIPs;
             }
 
             if (Server.bannedIPs.Count == 0) ConsoleUtils.LogToConsole("No Banned Players Found, Ignoring");
