@@ -89,7 +89,7 @@ namespace OpenWorld
             Main._ParametersCache.letterDescription = data.Split('│')[1];
             Main._ParametersCache.letterType = LetterDefOf.PositiveEvent;
 
-            Injections.thingsToDoInUpdate.Add(Main._MPGame.TryGenerateLetter);
+            Injections.thingsToDoInUpdate.Add(RimworldHandler.GenerateLetter);
         }
 
         public static void AdminHandle(string data)
@@ -172,7 +172,7 @@ namespace OpenWorld
                 Main._ParametersCache.letterTitle = "Successful Trade";
                 Main._ParametersCache.letterDescription = "You have traded with another settlement! \n\nTraded items have been deposited in your caravan.";
                 Main._ParametersCache.letterType = LetterDefOf.PositiveEvent;
-                Injections.thingsToDoInUpdate.Add(Main._MPGame.TryGenerateLetter);
+                Injections.thingsToDoInUpdate.Add(RimworldHandler.GenerateLetter);
             }
 
             else if (data == "│SentTrade│Reject│")
@@ -282,7 +282,7 @@ namespace OpenWorld
             Main._ParametersCache.letterDescription = data.Split('│')[1] + "'s settlement has been spying you! \n\nAlthough their actions are unclear you should be careful about this.";
             Main._ParametersCache.letterType = LetterDefOf.NegativeEvent;
 
-            Injections.thingsToDoInUpdate.Add(Main._MPGame.TryGenerateLetter);
+            Injections.thingsToDoInUpdate.Add(RimworldHandler.GenerateLetter);
         }
 
         public static void SentSpyHandle(string data)
@@ -312,13 +312,10 @@ namespace OpenWorld
             string splitedString = data.Split('│')[1];
 
             if (string.IsNullOrWhiteSpace(splitedString)) return;
-            if (Main._ParametersCache.inTrade) return;
 
-            string[] tradeableItems = new string[0];
-            if (splitedString.Contains('»')) tradeableItems = splitedString.Split('»').ToArray();
-            else tradeableItems = new string[1] { splitedString };
+            Main._ParametersCache.receiveGiftsData = splitedString;
 
-            Find.WindowStack.Add(new Dialog_MPGiftRequest(tradeableItems));
+            Main._MPGame.CheckForGifts();
         }
 
         public static void PlayerListHandle(string data)
@@ -424,6 +421,14 @@ namespace OpenWorld
                     string itemMaterial = itemUnbuilt.Split(':')[3];
 
                     SiloHandler.ReceiveMaterialFromSilo(itemID, itemQuantity, itemQuality, itemMaterial);
+                }
+            }
+
+            else if (data.StartsWith("FactionManagement│ProductionSite"))
+            {
+                if (data == "FactionManagement│ProductionSite│Tick")
+                {
+                    ProductionSiteHandler.GetProductsToReceive();
                 }
             }
         }

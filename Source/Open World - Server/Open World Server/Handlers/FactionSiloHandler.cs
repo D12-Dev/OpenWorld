@@ -56,16 +56,17 @@ namespace OpenWorldServer
             {
                 if (string.IsNullOrWhiteSpace(str)) continue;
 
-                string itemID = str.Split('┼')[0];
-                int itemCount = int.Parse(str.Split('┼')[1]);
+                string itemID = "Silver";
+                if (!string.IsNullOrWhiteSpace(str.Split('┼')[0])) itemID = str.Split('┼')[0];
+
+                int itemCount = 0;
+                if (!string.IsNullOrWhiteSpace(str.Split('┼')[1])) itemCount = int.Parse(str.Split('┼')[1]);
 
                 int itemQuality = 0;
-                try { itemQuality = int.Parse(str.Split('┼')[2]); }
-                catch { Debug.WriteLine("Deposited item has no quality, defaulting to 0"); }
+                if (!string.IsNullOrWhiteSpace(str.Split('┼')[2])) itemQuality = int.Parse(str.Split('┼')[2]);
 
                 string itemMaterial = "0";
-                try { itemMaterial = str.Split('┼')[3]; }
-                catch { Debug.WriteLine("Deposited item has no material, defaulting to 0"); }
+                if (!string.IsNullOrWhiteSpace(str.Split('┼')[3])) itemMaterial = str.Split('┼')[3];
 
                 List<string> itemValues = new List<string>();
                 itemValues.Add(itemID);

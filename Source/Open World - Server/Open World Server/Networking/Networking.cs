@@ -24,6 +24,7 @@ namespace OpenWorldServer
             ConsoleUtils.UpdateTitle();
 
             Threading.GenerateThreads(1);
+            Threading.GenerateThreads(2);
 
             ListenForIncomingUsers();
         }
@@ -64,7 +65,7 @@ namespace OpenWorldServer
 
                     string encryptedData = sr.ReadLine();
                     string data = Encryption.DecryptString(encryptedData);
-                    if (data != "Ping") Debug.WriteLine(data);
+                    //if (data != "Ping") Debug.WriteLine(data);
 
                     if (encryptedData != null)
                     {

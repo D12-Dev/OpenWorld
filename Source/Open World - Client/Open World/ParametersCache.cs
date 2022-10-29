@@ -28,6 +28,7 @@ namespace OpenWorld
         public bool visitFlag;
         public bool secretFlag;
         public bool spyWarnFlag;
+        public bool hasLoadedCorrectly;
 
         //Planet Factions
         public List<Faction> allFactions = new List<Faction>();
@@ -85,6 +86,9 @@ namespace OpenWorld
         //Black Market References
         public Dialog_MPBlackMarket __MPBlackMarket;
         public string blackEventType;
+
+        //Production Site References
+        public int productionSiteProduct = 0;
 
         //General Purpose
         public string gameSavePath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData).Replace("Roaming", "LocalLow") + Path.DirectorySeparatorChar + "Ludeon Studios" + Path.DirectorySeparatorChar + "RimWorld by Ludeon Studios" + Path.DirectorySeparatorChar + "Saves";

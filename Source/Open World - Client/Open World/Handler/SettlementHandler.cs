@@ -15,16 +15,29 @@ namespace OpenWorld
 		{
 			int tileID = int.Parse(data.Split('│')[2]);
 			string name = data.Split('│')[3] + "'s Settlement";
+			int factionValue = int.Parse(data.Split('│')[4]);
 
 			Settlement settlement = (Settlement)WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
-			settlement.SetFaction(Main._ParametersCache.onlineNeutralFaction);
 			settlement.Tile = tileID;
 			settlement.Name = name;
-			Find.WorldObjects.Add(settlement);
 
-			Main._ParametersCache.onlineNeutralSettlements.Add(tileID, new List<string>() { name });
+			if (factionValue == 0) settlement.SetFaction(Main._ParametersCache.onlineNeutralFaction);
+			else if (factionValue == 1) settlement.SetFaction(Main._ParametersCache.onlineAllyFaction);
+			else if (factionValue == 2) settlement.SetFaction(Main._ParametersCache.onlineEnemyFaction);
+
+			List<string> settlementDetails = new List<string>()
+			{
+				name,
+				factionValue.ToString()
+			};
+
+			if (factionValue == 0) Main._ParametersCache.onlineNeutralSettlements.Add(tileID, settlementDetails);
+			else if (factionValue == 1) Main._ParametersCache.onlineAllySettlements.Add(tileID, settlementDetails);
+			else if (factionValue == 2) Main._ParametersCache.onlineEnemySettlements.Add(tileID, settlementDetails);
 
 			Main._ParametersCache.allSettlements.Add(tileID, new List<string>() { name });
+
+			Find.WorldObjects.Add(settlement);
 		}
 
 		public static void RemoveSettlementInWorld(string data)

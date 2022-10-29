@@ -106,13 +106,54 @@ namespace OpenWorld
             else if (siteType == 2)
             {
                 windowTitle = "Production Site Management Menu";
-                windowDescription = "Generate resources over tile for all members";
+                windowDescription = "Generate resources over time for all members";
 
                 Text.Font = GameFont.Small;
                 Widgets.Label(new Rect(centeredX - Text.CalcSize(windowDescription).x / 2, windowDescriptionDif, Text.CalcSize(windowDescription).x, Text.CalcSize(windowDescription).y), windowDescription);
                 Text.Font = GameFont.Medium;
 
                 Widgets.DrawLineHorizontal(rect.x, descriptionLineDif, rect.width);
+
+                if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX / 2) * 2, rect.yMax - buttonY * 5 - 40), new Vector2(buttonX * 2, buttonY)), "Receive Food"))
+                {
+                    Main._ParametersCache.productionSiteProduct = 1;
+                    Find.WindowStack.Add(new Dialog_MPFactionProductionProductChanged());
+                }
+
+                if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX / 2) * 2, rect.yMax - buttonY * 4 - 30), new Vector2(buttonX * 2, buttonY)), "Receive Silver"))
+                {
+                    Main._ParametersCache.productionSiteProduct = 2;
+                    Find.WindowStack.Add(new Dialog_MPFactionProductionProductChanged());
+                }
+
+                if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX / 2) * 2, rect.yMax - buttonY * 3 - 20), new Vector2(buttonX * 2, buttonY)), "Receive Components"))
+                {
+                    Main._ParametersCache.productionSiteProduct = 3;
+                    Find.WindowStack.Add(new Dialog_MPFactionProductionProductChanged());
+                }
+
+                if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX / 2) * 2, rect.yMax - buttonY * 2 - 10), new Vector2(buttonX * 2, buttonY)), "Receive Fuel"))
+                {
+                    Main._ParametersCache.productionSiteProduct = 4;
+                    Find.WindowStack.Add(new Dialog_MPFactionProductionProductChanged());
+                }
+            }
+
+            else if (siteType == 3)
+            {
+                windowTitle = "Wonder Structure Management Menu";
+                windowDescription = "Assert superiority against the whole planet";
+
+                Text.Font = GameFont.Small;
+                Widgets.Label(new Rect(centeredX - Text.CalcSize(windowDescription).x / 2, windowDescriptionDif, Text.CalcSize(windowDescription).x, Text.CalcSize(windowDescription).y), windowDescription);
+                Text.Font = GameFont.Medium;
+
+                Widgets.DrawLineHorizontal(rect.x, descriptionLineDif, rect.width);
+
+                if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX / 2) * 2, rect.yMax - buttonY * 2 - 10), new Vector2(buttonX * 2, buttonY)), "Utilize"))
+                {
+                    Find.WindowStack.Add(new Dialog_MPNotImplemented());
+                }
             }
 
             Text.Font = GameFont.Medium;

@@ -23,6 +23,7 @@ namespace OpenWorld
             if (structureType == 0) siteName = "Resource Silo";
             else if (structureType == 1) siteName = "Marketplace";
             else if (structureType == 2) siteName = "Production Site";
+            else if (structureType == 3) siteName = "Wonder Structure";
 
             Faction factionToGet = null;
             if (factionValue == 0) factionToGet = Main._ParametersCache.onlineNeutralFaction;
@@ -31,6 +32,7 @@ namespace OpenWorld
 
             Site newSite = SiteMaker.MakeSite(sitePart: SitePartDefOf.Outpost,
                                               tile: structureTile,
+                                              threatPoints: 5000,
                                               faction: factionToGet);
 
             newSite.customLabel = siteName;
@@ -115,12 +117,14 @@ namespace OpenWorld
                 }
             }
 
+            //Get server structures
             foreach (KeyValuePair<int, List<int>> pair in Main._ParametersCache.allFactionStructures)
             {
                 string siteName = "";
                 if (pair.Value[0] == 0) siteName = "Resource Silo";
                 else if (pair.Value[0] == 1) siteName = "Marketplace";
                 else if (pair.Value[0] == 2) siteName = "Production Site";
+                else if (pair.Value[0] == 3) siteName = "Wonder Structure";
 
                 Faction factionToGet = null;
                 if (pair.Value[1] == 0) factionToGet = Main._ParametersCache.onlineNeutralFaction;
@@ -129,18 +133,21 @@ namespace OpenWorld
 
                 Site newSite = SiteMaker.MakeSite(sitePart: SitePartDefOf.Outpost,
                                                   tile: pair.Key,
+                                                  threatPoints: 5000,
                                                   faction: factionToGet);
 
                 newSite.customLabel = siteName;
                 serverStructures.Add(newSite);
             }
 
+            //Remove existing structures
             foreach(Site site in existingStructures)
             {
                 Site siteToRemove = Find.WorldObjects.Sites.Find(fetch => fetch.Tile == site.Tile);
                 Find.WorldObjects.Remove(siteToRemove);
             }
 
+            //Add server structures
             foreach(Site site in serverStructures)
             {
                 Find.WorldObjects.Add(site);

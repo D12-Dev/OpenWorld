@@ -355,7 +355,7 @@ namespace OpenWorld
 
 			ResetBarterVariables();
 
-			Injections.thingsToDoInUpdate.Add(Main._MPGame.TryGenerateLetter);
+			Injections.thingsToDoInUpdate.Add(RimworldHandler.GenerateLetter);
 
 			Injections.thingsToDoInUpdate.Add(Main._MPGame.ForceSave);
 		}

@@ -35,16 +35,17 @@ namespace OpenWorldServer
             int newStructureTile = int.Parse(tileID);
             int newStructureIntValue = int.Parse(structureID);
 
-            FactionStructure structureOfSameType = faction.factionStructures.Find(fetch => fetch.structureType == newStructureIntValue);
-            if (structureOfSameType != null) return;
+            if (!CheckForGlobalStructureCap(newStructureIntValue)) return;
 
-            FactionStructure presentStructure = faction.factionStructures.Find(fetch => fetch.structureTile == newStructureTile);
-            if (presentStructure != null) return;
+            if (!CheckForStructureCap(faction, newStructureIntValue)) return;
+
+            if (!CheckIfTileIsAvailableForStructure(faction, newStructureTile)) return;
 
             FactionStructure structureToBuild = null;
             if (newStructureIntValue == 0) structureToBuild = new FactionSilo(faction, newStructureTile);
             else if (newStructureIntValue == 1) structureToBuild = new FactionMarketplace(faction, newStructureTile);
             else if (newStructureIntValue == 2) structureToBuild = new FactionProductionSite(faction, newStructureTile);
+            else if (newStructureIntValue == 3) structureToBuild = new FactionWonder(faction, newStructureTile);
 
             if (structureToBuild == null) return;
 
@@ -81,6 +82,34 @@ namespace OpenWorldServer
             {
                 Networking.SendData(client, "FactionStructureBuilder│RemoveStructure" + "│" + structureTile);
             }
+        }
+
+        public static bool CheckForGlobalStructureCap(int structureType)
+        {
+            if (structureType != 3) return true;
+            else foreach (Faction serverFaction in Server.savedFactions)
+            {
+                foreach (FactionStructure structure in serverFaction.factionStructures)
+                {
+                    if (structure.structureType == 3) return false;
+                }
+            }
+
+            return true;
+        }
+
+        public static bool CheckForStructureCap(Faction faction, int structureType)
+        {
+            FactionStructure structureOfSameType = faction.factionStructures.Find(fetch => fetch.structureType == structureType);
+            if (structureOfSameType != null) return false;
+            else return true;
+        }
+
+        public static bool CheckIfTileIsAvailableForStructure(Faction faction, int structureTile)
+        {
+            FactionStructure presentStructure = faction.factionStructures.Find(fetch => fetch.structureTile == structureTile);
+            if (presentStructure != null) return false;
+            else return true;
         }
     }
 }

@@ -317,30 +317,23 @@ namespace OpenWorld
 
         public void CheckForGifts()
         {
-            if (!string.IsNullOrWhiteSpace(Main._ParametersCache.receiveGiftsData))
-			{
-				if (Find.AnyPlayerHomeMap == null) Main._ParametersCache.receiveGiftsData = "";
-				else
-                {
-					if (Main._ParametersCache.inTrade) return;
+			if (string.IsNullOrWhiteSpace(Main._ParametersCache.receiveGiftsData)) return;
 
-					string[] tradeableItems = new string[0];
-					if (Main._ParametersCache.receiveGiftsData.Contains('»')) tradeableItems = Main._ParametersCache.receiveGiftsData.Split('»').ToArray();
-					else tradeableItems = new string[1] { Main._ParametersCache.receiveGiftsData };
+			if (!Main._ParametersCache.hasLoadedCorrectly) return;
 
-					Find.WindowStack.Add(new Dialog_MPGiftRequest(tradeableItems));
-				}
+			if (Main._ParametersCache.inTrade) return;
+
+			if (Find.AnyPlayerHomeMap == null)
+            {
+				Main._ParametersCache.receiveGiftsData = "";
+				return;
 			}
-		}
 
-		public void TryGenerateLetter()
-        {
-			try { Find.LetterStack.ReceiveLetter(Main._ParametersCache.letterTitle, Main._ParametersCache.letterDescription, Main._ParametersCache.letterType); }
-			catch { }
+			string[] tradeableItems;
+			if (Main._ParametersCache.receiveGiftsData.Contains('»')) tradeableItems = Main._ParametersCache.receiveGiftsData.Split('»').ToArray();
+			else tradeableItems = new string[1] { Main._ParametersCache.receiveGiftsData };
 
-			Main._ParametersCache.letterTitle = "";
-			Main._ParametersCache.letterDescription = "";
-			Main._ParametersCache.letterType = null;
+			Find.WindowStack.Add(new Dialog_MPGiftRequest(tradeableItems));
 		}
 
 		//Breaks game saves sometimes, need to search better way of force saving

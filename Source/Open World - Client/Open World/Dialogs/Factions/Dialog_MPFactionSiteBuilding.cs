@@ -12,7 +12,7 @@ namespace OpenWorld
 {
     public class Dialog_MPFactionSiteBuilding : Window
     {
-        public override Vector2 InitialSize => new Vector2(325f, 310f);
+        public override Vector2 InitialSize => new Vector2(325f, 355f);
 
         private string windowTitle = "Faction Site";
         private string windowDescription = "Build an utility site for your faction";
@@ -23,6 +23,7 @@ namespace OpenWorld
         bool isBuildingSilo;
         bool isBuildingMarketplace;
         bool isBuildingProductionSite;
+        bool isBuildingWonder;
 
         public Dialog_MPFactionSiteBuilding()
         {
@@ -74,7 +75,7 @@ namespace OpenWorld
 
                 if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX / 2) * 2, rect.yMax - buttonY * 2 - 10), new Vector2(buttonX * 2, buttonY)), "Build"))
                 {
-                    Find.WindowStack.Add(new Dialog_MPFactionSiteBuild(0, 1));
+                    Find.WindowStack.Add(new Dialog_MPFactionSiteBuild(0, 5000));
                     Close();
                 }
 
@@ -144,6 +145,36 @@ namespace OpenWorld
                 }
             }
 
+            else if (isBuildingWonder)
+            {
+                windowDescription = "About wonder construction";
+
+                string siteDescription = "Unique server structure";
+
+                string materialList = "Cost: 100000x silver";
+
+                Text.Font = GameFont.Small;
+                Widgets.Label(new Rect(centeredX - Text.CalcSize(windowDescription).x / 2, windowDescriptionDif, Text.CalcSize(windowDescription).x, Text.CalcSize(windowDescription).y), windowDescription);
+
+                Widgets.DrawLineHorizontal(rect.x, descriptionLineDif, rect.width);
+
+                Widgets.Label(new Rect(centeredX - Text.CalcSize(siteDescription).x / 2, rect.y + 80, Text.CalcSize(siteDescription).x, Text.CalcSize(siteDescription).y), siteDescription);
+
+                Widgets.Label(new Rect(centeredX - Text.CalcSize(materialList).x / 2, rect.y + 100, Text.CalcSize(materialList).x, Text.CalcSize(materialList).y), materialList);
+                Text.Font = GameFont.Medium;
+
+                if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX / 2) * 2, rect.yMax - buttonY * 2 - 10), new Vector2(buttonX * 2, buttonY)), "Build"))
+                {
+                    Find.WindowStack.Add(new Dialog_MPFactionSiteBuild(3, 100000));
+                    Close();
+                }
+
+                if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX / 2) * 1.5f, rect.yMax - buttonY), new Vector2(buttonX * 1.5f, buttonY)), "Back"))
+                {
+                    isBuildingWonder = false;
+                }
+            }
+
             else
             {
                 windowDescription = "Build an utility site for your faction";
@@ -154,19 +185,24 @@ namespace OpenWorld
 
                 Widgets.DrawLineHorizontal(rect.x, descriptionLineDif, rect.width);
 
-                if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX / 2) * 2, rect.yMax - buttonY * 4 - 30), new Vector2(buttonX * 2, buttonY)), "Resource Silo"))
+                if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX / 2) * 2, rect.yMax - buttonY * 5 - 40), new Vector2(buttonX * 2, buttonY)), "Resource Silo"))
                 {
                     isBuildingSilo = true;
                 }
 
-                if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX / 2) * 2, rect.yMax - buttonY * 3 - 20), new Vector2(buttonX * 2, buttonY)), "Marketplace"))
+                if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX / 2) * 2, rect.yMax - buttonY * 4 - 30), new Vector2(buttonX * 2, buttonY)), "Marketplace"))
                 {
                     isBuildingMarketplace = true;
                 }
 
-                if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX / 2) * 2, rect.yMax - buttonY * 2 - 10), new Vector2(buttonX * 2, buttonY)), "Production Site"))
+                if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX / 2) * 2, rect.yMax - buttonY * 3 - 20), new Vector2(buttonX * 2, buttonY)), "Production Site"))
                 {
                     isBuildingProductionSite = true;
+                }
+
+                if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX / 2) * 2, rect.yMax - buttonY * 2 - 10), new Vector2(buttonX * 2, buttonY)), "Wonder Structure"))
+                {
+                    isBuildingWonder = true;
                 }
 
                 if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX / 2) * 1.5f, rect.yMax - buttonY), new Vector2(buttonX * 1.5f, buttonY)), "Close"))

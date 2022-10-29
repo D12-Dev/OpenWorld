@@ -54,6 +54,12 @@ namespace OpenWorld
 
                 foreach (KeyValuePair<int, List<int>> pair in Main._ParametersCache.allFactionStructures)
                 {
+                    if(buildingType == 3 && pair.Value[0] == 3)
+                    {
+                        Find.WindowStack.Add(new Dialog_MPFactionStructureLimit());
+                        return;
+                    }
+
                     if (pair.Value[0] == buildingType && pair.Value[1] == 1)
                     {
                         Find.WindowStack.Add(new Dialog_MPFactionStructureLimit());

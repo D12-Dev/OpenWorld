@@ -75,7 +75,7 @@ namespace OpenWorld
                     Main._ParametersCache.letterTitle = "Successful Trade";
                     Main._ParametersCache.letterDescription = "You have traded with another settlement! \n\nTraded items have been deposited in your caravan.";
                     Main._ParametersCache.letterType = LetterDefOf.PositiveEvent;
-                    Injections.thingsToDoInUpdate.Add(Main._MPGame.TryGenerateLetter);
+                    Injections.thingsToDoInUpdate.Add(RimworldHandler.GenerateLetter);
                 }
                 else Find.WindowStack.Add(new Dialog_MPBarter(true, invokerID));
             }

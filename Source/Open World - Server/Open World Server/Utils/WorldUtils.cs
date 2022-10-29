@@ -6,13 +6,11 @@ namespace OpenWorldServer
 {
     public static class WorldUtils
     {
-        public static void AddSettlement(ServerClient? client, string data)
+        public static void AddSettlement(ServerClient? client, string tileID, string username)
         {
-            string[] dataSplit = data.Split(' ');
-
             if (client != null)
             {
-                client.homeTileID = dataSplit[0];
+                client.homeTileID = tileID;
 
                 foreach(ServerClient sc in Server.savedClients)
                 {
@@ -26,21 +24,28 @@ namespace OpenWorldServer
                 PlayerUtils.SavePlayer(client);
             }
 
-            string dataString = "SettlementBuilder│AddSettlement│" + dataSplit[0] + "│" + dataSplit[1];
-
+            int factionValue = 0;
             foreach (ServerClient sc in Networking.connectedClients)
             {
-                if (client != null)
+                if (sc.username == client.username) continue;
+                else
                 {
-                    if (sc.username == client.username) continue;
+                    if (client.faction == null) factionValue = 0;
+                    if (sc.faction == null) factionValue = 0;
+                    else if (client.faction != null && sc.faction != null)
+                    {
+                        if (client.faction.name == sc.faction.name) factionValue = 1;
+                        else factionValue = 2;
+                    }
                 }
 
+                string dataString = "SettlementBuilder│AddSettlement│" + tileID + "│" + username + "│" + factionValue;
                 Networking.SendData(sc, dataString);
             }
 
             Server.savedSettlements.Add(client.homeTileID, new List<string> { client.username });
 
-            ConsoleUtils.LogToConsole("Settlement With ID [" + dataSplit[0] + "] And Owner [" + dataSplit[1] + "] Has Been Added");
+            ConsoleUtils.LogToConsole("Settlement With ID [" + tileID + "] And Owner [" + username + "] Has Been Added");
         }
 
         public static void RemoveSettlement(ServerClient? client, string tile)
@@ -119,7 +124,7 @@ namespace OpenWorldServer
                 }
             }
 
-            AddSettlement(client, tileID + " " + client.username);
+            AddSettlement(client, tileID, client.username);
         }
     }
 }

@@ -179,7 +179,7 @@ namespace OpenWorld
 			Main._ParametersCache.letterDescription = "You have received a gift from another player! \n\nIf you have a zone called 'Trading' check it for the items, if not, search around the center of the map. \n\nTake a look at your objects! Some might have been swapped out by thieves!";
 			Main._ParametersCache.letterType = LetterDefOf.PositiveEvent;
 
-			Injections.thingsToDoInUpdate.Add(Main._MPGame.TryGenerateLetter);
+			Injections.thingsToDoInUpdate.Add(RimworldHandler.GenerateLetter);
 
 			ResetGiftVariables();
 

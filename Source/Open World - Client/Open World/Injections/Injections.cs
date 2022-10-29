@@ -60,6 +60,7 @@ namespace OpenWorld
 			if (Widgets.ButtonText(new Rect(buttonLocation.x, buttonLocation.y, buttonSize.x, buttonSize.y), ""))
 			{
 				Find.WindowStack.Add(new Dialog_MPMultiplayerType());
+				Main._ParametersCache.hasLoadedCorrectly = false;
 			}
 
 			Vector2 buttonLocation2 = new Vector2(rect.x, rect.y + buttonSize.y + 7.5f);
@@ -236,6 +237,8 @@ namespace OpenWorld
 				Main._MPGame.DisableDevOptions();
 
 				Main._MPGame.SendPlayerSettlementData(__instance);
+
+				Main._ParametersCache.hasLoadedCorrectly = true;
 			}
 		}
 	}
@@ -262,6 +265,8 @@ namespace OpenWorld
 				Main._MPGame.DisableDevOptions();
 
 				Main._MPGame.SendPlayerSettlementData(__instance);
+
+				Main._ParametersCache.hasLoadedCorrectly = true;
 
 				Main._MPGame.CheckForGifts();
 			}
@@ -331,6 +336,7 @@ namespace OpenWorld
 				if (pair.Value[0] == 0) siteName = "Resource Silo";
 				else if (pair.Value[0] == 1) siteName = "Marketplace";
 				else if (pair.Value[0] == 2) siteName = "Production Site";
+				else if (pair.Value[0] == 3) siteName = "Wonder Structure";
 
 				Faction factionToGet = null;
 				if (pair.Value[1] == 0) factionToGet = Main._ParametersCache.onlineNeutralFaction;

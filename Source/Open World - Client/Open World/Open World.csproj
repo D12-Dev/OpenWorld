@@ -84,6 +84,7 @@
     <Compile Include="Categories\MPChat.cs" />
     <Compile Include="Categories\MPGame.cs" />
     <Compile Include="Categories\MPWorld.cs" />
+    <Compile Include="Dialogs\Factions\Dialog_MPFactionProductionProductChanged.cs" />
     <Compile Include="Dialogs\Factions\Dialog_MPFactionInvite.cs" />
     <Compile Include="Dialogs\Factions\Dialog_MPFactionStructureLimit.cs" />
     <Compile Include="Dialogs\Factions\Dialog_MPFactionSiteBuild.cs" />
@@ -146,6 +147,8 @@
     <Compile Include="Handler\FactionHandler.cs" />
     <Compile Include="Handler\BarterHandler.cs" />
     <Compile Include="Handler\GiftHandler.cs" />
+    <Compile Include="Handler\ProductionSiteHandler.cs" />
+    <Compile Include="Handler\RimworldHandler.cs" />
     <Compile Include="Handler\SiloHandler.cs" />
     <Compile Include="Handler\TradeHandler.cs" />
     <Compile Include="Main.cs" />
