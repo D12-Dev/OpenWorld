@@ -21,6 +21,7 @@ namespace OpenWorld
         public int chatMode = 0;
         public int modVerificationMode = 0;
         public int profanityMode = 0;
+        public int enforcedDifficultyMode = 0;
 
         //Player Flags
         public bool pvpFlag;

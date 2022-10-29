@@ -247,6 +247,7 @@ namespace OpenWorldServer
             Console.ForegroundColor = ConsoleColor.White;
 
             ConsoleUtils.WriteWithTime("Using Whitelist: " + Server.usingWhitelist);
+            ConsoleUtils.WriteWithTime("Using Enforced Difficulty: " + Server.usingEnforcedDifficulty);
             ConsoleUtils.WriteWithTime("Allow Dev Mode: " + Server.allowDevMode);
 
             Console.WriteLine("");

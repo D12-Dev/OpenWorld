@@ -65,7 +65,9 @@ namespace OpenWorld
                 }
             }
 
-            Main._ParametersCache.connectedServerIdentifier = variablesData[6];
+            Main._ParametersCache.enforcedDifficultyMode = int.Parse(variablesData[6]);
+
+            Main._ParametersCache.connectedServerIdentifier = variablesData[7];
         }
 
         public static void NewGameHandle(string data)

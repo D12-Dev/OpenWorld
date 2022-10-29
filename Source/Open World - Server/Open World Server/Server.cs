@@ -48,6 +48,7 @@ namespace OpenWorldServer
         public static bool usingModVerification = false;
         public static bool usingChat = false;
         public static bool usingProfanityFilter = false;
+        public static bool usingEnforcedDifficulty = false;
 
         //Server Mods
         public static List<string> enforcedMods = new List<string>();

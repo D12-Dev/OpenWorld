@@ -137,6 +137,15 @@ namespace OpenWorldServer
                         continue;
                     }
 
+                    else if (setting.StartsWith("Use Enforced Difficulty: "))
+                    {
+                        string splitString = setting.Replace("Use Enforced Difficulty: ", "");
+
+                        if (splitString == "True") Server.usingEnforcedDifficulty = true;
+
+                        continue;
+                    }
+
                     else if (setting.StartsWith("Wealth Warning Threshold: "))
                     {
                         string splitString = setting.Replace("Wealth Warning Threshold: ", "");
@@ -300,6 +309,7 @@ namespace OpenWorldServer
                     "Max Players: 300",
                     "Allow Dev Mode: False",
                     "Use Whitelist: False",
+                    "Use Enforced Difficulty: False",
                     "",
                     "- Mod System Details -",
                     "Use Modlist Match: True",

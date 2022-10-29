@@ -101,6 +101,8 @@ namespace OpenWorld
 
 		public void EnforceDificultyTweaks()
         {
+			if (Main._ParametersCache.enforcedDifficultyMode == 0) return;
+
 			Current.Game.storyteller.difficulty.threatScale = 2.0f;
 			Current.Game.storyteller.difficulty.allowBigThreats = true;
 			Current.Game.storyteller.difficulty.allowViolentQuests = true;
@@ -123,6 +125,7 @@ namespace OpenWorld
 			Current.Game.storyteller.difficulty.foodPoisonChanceFactor = 1.50f;
 			Current.Game.storyteller.difficulty.manhunterChanceOnDamageFactor = 5.00f;
 			Current.Game.storyteller.difficulty.playerPawnInfectionChanceFactor = 1.25f;
+			Current.Game.storyteller.difficulty.diseaseIntervalFactor = 1.25f;
 			Current.Game.storyteller.difficulty.deepDrillInfestationChanceFactor = 2.00f;
 			Current.Game.storyteller.difficulty.friendlyFireChanceFactor = 0.75f;
 			Current.Game.storyteller.difficulty.allowInstantKillChance = 1.0f;
@@ -131,6 +134,8 @@ namespace OpenWorld
 			Current.Game.storyteller.difficulty.allowTurrets = true;
 			Current.Game.storyteller.difficulty.allowMortars = true;
 
+			Current.Game.storyteller.difficulty.adaptationEffectFactor = 1.0f;
+			Current.Game.storyteller.difficulty.adaptationGrowthRateFactorOverZero = 1.0f;
 			Current.Game.storyteller.difficulty.fixedWealthMode = false;
 		}
 

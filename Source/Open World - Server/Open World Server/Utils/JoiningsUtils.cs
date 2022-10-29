@@ -196,15 +196,17 @@ namespace OpenWorldServer
             if (Server.usingRoadSystem) roadInt = 1;
             if (Server.usingRoadSystem && Server.aggressiveRoadMode) roadInt = 2;
 
-            string name = Server.serverName;
-
             int chatInt = Server.usingChat ? 1 : 0;
 
             int profanityInt = Server.usingProfanityFilter ? 1 : 0;
 
             int modVerifyInt = Server.usingModVerification ? 1 : 0;
 
-            return dataToSend + devInt + "│" + wipeInt + "│" + roadInt + "│" + chatInt + "│" + profanityInt + "│" + modVerifyInt + "│" + name;
+            int enforcedDifficultyInt = Server.usingEnforcedDifficulty ? 1 : 0;
+
+            string name = Server.serverName;
+
+            return dataToSend + devInt + "│" + wipeInt + "│" + roadInt + "│" + chatInt + "│" + profanityInt + "│" + modVerifyInt + "│" + enforcedDifficultyInt + "│" + name;
         }
 
         public static string GetGiftsToSend(ServerClient client)
