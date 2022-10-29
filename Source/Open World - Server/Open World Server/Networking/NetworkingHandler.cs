@@ -10,9 +10,6 @@ namespace OpenWorldServer
     {
         public static void ConnectHandle(ServerClient client, string data)
         {
-            //Wait here to prevent sending the info before the client is listening
-            Thread.Sleep(100);
-
             JoiningsUtils.LoginProcedures(client, data);
         }
 
@@ -381,7 +378,7 @@ namespace OpenWorldServer
 
                 if (string.IsNullOrWhiteSpace(structureID)) return;
 
-                FactionHandler.BuildStructure(client.faction, tileID, structureID);
+                FactionBuildingHandler.BuildStructure(client.faction, tileID, structureID);
             }
 
             else if (data.StartsWith("FactionManagement│DestroyStructure"))
@@ -398,7 +395,43 @@ namespace OpenWorldServer
 
                 if (string.IsNullOrWhiteSpace(tileID)) return;
 
-                FactionHandler.DestroyStructure(client.faction, tileID);
+                FactionBuildingHandler.DestroyStructure(client.faction, tileID);
+            }
+
+            else if (data.StartsWith("FactionManagement│Silo"))
+            {
+                if (client.faction == null) return;
+
+                string siloID = data.Split('│')[3];
+
+                if (data.StartsWith("FactionManagement│Silo│Check"))
+                {
+                    if (string.IsNullOrWhiteSpace(siloID)) return;
+
+                    Networking.SendData(client, FactionSiloHandler.GetSiloContents(client.faction, siloID));
+                }
+
+                if (data.StartsWith("FactionManagement│Silo│Deposit"))
+                {
+                    string items = data.Split('│')[4];
+
+                    if (string.IsNullOrWhiteSpace(siloID)) return;
+
+                    if (string.IsNullOrWhiteSpace(items)) return;
+
+                    FactionSiloHandler.DepositIntoSilo(client.faction, siloID, items);
+                }
+
+                if (data.StartsWith("FactionManagement│Silo│Withdraw"))
+                {
+                    string itemID = data.Split('│')[4];
+
+                    if (string.IsNullOrWhiteSpace(siloID)) return;
+
+                    if (string.IsNullOrWhiteSpace(itemID)) return;
+
+                    FactionSiloHandler.WithdrawFromSilo(client.faction, siloID, itemID, client);
+                }
             }
         }
     }

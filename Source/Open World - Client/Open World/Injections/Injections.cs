@@ -236,8 +236,6 @@ namespace OpenWorld
 				Main._MPGame.DisableDevOptions();
 
 				Main._MPGame.SendPlayerSettlementData(__instance);
-
-				FactionHandler.FindOnlineFactionsInWorld();
 			}
 		}
 	}
@@ -289,7 +287,7 @@ namespace OpenWorld
 					foreach (KeyValuePair<int, List<string>> pair in Main._ParametersCache.onlineNeutralSettlements)
 					{
 						Settlement settlement = (Settlement)WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
-						settlement.Name = pair.Value[0] + "'s Settlement";
+						settlement.Name = pair.Value[0];
 						settlement.Tile = pair.Key;
 						settlement.SetFaction(Main._ParametersCache.onlineNeutralFaction);
 						Find.WorldObjects.Add(settlement);
@@ -304,7 +302,7 @@ namespace OpenWorld
 					foreach (KeyValuePair<int, List<string>> pair in Main._ParametersCache.onlineAllySettlements)
 					{
 						Settlement settlement = (Settlement)WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
-						settlement.Name = pair.Value[0] + "'s Settlement";
+						settlement.Name = pair.Value[0];
 						settlement.Tile = pair.Key;
 						settlement.SetFaction(Main._ParametersCache.onlineAllyFaction);
 						Find.WorldObjects.Add(settlement);
@@ -319,7 +317,7 @@ namespace OpenWorld
 					foreach (KeyValuePair<int, List<string>> pair in Main._ParametersCache.onlineEnemySettlements)
 					{
 						Settlement settlement = (Settlement)WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
-						settlement.Name = pair.Value[0] + "'s Settlement";
+						settlement.Name = pair.Value[0];
 						settlement.Tile = pair.Key;
 						settlement.SetFaction(Main._ParametersCache.onlineEnemyFaction);
 						Find.WorldObjects.Add(settlement);
@@ -410,11 +408,9 @@ namespace OpenWorld
 
 					pawnData += "‼";
 
-					try { pawnData += sentPawn.story.Childhood.identifier + "┼"; }
-					catch { }
+					pawnData += sentPawn.story.Childhood.identifier + "┼";
 
-					try { pawnData += sentPawn.story.Adulthood.identifier + "┼"; }
-					catch { }
+					pawnData += sentPawn.story.Adulthood.identifier + "┼";
 
 					pawnData += "‼";
 
@@ -435,8 +431,8 @@ namespace OpenWorld
 
 					//Add more
 
-					if (Main._ParametersCache.transferMode == "Gift") Main._ParametersCache.giftedItemsString += pawnData + "»";
-					else if (Main._ParametersCache.transferMode == "Trade") Main._ParametersCache.tradedItemString += pawnData + "»";
+					if (Main._ParametersCache.transferMode == 0) Main._ParametersCache.giftedItemsString += pawnData + "»";
+					else if (Main._ParametersCache.transferMode == 1) Main._ParametersCache.tradedItemString += pawnData + "»";
 				}
 
 				else
@@ -456,9 +452,12 @@ namespace OpenWorld
 					}
 					else itemDefName = ___thingsColony[0].def.defName;
 
-					if (Main._ParametersCache.transferMode == "Gift") Main._ParametersCache.giftedItemsString += itemDefName + "┼" + ___countToTransfer + "┼" + ((int)qc) + "┼" + stuffDefName + "»";
-					else if (Main._ParametersCache.transferMode == "Trade") Main._ParametersCache.tradedItemString += itemDefName + "┼" + ___countToTransfer + "┼" + ((int)qc) + "┼" + stuffDefName + "»";
+					if (Main._ParametersCache.transferMode == 0) Main._ParametersCache.giftedItemsString += itemDefName + "┼" + ___countToTransfer + "┼" + ((int)qc) + "┼" + stuffDefName + "»";
+					else if (Main._ParametersCache.transferMode == 1) Main._ParametersCache.tradedItemString += itemDefName + "┼" + ___countToTransfer + "┼" + ((int)qc) + "┼" + stuffDefName + "»";
+					else if (Main._ParametersCache.transferMode == 2) Main._ParametersCache.barteredItemString += itemDefName + "┼" + ___countToTransfer + "┼" + ((int)qc) + "┼" + stuffDefName + "»";
+					else if (Main._ParametersCache.transferMode == 3) Main._ParametersCache.depositItemsString += itemDefName + "┼" + ___countToTransfer + "┼" + ((int)qc) + "┼" + stuffDefName + "»";
 				}
+
 				return true;
 			}
 
@@ -486,7 +485,7 @@ namespace OpenWorld
 
                 Action action = delegate
                 {
-                    MPCaravan.SendGiftedPodsToSettlement(representative.TransportersInGroup, settlement);
+                    GiftHandler.SendGiftedPodsToSettlement(representative.TransportersInGroup, settlement);
                     representative.TryLaunch(settlement.Tile, new TransportPodsArrivalAction_GiveGift(settlement));
                 };
 
@@ -530,7 +529,12 @@ namespace OpenWorld
 		{
 			if (Main._ParametersCache.allFactions.Contains(TradeSession.trader.Faction))
 			{
-				___tradeables = Main._ParametersCache.listToShowInGiftMenu;
+				___tradeables = new List<Tradeable>();
+				___tradeables.AddRange(Main._ParametersCache.listToShowInGiftMenu);
+				___tradeables.AddRange(Main._ParametersCache.listToShowInTradeMenu);
+				___tradeables.AddRange(Main._ParametersCache.listToShowInBarterMenu);
+				___tradeables.AddRange(Main._ParametersCache.listToShowInSiloMenu);
+
 				return false;
 			}
 
@@ -793,7 +797,6 @@ namespace OpenWorld
 						Main._ParametersCache.focusedSettlement = __instance;
 						Main._ParametersCache.focusedCaravan = caravan;
 
-						//Injections.OpenDialogs(3);
 						Find.WindowStack.Add(new Dialog_MPBarter(false, null));
 					}
 				};
@@ -942,6 +945,7 @@ namespace OpenWorld
                                 }
 
 								Main._ParametersCache.focusedTile = objectToFind.Tile;
+								Main._ParametersCache.focusedCaravan = __instance;
 								Find.WindowStack.Add(new Dialog_MPFactionSiteBuilt(siteType));
 							}
 						};

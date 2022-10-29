@@ -37,6 +37,10 @@ namespace OpenWorld
 
         public Dictionary<int, List<int>> allFactionStructures = new Dictionary<int, List<int>>();
 
+        //Faction Silo
+        public Dictionary<int, List<string>> siloContents = new Dictionary<int, List<string>>();
+        public bool canWithdrawSilo;
+
         //Online Player Faction
         public bool hasFaction;
         public string factionName;
@@ -51,6 +55,36 @@ namespace OpenWorld
         //Online Players
         public List<string> playerList = new List<string>();
         public int playerCount = 0;
+
+        //Item Transfer Caches
+        public Dialog_MPGift __MPGift;
+        public Dialog_MPTrade __MPTrade;
+        public Dialog_MPBarter __MPBarter;
+        public Dialog_MPFactionSiloDeposit __MPSiloDeposit;
+
+        public string giftedItemsString = "";
+        public string tradedItemString = "";
+        public string barteredItemString = "";
+        public string depositItemsString = "";
+
+        public List<Tradeable> listToShowInGiftMenu = new List<Tradeable>();
+        public List<Tradeable> listToShowInTradeMenu = new List<Tradeable>();
+        public List<Tradeable> listToShowInBarterMenu = new List<Tradeable>();
+        public List<Tradeable> listToShowInSiloMenu = new List<Tradeable>();
+
+        //Trade References
+        public Dialog_MPWaiting __MPWaiting;
+        public string wantedSilver;
+        public bool inTrade;
+
+        //Barter References
+        public Dialog_MPBarterRequest __MPBarterRequest;
+        public List<string> cachedItems;
+        public bool awaitingRebarter;
+
+        //Black Market References
+        public Dialog_MPBlackMarket __MPBlackMarket;
+        public string blackEventType;
 
         //General Purpose
         public string gameSavePath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData).Replace("Roaming", "LocalLow") + Path.DirectorySeparatorChar + "Ludeon Studios" + Path.DirectorySeparatorChar + "RimWorld by Ludeon Studios" + Path.DirectorySeparatorChar + "Saves";
@@ -71,28 +105,6 @@ namespace OpenWorld
         public bool isPlayingOnline = false;
         public bool isAdmin = false;
 
-        //Dialog_MPBlackMarket
-        public Dialog_MPBlackMarket __MPBlackMarket;
-        public string blackEventType;
-
-        //Dialog_MPGift
-        public List<Tradeable> listToShowInGiftMenu = new List<Tradeable>();
-        public Dialog_MPGift __MPGift;
-        public string giftedItemsString;
-
-        //Dialog_MPTrade
-        public Dialog_MPTrade __MPTrade;
-        public Dialog_MPWaiting __MPWaiting;
-        public string tradedItemString;
-        public string wantedSilver;
-        public bool inTrade;
-
-        //Dialog_MPBarter
-        public Dialog_MPBarter __MPBarter;
-        public Dialog_MPBarterRequest __MPBarterRequest;
-        public string[] cachedItems;
-        public bool awaitingRebarter;
-
         //Letters
         public string letterTitle;
         public string letterDescription;
@@ -106,7 +118,7 @@ namespace OpenWorld
         public string forcedEvent;
         public string receiveGiftsData;
         public string serverStatusString;
-        public string transferMode;
+        public int transferMode;
         public string versionCode = "Going 1.4";
     }
 }

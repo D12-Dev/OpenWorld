@@ -46,7 +46,7 @@ namespace OpenWorld
                 Dictionary<int, List<string>> localOnlineSettlements = new Dictionary<int, List<string>>();
                 foreach (Settlement st in Find.WorldObjects.Settlements)
                 {
-                    if (Main._ParametersCache.allFactions.Contains(st.Faction)) localOnlineSettlements.Add(st.Tile, new List<string>() { st.Name.Replace("'s Settlement", "") });
+                    if (Main._ParametersCache.allFactions.Contains(st.Faction)) localOnlineSettlements.Add(st.Tile, new List<string>() { st.Name });
                 }
 
                 orderedDictionary = localOnlineSettlements.OrderBy(x => x.Value[0]);
@@ -89,12 +89,12 @@ namespace OpenWorld
 
             float buttonX = 47f;
             float buttonY = 30f;
-            Widgets.Label(fixedRect, pair.Value[0] + "'s Settlement");
+            Widgets.Label(fixedRect, pair.Value[0]);
             if (Widgets.ButtonText(new Rect(new Vector2(rect.xMax - buttonX, rect.y), new Vector2(buttonX, buttonY)), "Jump"))
             {
                 foreach(Settlement settlement in Find.World.worldObjects.Settlements)
                 {
-                    if (Main._ParametersCache.allFactions.Contains(settlement.Faction) && settlement.Tile == pair.Key)
+                    if (settlement.Tile == pair.Key)
                     {
                         CameraJumper.TryJumpAndSelect(new GlobalTargetInfo(settlement));
                         break;

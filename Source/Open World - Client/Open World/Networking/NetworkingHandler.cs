@@ -159,33 +159,28 @@ namespace OpenWorld
 
             else if (data == "│SentTrade│Deny│")
             {
-                MPCaravan.ReturnTradesToCaravan();
+                TradeHandler.ReturnTradesToCaravan();
                 Main._ParametersCache.__MPTrade.Close();
                 Find.WindowStack.Add(new Dialog_MPPlayerNotConnected());
-                Main._ParametersCache.wantedSilver = "";
             }
 
             else if (data == "│SentTrade│Deal│")
             {
-                MPCaravan.GiveFundsToCaravan();
+                TradeHandler.GiveTradeFundsToCaravan();
                 Main._ParametersCache.__MPWaiting.Close();
-                Main._ParametersCache.tradedItemString = "";
 
                 Main._ParametersCache.letterTitle = "Successful Trade";
                 Main._ParametersCache.letterDescription = "You have traded with another settlement! \n\nTraded items have been deposited in your caravan.";
                 Main._ParametersCache.letterType = LetterDefOf.PositiveEvent;
                 Injections.thingsToDoInUpdate.Add(Main._MPGame.TryGenerateLetter);
-
-                Injections.thingsToDoInUpdate.Add(Main._MPGame.ForceSave);
             }
 
             else if (data == "│SentTrade│Reject│")
             {
-                MPCaravan.ReturnTradesToCaravan();
+                TradeHandler.ReturnTradesToCaravan();
                 Main._ParametersCache.__MPWaiting.Close();
                 Main._ParametersCache.__MPTrade.Close();
                 Find.WindowStack.Add(new Dialog_MPRejectedTrade());
-                Main._ParametersCache.wantedSilver = "";
             }
         }
 
@@ -198,34 +193,26 @@ namespace OpenWorld
 
             else if (data == "│SentBarter│Deny│")
             {
-                MPCaravan.ReturnTradesToCaravan();
+                TradeHandler.ReturnTradesToCaravan();
                 Main._ParametersCache.__MPBarter.Close();
                 Find.WindowStack.Add(new Dialog_MPPlayerNotConnected());
             }
 
             else if (data == "│SentBarter│Deal│")
             {
-                MPCaravan.ReceiveTradesFromPlayer(Main._ParametersCache.cachedItems);
-                Main._ParametersCache.inTrade = false;
-                Main._ParametersCache.cachedItems = null;
-                Main._ParametersCache.tradedItemString = "";
+                BarterHandler.ReceiveBarterToSettlement(Main._ParametersCache.cachedItems);
                 Main._ParametersCache.__MPWaiting.Close();
-
-                Injections.thingsToDoInUpdate.Add(Main._MPGame.ForceSave);
             }
 
             else if (data == "│SentBarter│Reject│")
             {
                 if (Main._ParametersCache.awaitingRebarter)
                 {
-                    MPCaravan.ReturnTradesToSettlement();
+                    BarterHandler.ReturnBarterToSettlement();
                     Main._ParametersCache.__MPBarter.Close();
                 }
-                else MPCaravan.ReturnTradesToCaravan();
+                else BarterHandler.ReturnBarterToCaravan();
 
-                Main._ParametersCache.inTrade = false;
-                Main._ParametersCache.cachedItems = null;
-                Main._ParametersCache.tradedItemString = "";
                 Main._ParametersCache.__MPWaiting.Close();
 
                 Find.WindowStack.Add(new Dialog_MPRejectedTrade());
@@ -236,7 +223,15 @@ namespace OpenWorld
                 string invoker = data.Split('│')[3];
                 string[] items = data.Split('│')[4].Split('»').ToArray();
 
-                Find.WindowStack.Add(new Dialog_MPBarterRequest(invoker, items, true));
+                List<string> tradeableItems = new List<string>();
+
+                foreach (string str in items)
+                {
+                    if (string.IsNullOrWhiteSpace(str)) continue;
+                    else tradeableItems.Add(str);
+                }
+
+                Find.WindowStack.Add(new Dialog_MPBarterRequest(invoker, tradeableItems, true));
             }
         }
 
@@ -261,16 +256,20 @@ namespace OpenWorld
         public static void BarterRequestHandle(string data)
         {
             string invoker = data.Split('│')[1];
-            string splitedString = data.Split('│')[2];
+            string[] splitedString = data.Split('│')[2].Split('»');
 
             if (Main._ParametersCache.inTrade)
             {
                 Networking.SendData("BarterStatus│Reject│" + invoker);
             }
 
-            string[] tradeableItems = new string[0];
-            if (splitedString.Contains('»')) tradeableItems = splitedString.Split('»').ToArray();
-            else tradeableItems = new string[1] { splitedString };
+            List<string> tradeableItems = new List<string>();
+
+            foreach (string str in splitedString)
+            {
+                if (string.IsNullOrWhiteSpace(str)) continue;
+                else tradeableItems.Add(str);
+            }
 
             Find.WindowStack.Add(new Dialog_MPBarterRequest(invoker, tradeableItems, false));
         }
@@ -374,6 +373,58 @@ namespace OpenWorld
                 string factionName = data.Split('│')[2];
 
                 Find.WindowStack.Add(new Dialog_MPFactionInvite(factionName));
+            }
+
+            else if (data.StartsWith("FactionManagement│Silo"))
+            {
+                if (data.StartsWith("FactionManagement│Silo│Contents"))
+                {
+                    string itemsUnbuilt = data.Split('│')[3];
+
+                    Main._ParametersCache.siloContents.Clear();
+
+                    if (string.IsNullOrWhiteSpace(itemsUnbuilt)) return;
+
+                    string[] itemsBuilt;
+                    if (itemsUnbuilt.Contains('»')) itemsBuilt = itemsUnbuilt.Split('»');
+                    else itemsBuilt = new string[] { itemsUnbuilt };
+
+                    foreach(string str in itemsBuilt)
+                    {
+                        if (string.IsNullOrWhiteSpace(str)) continue;
+
+                        string itemID = str.Split(':')[0];
+                        string itemQuantity = str.Split(':')[1];
+                        string itemQuality = str.Split(':')[2];
+                        string itemMaterial = str.Split(':')[3];
+
+                        List<string> itemDetails = new List<string>();
+                        itemDetails.Add(itemID);
+                        itemDetails.Add(itemQuantity);
+                        itemDetails.Add(itemQuality);
+                        itemDetails.Add(itemMaterial);
+
+                        Main._ParametersCache.siloContents.Add(Main._ParametersCache.siloContents.Count, itemDetails);
+                    }
+
+                    Main._ParametersCache.canWithdrawSilo = true;
+                }
+
+                else if (data.StartsWith("FactionManagement│Silo│Withdraw"))
+                {
+                    string itemUnbuilt = data.Split('│')[3];
+
+                    Main._ParametersCache.siloContents.Clear();
+
+                    if (string.IsNullOrWhiteSpace(itemUnbuilt)) return;
+
+                    string itemID = itemUnbuilt.Split(':')[0];
+                    int itemQuantity = int.Parse(itemUnbuilt.Split(':')[1]);
+                    int itemQuality = int.Parse(itemUnbuilt.Split(':')[2]);
+                    string itemMaterial = itemUnbuilt.Split(':')[3];
+
+                    SiloHandler.ReceiveMaterialFromSilo(itemID, itemQuantity, itemQuality, itemMaterial);
+                }
             }
         }
 

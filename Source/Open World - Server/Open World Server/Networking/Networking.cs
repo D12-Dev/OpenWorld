@@ -15,7 +15,6 @@ namespace OpenWorldServer
         public static int serverPort = 0;
 
         public static List<ServerClient> connectedClients = new List<ServerClient>();
-        public static List<ServerClient> disconnectedClients = new List<ServerClient>();
 
         public static void ReadyServer()
         {
@@ -59,81 +58,76 @@ namespace OpenWorldServer
 
                 try
                 {
-                    if (client.disconnectFlag)
-                    {
-                        disconnectedClients.Add(client);
-                        return;
-                    }
+                    if (client.disconnectFlag) return;
 
-                    else if (!client.disconnectFlag && s.DataAvailable)
+                    if (!s.DataAvailable) continue;
+
+                    string encryptedData = sr.ReadLine();
+                    string data = Encryption.DecryptString(encryptedData);
+                    if (data != "Ping") Debug.WriteLine(data);
+
+                    if (encryptedData != null)
                     {
-                        string encryptedData = sr.ReadLine();
-                        string data = Encryption.DecryptString(encryptedData);
-                        if (data != "Ping") Debug.WriteLine(data);
-                        
-                        if (encryptedData != null)
+                        if (data.StartsWith("Connect│"))
                         {
-                            if (data.StartsWith("Connect│"))
-                            {
-                                NetworkingHandler.ConnectHandle(client, data);
-                            }
+                            NetworkingHandler.ConnectHandle(client, data);
+                        }
 
-                            else if (data.StartsWith("ChatMessage│"))
-                            {
-                                NetworkingHandler.ChatMessageHandle(client, data);
-                            }
+                        else if (data.StartsWith("ChatMessage│"))
+                        {
+                            NetworkingHandler.ChatMessageHandle(client, data);
+                        }
 
-                            else if (data.StartsWith("UserSettlement│"))
-                            {
-                                NetworkingHandler.UserSettlementHandle(client, data);
-                            }
+                        else if (data.StartsWith("UserSettlement│"))
+                        {
+                            NetworkingHandler.UserSettlementHandle(client, data);
+                        }
 
-                            else if (data.StartsWith("ForceEvent│"))
-                            {
-                                NetworkingHandler.ForceEventHandle(client, data);
-                            }
+                        else if (data.StartsWith("ForceEvent│"))
+                        {
+                            NetworkingHandler.ForceEventHandle(client, data);
+                        }
 
-                            else if (data.StartsWith("SendGiftTo│"))
-                            {
-                                NetworkingHandler.SendGiftHandle(client, data);
-                            }
+                        else if (data.StartsWith("SendGiftTo│"))
+                        {
+                            NetworkingHandler.SendGiftHandle(client, data);
+                        }
 
-                            else if (data.StartsWith("SendTradeTo│"))
-                            {
-                                NetworkingHandler.SendTradeHandle(client, data);
-                            }
+                        else if (data.StartsWith("SendTradeTo│"))
+                        {
+                            NetworkingHandler.SendTradeHandle(client, data);
+                        }
 
-                            else if (data.StartsWith("SendBarterTo│"))
-                            {
-                                NetworkingHandler.SendBarterHandle(client, data);
-                            }
+                        else if (data.StartsWith("SendBarterTo│"))
+                        {
+                            NetworkingHandler.SendBarterHandle(client, data);
+                        }
 
-                            else if (data.StartsWith("TradeStatus│"))
-                            {
-                                NetworkingHandler.TradeStatusHandle(client, data);
-                            }
+                        else if (data.StartsWith("TradeStatus│"))
+                        {
+                            NetworkingHandler.TradeStatusHandle(client, data);
+                        }
 
-                            else if (data.StartsWith("BarterStatus│"))
-                            {
-                                NetworkingHandler.BarterStatusHandle(client, data);
-                            }
+                        else if (data.StartsWith("BarterStatus│"))
+                        {
+                            NetworkingHandler.BarterStatusHandle(client, data);
+                        }
 
-                            else if (data.StartsWith("GetSpyInfo│"))
-                            {
-                                NetworkingHandler.SpyInfoHandle(client, data);
-                            }
+                        else if (data.StartsWith("GetSpyInfo│"))
+                        {
+                            NetworkingHandler.SpyInfoHandle(client, data);
+                        }
 
-                            else if (data.StartsWith("FactionManagement│"))
-                            {
-                                NetworkingHandler.FactionManagementHandle(client, data);
-                            }
+                        else if (data.StartsWith("FactionManagement│"))
+                        {
+                            NetworkingHandler.FactionManagementHandle(client, data);
                         }
                     }
                 }
 
                 catch
                 {
-                    disconnectedClients.Add(client);
+                    client.disconnectFlag = true;
                     return;
                 }
             }
@@ -141,16 +135,19 @@ namespace OpenWorldServer
 
         public static void SendData(ServerClient client, string data)
         {
-            try
+            if (!client.tcp.Connected) client.disconnectFlag = true;
+            else
             {
-                NetworkStream s = client.tcp.GetStream();
-                StreamWriter sw = new StreamWriter(s);
+                try
+                {
+                    NetworkStream s = client.tcp.GetStream();
+                    StreamWriter sw = new StreamWriter(s);
 
-                sw.WriteLine(Encryption.EncryptString(data));
-                sw.Flush();
+                    sw.WriteLine(Encryption.EncryptString(data));
+                    sw.Flush();
+                }
+                catch { }
             }
-
-            catch { }
         }
 
         public static void KickClients(ServerClient client, string kickMode)
@@ -158,12 +155,10 @@ namespace OpenWorldServer
             try { client.tcp.Close(); }
             catch { }
 
-            try { connectedClients.Remove(client); }
-            catch { }
+            connectedClients.Remove(client);
 
             if (kickMode == "Normal") ConsoleUtils.LogToConsole("Player [" + client.username + "] Has Disconnected");
             else if (kickMode == "Silent") { }
-            else { }
 
             ServerUtils.SendPlayerListToAll(null);
 
@@ -176,48 +171,33 @@ namespace OpenWorldServer
 
             while (true)
             {
-                Thread.Sleep(100);
+                Thread.Sleep(500);
 
                 try
                 {
-                    if (disconnectedClients.Count > 0)
-                    {
-                        KickClients(disconnectedClients[0], "Normal");
+                    List<ServerClient> actualClients = new List<ServerClient>();
+                    actualClients.AddRange(connectedClients);
 
-                        disconnectedClients.Remove(disconnectedClients[0]);
+                    List<ServerClient> clientsToDisconnect = new List<ServerClient>();
+
+                    foreach (ServerClient client in actualClients)
+                    {
+                        if (client.disconnectFlag) clientsToDisconnect.Add(client);
+
+                        Thread.Sleep(1);
+
+                        SendData(client, "Ping");
+                    }
+
+                    foreach(ServerClient client in clientsToDisconnect)
+                    {
+                        Thread.Sleep(1);
+
+                        KickClients(client, "Normal");
                     }
                 }
+
                 catch { continue; }
-
-                try
-                {
-                    foreach (ServerClient client in connectedClients)
-                    {
-                        if (!IsClientConnected(client)) client.disconnectFlag = true;
-                    }
-                }
-
-                catch { continue; }
-            }
-
-            bool IsClientConnected(ServerClient client)
-            {
-                try
-                {
-                    TcpClient c = client.tcp;
-
-                    if (c != null && c.Client != null && c.Client.Connected)
-                    {
-                        if (c.Client.Poll(0, SelectMode.SelectRead))
-                        {
-                            return !(c.Client.Receive(new byte[1], SocketFlags.Peek) == 0);
-                        }
-                    }
-
-                    return true;
-                }
-
-                catch { return false; }
             }
         }
     }

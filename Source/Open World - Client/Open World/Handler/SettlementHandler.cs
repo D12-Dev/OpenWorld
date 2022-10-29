@@ -71,7 +71,7 @@ namespace OpenWorld
 				if (string.IsNullOrWhiteSpace(str)) continue;
 
 				int settlementTile = int.Parse(str.Split(':')[0]);
-				string settlementName = str.Split(':')[1];
+				string settlementName = str.Split(':')[1] + "'s Settlement";
 				int settlementFactionValue = int.Parse(str.Split(':')[2]);
 
 				List<string> settlementDetails = new List<string>()
@@ -98,19 +98,17 @@ namespace OpenWorld
 			//Get existing settlements
 			foreach (Settlement st in Find.WorldObjects.Settlements)
 			{
-				if (st.Faction == Main._ParametersCache.onlineNeutralFaction ||
-					st.Faction == Main._ParametersCache.onlineAllyFaction ||
-					st.Faction == Main._ParametersCache.onlineEnemyFaction)
-				{
+				if (Main._ParametersCache.allFactions.Contains(st.Faction))
+                {
 					existingSettlements.Add(st);
-				}
+                }
 			}
 
 			//Get server settlements
 			foreach (KeyValuePair<int, List<string>> pair in Main._ParametersCache.onlineNeutralSettlements)
 			{
 				Settlement neutralSettlement = (Settlement)WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
-				neutralSettlement.Name = pair.Value[0] + "'s Settlement";
+				neutralSettlement.Name = pair.Value[0];
 				neutralSettlement.Tile = pair.Key;
 				neutralSettlement.SetFaction(Main._ParametersCache.onlineNeutralFaction);
 
@@ -120,7 +118,7 @@ namespace OpenWorld
 			foreach (KeyValuePair<int, List<string>> pair in Main._ParametersCache.onlineAllySettlements)
 			{
 				Settlement allySettlement = (Settlement)WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
-				allySettlement.Name = pair.Value[0] + "'s Settlement";
+				allySettlement.Name = pair.Value[0];
 				allySettlement.Tile = pair.Key;
 				allySettlement.SetFaction(Main._ParametersCache.onlineAllyFaction);
 
@@ -130,7 +128,7 @@ namespace OpenWorld
 			foreach (KeyValuePair<int, List<string>> pair in Main._ParametersCache.onlineEnemySettlements)
 			{
 				Settlement enemySettlement = (Settlement)WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
-				enemySettlement.Name = pair.Value[0] + "'s Settlement";
+				enemySettlement.Name = pair.Value[0];
 				enemySettlement.Tile = pair.Key;
 				enemySettlement.SetFaction(Main._ParametersCache.onlineEnemyFaction);
 

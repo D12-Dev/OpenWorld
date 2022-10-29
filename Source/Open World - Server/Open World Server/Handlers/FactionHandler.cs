@@ -68,7 +68,8 @@ namespace OpenWorldServer
 
             if (factionToSave.members.Count() > 1)
             {
-                //Order faction members dictionary to order
+                var orderedDictionary = factionToSave.members.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
+                factionToSave.members = orderedDictionary;
             }
             
             Stream s = File.OpenWrite(factionSavePath);
@@ -141,30 +142,6 @@ namespace OpenWorldServer
 
                 return dataToSend;
             }
-        }
-
-        public static string GetAllFactionStructures(ServerClient client)
-        {
-            string dataToSend = "FactionStructures│";
-
-            int factionValue = 0;
-
-            foreach (Faction faction in Server.savedFactions)
-            {
-                if (client.faction == null) factionValue = 0;
-                if (client.faction != null)
-                {
-                    if (client.faction == faction) factionValue = 1;
-                    else factionValue = 2;
-                }
-
-                foreach (FactionStructure structure in faction.factionStructures)
-                {
-                    dataToSend += structure.structureTile + ":" + structure.structureType + ":" + factionValue + "»";
-                }
-            }
-
-            return dataToSend;
         }
 
         public static void AddMember(Faction faction, ServerClient memberToAdd)
@@ -322,56 +299,6 @@ namespace OpenWorldServer
             }
 
             return MemberRank.Member;
-        }
-
-        public static void BuildStructure(Faction faction, string tileID, string structureID)
-        {
-            FactionStructure structureToBuild = null;
-            int newStructureTile = int.Parse(tileID);
-            int newStructureIntValue = int.Parse(structureID);
-
-            FactionStructure presentStructure = faction.factionStructures.Find(fetch => fetch.structureTile == newStructureTile);
-            if (presentStructure != null) return;
-
-            if (newStructureIntValue == 0) structureToBuild = new FactionSilo(faction, newStructureTile);
-            else if (newStructureIntValue == 1) structureToBuild = new FactionMarketplace(faction, newStructureTile);
-            else if (newStructureIntValue == 2) structureToBuild = new FactionProductionSite(faction, newStructureTile);
-
-            if (structureToBuild == null) return;
-
-            faction.factionStructures.Add(structureToBuild);
-
-            SaveFaction(faction);
-
-            int factionValue = 0;
-            foreach(ServerClient client in Networking.connectedClients)
-            {
-                if (client.faction == null) factionValue = 0;
-                if (client.faction != null)
-                {
-                    if (client.faction == faction) factionValue = 1;
-                    else factionValue = 2;
-                }
-
-                Networking.SendData(client, "FactionStructureBuilder│AddStructure" + "│" + newStructureTile + "│" + newStructureIntValue + "│" + factionValue);
-            }
-        }
-
-        public static void DestroyStructure(Faction faction, string tileID)
-        {
-            int structureTile = int.Parse(tileID);
-
-            FactionStructure structureToDestroy = faction.factionStructures.Find(fetch => fetch.structureTile == structureTile);
-            if (structureToDestroy == null) return;
-
-            faction.factionStructures.Remove(structureToDestroy);
-
-            SaveFaction(faction);
-
-            foreach (ServerClient client in Networking.connectedClients)
-            {
-                Networking.SendData(client, "FactionStructureBuilder│RemoveStructure" + "│" + structureTile);
-            }
         }
     }
 }

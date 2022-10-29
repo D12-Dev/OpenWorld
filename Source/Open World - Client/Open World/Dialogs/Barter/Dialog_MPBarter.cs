@@ -77,7 +77,7 @@ namespace OpenWorld
 
         public void CacheTradeables()
         {
-            cachedTradeables = (from tr in Main._ParametersCache.listToShowInGiftMenu
+            cachedTradeables = (from tr in Main._ParametersCache.listToShowInBarterMenu
                                 where quickSearchWidget.filter.Matches(tr.Label)
                                 orderby 0 descending
                                 select tr)
@@ -90,7 +90,7 @@ namespace OpenWorld
 
         public void GenerateTradeList()
         {
-            Main._ParametersCache.listToShowInGiftMenu = new List<Tradeable>();
+            Main._ParametersCache.listToShowInBarterMenu = new List<Tradeable>();
 
             if (!rebarter)
             {
@@ -100,7 +100,7 @@ namespace OpenWorld
                 {
                     Tradeable tradeable = new Tradeable();
                     tradeable.AddThing(item, Transactor.Colony);
-                    Main._ParametersCache.listToShowInGiftMenu.Add(tradeable);
+                    Main._ParametersCache.listToShowInBarterMenu.Add(tradeable);
                 }
             }
 
@@ -121,7 +121,7 @@ namespace OpenWorld
 
                         Tradeable tradeable = new Tradeable();
                         tradeable.AddThing(item, Transactor.Colony);
-                        Main._ParametersCache.listToShowInGiftMenu.Add(tradeable);
+                        Main._ParametersCache.listToShowInBarterMenu.Add(tradeable);
                     }
                 }
             }

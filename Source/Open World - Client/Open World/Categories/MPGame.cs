@@ -343,20 +343,21 @@ namespace OpenWorld
 			Main._ParametersCache.letterType = null;
 		}
 
+		//Breaks game saves sometimes, need to search better way of force saving
 		public void ForceSave()
         {
-			string fileName = Main._ParametersCache.onlineFileSaveName + " - " + Main._ParametersCache.connectedServerIdentifier + " - " + Main._ParametersCache.usernameText;
+			//string fileName = Main._ParametersCache.onlineFileSaveName + " - " + Main._ParametersCache.connectedServerIdentifier + " - " + Main._ParametersCache.usernameText;
 
-			try
-			{
-				SafeSaver.Save(GenFilePaths.FilePathForSavedGame(fileName), "savegame", delegate
-				{
-					ScribeMetaHeaderUtility.WriteMetaHeader();
-					Game target = Current.Game;
-					Scribe_Deep.Look(ref target, "game");
-				}, Find.GameInfo.permadeathMode);
-			}
-			catch (Exception arg) { Log.Error("Exception while saving game: " + arg); }
+			//try
+			//{
+			//	SafeSaver.Save(GenFilePaths.FilePathForSavedGame(fileName), "savegame", delegate
+			//	{
+			//		ScribeMetaHeaderUtility.WriteMetaHeader();
+			//		Game target = Current.Game;
+			//		Scribe_Deep.Look(ref target, "game");
+			//	}, Find.GameInfo.permadeathMode);
+			//}
+			//catch (Exception arg) { Log.Error("Exception while saving game: " + arg); }
 		}
 	}
 }

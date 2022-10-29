@@ -44,9 +44,9 @@ namespace OpenWorld
 
             if (Widgets.ButtonText(new Rect(new Vector2(rect.x, rect.yMax - buttonY), new Vector2(buttonX, buttonY)), "OK"))
             {
-                MPCaravan.TakeGiftsFromCaravan();
+                MPCaravan.TakeItemsFromCaravan(0);
 
-                MPCaravan.SendGiftsToSettlement();
+                GiftHandler.SendGiftsToSettlement();
 
                 Close();
             }

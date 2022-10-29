@@ -74,7 +74,7 @@ namespace OpenWorldServer
             Networking.SendData(client, FactionHandler.GetFactionDetails(client));
             Thread.Sleep(100);
 
-            Networking.SendData(client, FactionHandler.GetAllFactionStructures(client));
+            Networking.SendData(client, FactionBuildingHandler.GetAllFactionStructures(client));
             Thread.Sleep(100);
 
             Networking.SendData(client, "NewGame│");
@@ -95,7 +95,7 @@ namespace OpenWorldServer
             Networking.SendData(client, FactionHandler.GetFactionDetails(client));
             Thread.Sleep(100);
 
-            Networking.SendData(client, FactionHandler.GetAllFactionStructures(client));
+            Networking.SendData(client, FactionBuildingHandler.GetAllFactionStructures(client));
             Thread.Sleep(100);
 
             Networking.SendData(client, GetGiftsToSend(client));

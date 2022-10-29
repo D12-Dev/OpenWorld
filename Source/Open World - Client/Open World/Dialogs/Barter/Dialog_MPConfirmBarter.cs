@@ -48,19 +48,13 @@ namespace OpenWorld
 
             if (Widgets.ButtonText(new Rect(new Vector2(rect.x, rect.yMax - buttonY), new Vector2(buttonX, buttonY)), "OK"))
             {
-                if (!Networking.isConnectedToServer)
-                {
-                    Find.WindowStack.Add(new Dialog_MPDisconnected());
-                    return;
-                }
-
                 if (rebarter)
                 {
                     Main._ParametersCache.awaitingRebarter = true;
 
-                    MPCaravan.TakeTradesFromSettlement();
+                    MPCaravan.TakeItemsFromSettlement(1);
 
-                    MPCaravan.SendBarterToCaravan();
+                    BarterHandler.SendBarterToCaravan();
 
                     Main._ParametersCache.__MPBarterRequest.Close();
 
@@ -69,9 +63,9 @@ namespace OpenWorld
 
                 else
                 {
-                    MPCaravan.TakeTradesFromCaravan();
+                    MPCaravan.TakeItemsFromCaravan(2);
 
-                    MPCaravan.SendBarterToSettlement();
+                    BarterHandler.SendBarterToSettlement();
 
                     Main._ParametersCache.__MPBarter.Close();
                 }

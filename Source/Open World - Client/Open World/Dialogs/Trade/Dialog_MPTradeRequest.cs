@@ -83,9 +83,9 @@ namespace OpenWorld
                 if (quantityAvailable < quantityToRemove)
                 {
                     Networking.SendData("TradeStatus│Reject│" + invokerID);
-                    Main._ParametersCache.inTrade = false;
-                    Close();
+                    TradeHandler.ResetTradeVariables();
                     Find.WindowStack.Add(new Dialog_MPNoFunds());
+                    Close();
                     return;
                 }
 
@@ -113,15 +113,14 @@ namespace OpenWorld
                 }
 
                 Networking.SendData("TradeStatus│Deal│" + invokerID);
-                MPCaravan.ReceiveTradesFromPlayer(tradeableItems);
-                Main._ParametersCache.inTrade = false;
+                TradeHandler.ReceiveTradesFromPlayer(tradeableItems);
                 Close();
             }
 
             if (Widgets.ButtonText(new Rect(new Vector2(rect.xMax - buttonX, rect.yMax - buttonY), new Vector2(buttonX, buttonY)), "Reject"))
             {
                 Networking.SendData("TradeStatus│Reject│" + invokerID);
-                Main._ParametersCache.inTrade = false;
+                TradeHandler.ResetTradeVariables();
                 Close();
             }
         }

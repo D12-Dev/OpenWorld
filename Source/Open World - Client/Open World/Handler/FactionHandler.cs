@@ -154,6 +154,7 @@ namespace OpenWorld
             Main._ParametersCache.onlineAllyFaction = factions.Find(fetch => fetch.Name == "Open World Settlements Ally");
             Main._ParametersCache.onlineEnemyFaction = factions.Find(fetch => fetch.Name == "Open World Settlements Enemy");
 
+            Main._ParametersCache.allFactions.Clear();
             Main._ParametersCache.allFactions.Add(Main._ParametersCache.onlineNeutralFaction);
             Main._ParametersCache.allFactions.Add(Main._ParametersCache.onlineAllyFaction);
             Main._ParametersCache.allFactions.Add(Main._ParametersCache.onlineEnemyFaction);

@@ -11,18 +11,13 @@ using Verse.Sound;
 
 namespace OpenWorld
 {
-    public class Dialog_MPTrade : Window
+    public class Dialog_MPFactionSiloDeposit : Window
     {
         public override Vector2 InitialSize => new Vector2(835f, 512f);
 
-        public string windowTitle = "Trading Menu";
+        public string windowTitle = "Silo Deposit Menu";
 
-        public string windowDescription = "Select the items you wish to trade with this settlement";
-
-        public string silverWanted = "For X silver";
-
-        private int startAcceptingInputAtFrame;
-        private bool AcceptsInput => startAcceptingInputAtFrame <= Time.frameCount;
+        public string windowDescription = "Select the items you wish to deposit in this silo";
 
         private List<Tradeable> cachedTradeables;
 
@@ -36,9 +31,9 @@ namespace OpenWorld
 
         public override QuickSearchWidget CommonSearchWidget => quickSearchWidget;
 
-        public Dialog_MPTrade()
+        public Dialog_MPFactionSiloDeposit()
         {
-            Main._ParametersCache.__MPTrade = this;
+            Main._ParametersCache.__MPSiloDeposit = this;
 
             Pawn playerNegotiator = BestCaravanPawnUtility.FindBestNegotiator(caravan, settlement.Faction, settlement.TraderKind);
             GenerateTradeList();
@@ -64,7 +59,7 @@ namespace OpenWorld
 
         public void CacheTradeables()
         {
-            cachedTradeables = (from tr in Main._ParametersCache.listToShowInTradeMenu
+            cachedTradeables = (from tr in Main._ParametersCache.listToShowInSiloMenu
                                 where quickSearchWidget.filter.Matches(tr.Label)
                                 orderby 0 descending
                                 select tr)
@@ -77,7 +72,7 @@ namespace OpenWorld
 
         public void GenerateTradeList()
         {
-            Main._ParametersCache.listToShowInTradeMenu = new List<Tradeable>();
+            Main._ParametersCache.listToShowInSiloMenu = new List<Tradeable>();
 
             List<Thing> caravanItems = CaravanInventoryUtility.AllInventoryItems(caravan);
 
@@ -85,16 +80,7 @@ namespace OpenWorld
             {
                 Tradeable tradeable = new Tradeable();
                 tradeable.AddThing(item, Transactor.Colony);
-                Main._ParametersCache.listToShowInTradeMenu.Add(tradeable);
-            }
-
-            foreach(Pawn pawn in caravan.pawns)
-            {
-                if (pawn.NonHumanlikeOrWildMan()) continue;
-
-                Tradeable tradeable = new Tradeable();
-                tradeable.AddThing(pawn, Transactor.Colony);
-                Main._ParametersCache.listToShowInTradeMenu.Add(tradeable);
+                Main._ParametersCache.listToShowInSiloMenu.Add(tradeable);
             }
         }
 
@@ -129,7 +115,6 @@ namespace OpenWorld
         public override void DoWindowContents(Rect inRect)
         {
             float windowDescriptionDif = Text.CalcSize(windowDescription).y + 8;
-            float silverDescriptionDif = windowDescriptionDif + StandardMargin + 8;
 
             Text.Font = GameFont.Medium;
             Widgets.Label(new Rect((inRect.width / 2) - Text.CalcSize(windowTitle).x / 2, inRect.y, inRect.width, Text.CalcSize(windowTitle).y), windowTitle);
@@ -137,20 +122,16 @@ namespace OpenWorld
             Text.Font = GameFont.Small;
             Widgets.Label(new Rect((inRect.width / 2) - Text.CalcSize(windowDescription).x / 2, windowDescriptionDif, inRect.width, Text.CalcSize(windowDescription).y), windowDescription);
 
-            Text.Font = GameFont.Medium;
-            Widgets.Label(new Rect((inRect.width / 2) - (Text.CalcSize(silverWanted).x / 2) - 103f, silverDescriptionDif, Text.CalcSize(silverWanted).x, Text.CalcSize(silverWanted).y), silverWanted);
-            string a = Widgets.TextField(new Rect((inRect.width / 2) - (Text.CalcSize(silverWanted).x / 2) + 12f, silverDescriptionDif, 200f, 30f), Main._ParametersCache.wantedSilver);
-            if (AcceptsInput && a.Length <= 7 && a.All(character => Char.IsDigit(character))) Main._ParametersCache.wantedSilver = a;
-
-            float num2 = 37f;
+            float num2 = 0f;
             Rect mainRect = new Rect(0f, 58f + num2, inRect.width, inRect.height - 58f - 38f - num2 - 20f);
             FillMainRect(mainRect);
 
             float buttonX = 137f;
             float buttonY = 38f;
+
             if (Widgets.ButtonText(new Rect(new Vector2(inRect.x, inRect.yMax - buttonY), new Vector2(137f, buttonY)), "Accept"))
             {
-                Find.WindowStack.Add(new Dialog_MPConfirmTrade());
+                Find.WindowStack.Add(new Dialog_MPConfirmDeposit());
             }
 
             if (Widgets.ButtonText(new Rect(new Vector2((inRect.width / 2) - (buttonX / 2), inRect.yMax - buttonY), new Vector2(137f, buttonY)), "Reset"))
@@ -164,6 +145,7 @@ namespace OpenWorld
             if (Widgets.ButtonText(new Rect(new Vector2(inRect.xMax - buttonX, inRect.yMax - buttonY), new Vector2(137f, buttonY)), "Cancel"))
             {
                 Close();
+                Event.current.Use();
             }
         }
 

@@ -1,5 +1,4 @@
 ﻿using RimWorld;
-using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,26 +6,27 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
-using Verse.Sound;
+using Verse.Profile;
 
 namespace OpenWorld
 {
-    public class Dialog_MPConfirmTrade : Window
+    public class Dialog_MPFactionStructureLimit : Window
     {
         public override Vector2 InitialSize => new Vector2(350f, 150f);
 
-        private string windowTitle = "Warning!";
-        private string windowDescription = "Are you sure you want to trade these items?";
+        private string windowTitle = "Error!";
+        private string windowDescription = "You reached this structure limit!";
 
-        private float buttonX = 137f;
+        private float buttonX = 150f;
         private float buttonY = 38f;
 
-        public Dialog_MPConfirmTrade()
+        public Dialog_MPFactionStructureLimit()
         {
             soundAppear = SoundDefOf.CommsWindow_Open;
             soundClose = SoundDefOf.CommsWindow_Close;
             absorbInputAroundWindow = true;
-            closeOnAccept = false;
+            forcePause = false;
+            closeOnAccept = true;
             closeOnCancel = true;
         }
 
@@ -42,24 +42,7 @@ namespace OpenWorld
             Text.Font = GameFont.Small;
             Widgets.Label(new Rect(centeredX - Text.CalcSize(windowDescription).x / 2, windowDescriptionDif, Text.CalcSize(windowDescription).x, Text.CalcSize(windowDescription).y), windowDescription);
 
-            if (Widgets.ButtonText(new Rect(new Vector2(rect.x, rect.yMax - buttonY), new Vector2(buttonX, buttonY)), "OK"))
-            {
-                if (string.IsNullOrWhiteSpace(Main._ParametersCache.wantedSilver) || int.Parse(Main._ParametersCache.wantedSilver) == 0) return;
-
-                if (!Networking.isConnectedToServer)
-                {
-                    Find.WindowStack.Add(new Dialog_MPDisconnected());
-                    return;
-                }
-
-                MPCaravan.TakeItemsFromCaravan(1);
-
-                TradeHandler.SendTradesToSettlement();
-
-                Close();
-            }
-
-            if (Widgets.ButtonText(new Rect(new Vector2(rect.xMax - buttonX, rect.yMax - buttonY), new Vector2(buttonX, buttonY)), "Cancel"))
+            if (Widgets.ButtonText(new Rect(new Vector2(centeredX - buttonX / 2, rect.yMax - buttonY), new Vector2(buttonX, buttonY)), "OK"))
             {
                 Close();
             }

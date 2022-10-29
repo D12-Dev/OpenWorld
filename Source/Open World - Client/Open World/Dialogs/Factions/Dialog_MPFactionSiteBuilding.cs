@@ -74,7 +74,7 @@ namespace OpenWorld
 
                 if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX / 2) * 2, rect.yMax - buttonY * 2 - 10), new Vector2(buttonX * 2, buttonY)), "Build"))
                 {
-                    Find.WindowStack.Add(new Dialog_MPFactionSiteBuild(0, 5000));
+                    Find.WindowStack.Add(new Dialog_MPFactionSiteBuild(0, 1));
                     Close();
                 }
 

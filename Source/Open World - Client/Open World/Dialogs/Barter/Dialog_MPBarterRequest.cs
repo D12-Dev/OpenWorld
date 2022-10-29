@@ -22,16 +22,14 @@ namespace OpenWorld
         string windowTitle = "Barter Request";
         string silverText = "For: Your Items";
 
-        string[] tradeableItems;
         string invokerID;
         bool rebarter;
 
-        public Dialog_MPBarterRequest(string invoker, string[] items, bool rebarter)
+        public Dialog_MPBarterRequest(string invoker, List<string> items, bool rebarter)
         {
             Main._ParametersCache.__MPBarterRequest = this;
             Main._ParametersCache.cachedItems = items;
 
-            tradeableItems = items;
             invokerID = invoker;
             this.rebarter = rebarter;
 
@@ -69,12 +67,8 @@ namespace OpenWorld
                 if (rebarter)
                 {
                     Networking.SendData("BarterStatus│Deal│" + invokerID);
-                    MPCaravan.ReceiveBarterToCaravan(tradeableItems);
+                    BarterHandler.ReceiveBarterToCaravan(Main._ParametersCache.cachedItems);
 
-                    tradeableItems = null;
-
-                    Main._ParametersCache.cachedItems = null;
-                    Main._ParametersCache.tradedItemString = "";
                     Main._ParametersCache.__MPWaiting.Close();
                     Close();
 
@@ -89,13 +83,14 @@ namespace OpenWorld
             if (Widgets.ButtonText(new Rect(new Vector2(rect.xMax - buttonX, rect.yMax - buttonY), new Vector2(buttonX, buttonY)), "Reject"))
             {
                 Networking.SendData("BarterStatus│Reject│" + invokerID);
-                Main._ParametersCache.inTrade = false;
 
                 if (rebarter)
                 {
-                    MPCaravan.ReturnTradesToCaravan();
+                    BarterHandler.ReturnBarterToCaravan();
                     Main._ParametersCache.__MPWaiting.Close();
                 }
+
+                BarterHandler.ResetBarterVariables();
 
                 Close();
             }
@@ -103,7 +98,7 @@ namespace OpenWorld
 
         private void GenerateList(Rect mainRect)
         {
-            float height = 6f + (float)tradeableItems.Count() * 21f;
+            float height = 6f + (float)Main._ParametersCache.cachedItems.Count() * 21f;
 
             Rect viewRect = new Rect(mainRect.x, mainRect.y, mainRect.width - 16f, height);
 
@@ -116,7 +111,7 @@ namespace OpenWorld
 
             int index = 0;
 
-            var orderedList = tradeableItems.OrderBy(x => x.ToString());
+            var orderedList = Main._ParametersCache.cachedItems.OrderBy(x => x.ToString());
 
             foreach (string str in orderedList)
             {

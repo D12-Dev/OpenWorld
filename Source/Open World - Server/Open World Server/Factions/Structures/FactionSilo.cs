@@ -15,7 +15,7 @@ namespace OpenWorldServer
 
         public override int structureTile => base.structureTile;
 
-        public string[] holdingItems;
+        public Dictionary<int, List<string>> holdingItems = new Dictionary<int, List<string>>();
 
         public FactionSilo(Faction holdingFaction, int structureTile)
         {
