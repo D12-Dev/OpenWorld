@@ -28,7 +28,7 @@ namespace OpenWorldServer
         //Server Details
         public static string serverName = "";
         public static string serverDescription = "";
-        public static string serverVersion = "v1.4.1 Unstable";
+        public static string serverVersion = "v1.4.1";
 
         //Server Variables
         public static int maxPlayers = 300;

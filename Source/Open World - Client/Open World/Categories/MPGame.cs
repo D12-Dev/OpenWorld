@@ -110,24 +110,24 @@ namespace OpenWorld
 			Current.Game.storyteller.difficulty.predatorsHuntHumanlikes = true;
 			Current.Game.storyteller.difficulty.allowExtremeWeatherIncidents = true;
 
-			Current.Game.storyteller.difficulty.cropYieldFactor = 0.3f;
-			Current.Game.storyteller.difficulty.mineYieldFactor = 0.3f;
-			Current.Game.storyteller.difficulty.butcherYieldFactor = 0.3f;
+			Current.Game.storyteller.difficulty.cropYieldFactor = 0.40f;
+			Current.Game.storyteller.difficulty.mineYieldFactor = 0.40f;
+			Current.Game.storyteller.difficulty.butcherYieldFactor = 0.40f;
 			Current.Game.storyteller.difficulty.researchSpeedFactor = 0.90f;
-			Current.Game.storyteller.difficulty.questRewardValueFactor = 0.3f;
+			Current.Game.storyteller.difficulty.questRewardValueFactor = 0.5f;
 			Current.Game.storyteller.difficulty.raidLootPointsFactor = 0.50f;
-			Current.Game.storyteller.difficulty.tradePriceFactorLoss = 0.75f;
+			Current.Game.storyteller.difficulty.tradePriceFactorLoss = 0.65f;
 			Current.Game.storyteller.difficulty.maintenanceCostFactor = 1.0f;
 			Current.Game.storyteller.difficulty.scariaRotChance = 1.0f;
-			Current.Game.storyteller.difficulty.enemyDeathOnDownedChanceFactor = 1.0f;
+			Current.Game.storyteller.difficulty.enemyDeathOnDownedChanceFactor = 0.5f;
 
 			Current.Game.storyteller.difficulty.colonistMoodOffset = -10f;
 			Current.Game.storyteller.difficulty.foodPoisonChanceFactor = 1.50f;
-			Current.Game.storyteller.difficulty.manhunterChanceOnDamageFactor = 5.00f;
+			Current.Game.storyteller.difficulty.manhunterChanceOnDamageFactor = 2.00f;
 			Current.Game.storyteller.difficulty.playerPawnInfectionChanceFactor = 1.25f;
 			Current.Game.storyteller.difficulty.diseaseIntervalFactor = 1.25f;
 			Current.Game.storyteller.difficulty.deepDrillInfestationChanceFactor = 2.00f;
-			Current.Game.storyteller.difficulty.friendlyFireChanceFactor = 0.75f;
+			Current.Game.storyteller.difficulty.friendlyFireChanceFactor = 0.5f;
 			Current.Game.storyteller.difficulty.allowInstantKillChance = 1.0f;
 
 			Current.Game.storyteller.difficulty.allowTraps = true;
@@ -141,6 +141,8 @@ namespace OpenWorld
 
 		public void ExecuteEvent()
 		{
+			if (!Main._ParametersCache.hasLoadedCorrectly) return;
+
 			if (Find.AnyPlayerHomeMap == null) return;
 
 			string eventType = Main._ParametersCache.forcedEvent;

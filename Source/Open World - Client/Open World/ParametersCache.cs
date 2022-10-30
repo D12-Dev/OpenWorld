@@ -124,6 +124,6 @@ namespace OpenWorld
         public string receiveGiftsData;
         public string serverStatusString;
         public int transferMode;
-        public string versionCode = "Going 1.4";
+        public string versionCode = "Faction Warfare";
     }
 }

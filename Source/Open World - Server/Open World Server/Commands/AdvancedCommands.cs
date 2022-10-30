@@ -339,7 +339,6 @@ namespace OpenWorldServer
 
             string clientID = commandData.Split(' ')[0];
             string eventID = commandData.Split(' ')[1];
-            ServerClient target = null;
 
             if (string.IsNullOrWhiteSpace(clientID)) isMissingParameters = true;
             if (string.IsNullOrWhiteSpace(eventID)) isMissingParameters = true;
@@ -364,7 +363,7 @@ namespace OpenWorldServer
 
                 else
                 {
-                    Networking.SendData(target, "ForcedEvent│" + eventID);
+                    Networking.SendData(targetClient, "ForcedEvent│" + eventID);
 
                     Console.ForegroundColor = ConsoleColor.Green;
                     ConsoleUtils.WriteWithTime("Sent Event [" + eventID + "] to [" + targetClient.username + "]");

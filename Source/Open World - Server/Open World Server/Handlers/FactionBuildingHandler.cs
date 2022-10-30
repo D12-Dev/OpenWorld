@@ -86,8 +86,10 @@ namespace OpenWorldServer
 
         public static bool CheckForGlobalStructureCap(int structureType)
         {
+            Faction[] serverFactions = Server.savedFactions.ToArray();
+
             if (structureType != 3) return true;
-            else foreach (Faction serverFaction in Server.savedFactions)
+            else foreach (Faction serverFaction in serverFactions)
             {
                 foreach (FactionStructure structure in serverFaction.factionStructures)
                 {
@@ -101,7 +103,13 @@ namespace OpenWorldServer
         public static bool CheckForStructureCap(Faction faction, int structureType)
         {
             FactionStructure structureOfSameType = faction.factionStructures.Find(fetch => fetch.structureType == structureType);
-            if (structureOfSameType != null) return false;
+            if (structureOfSameType != null)
+            {
+                if (structureOfSameType is FactionSilo) return false;
+                else if (structureOfSameType is FactionProductionSite) return false;
+                else if (structureOfSameType is FactionMarketplace) return true;
+                else return false;
+            }
             else return true;
         }
 

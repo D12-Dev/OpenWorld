@@ -60,7 +60,13 @@ namespace OpenWorld
                         return;
                     }
 
-                    if (pair.Value[0] == buildingType && pair.Value[1] == 1)
+                    if (buildingType == 2 && pair.Value[0] == 2)
+                    {
+                        Find.WindowStack.Add(new Dialog_MPFactionStructureLimit());
+                        return;
+                    }
+
+                    if (buildingType == 0 && pair.Value[0] == 0)
                     {
                         Find.WindowStack.Add(new Dialog_MPFactionStructureLimit());
                         return;

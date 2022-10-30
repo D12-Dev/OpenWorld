@@ -34,7 +34,6 @@ namespace OpenWorldServer
                 if (factionFiles.Length == 0)
                 {
                     ConsoleUtils.LogToConsole("No Factions Found, Ignoring");
-                    Console.WriteLine("");
                 }
 
                 else LoadFactions(factionFiles);
