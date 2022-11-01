@@ -150,10 +150,10 @@ namespace OpenWorldServer
 
         public static void KickClients(ServerClient client, string kickMode)
         {
-            try { client.tcp.Close(); }
-            catch { }
-
             connectedClients.Remove(client);
+
+            try { client.tcp.Dispose(); }
+            catch { }
 
             if (kickMode == "Normal") ConsoleUtils.LogToConsole("Player [" + client.username + "] Has Disconnected");
             else if (kickMode == "Silent") { }

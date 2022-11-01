@@ -79,12 +79,14 @@ namespace OpenWorld
                 Text.Font = GameFont.Medium;
                 if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX / 2) * 2, rect.yMax - buttonY * 2 - 10), new Vector2(buttonX * 2, buttonY)), "Deposit"))
                 {
-                    Settlement settlementToUse = Find.WorldObjects.Settlements.First((Settlement x) => x.Faction == Main._ParametersCache.onlineAllyFaction);
+                    //Need a fix for this, can't use the player settlement but can't depend on another player forever
+                    Settlement settlementToUse = Find.WorldObjects.Settlements.First((Settlement x) => Main._ParametersCache.allFactions.Contains(x.Faction));
 
                     if (settlementToUse == null) return;
                     else Main._ParametersCache.focusedSettlement = settlementToUse;
 
-                    Find.WindowStack.Add(new Dialog_MPFactionSiloDeposit());
+                    if (RimworldHandler.CheckIfAnySocialPawn(0)) Find.WindowStack.Add(new Dialog_MPFactionSiloDeposit());
+                    else Find.WindowStack.Add(new Dialog_MPNoSocialSkill());
                 }
             }
 

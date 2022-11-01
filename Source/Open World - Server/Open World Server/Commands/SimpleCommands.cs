@@ -131,13 +131,7 @@ namespace OpenWorldServer
 
         public static void ExitCommand()
         {
-            List<ServerClient> clientsToKick = new List<ServerClient>();
-
-            foreach (ServerClient sc in Networking.connectedClients)
-            {
-                clientsToKick.Add(sc);
-            }
-
+            ServerClient[] clientsToKick = Networking.connectedClients.ToArray();
             foreach (ServerClient sc in clientsToKick)
             {
                 Networking.SendData(sc, "Disconnect│Closing");

@@ -35,7 +35,8 @@ namespace OpenWorld
         {
             Main._ParametersCache.__MPSiloDeposit = this;
 
-            Pawn playerNegotiator = BestCaravanPawnUtility.FindBestNegotiator(caravan, settlement.Faction, settlement.TraderKind);
+            Pawn playerNegotiator = caravan.PawnsListForReading.Find(fetch => fetch.IsColonist && !fetch.skills.skills[10].PermanentlyDisabled);
+
             GenerateTradeList();
             CacheTradeables();
             SetupParameters();

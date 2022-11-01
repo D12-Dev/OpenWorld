@@ -245,6 +245,7 @@ namespace OpenWorldServer
                 ConsoleUtils.LogToConsole("Player [" + client.username + "]'s Wealth Triggered Alarm [" + wealthToCompare + " > " + (int)client.wealth + "], Banning");
                 Console.ForegroundColor = ConsoleColor.White;
             }
+
             else if (client.wealth - wealthToCompare > Server.warningWealthThreshold && Server.warningWealthThreshold > 0)
             {
                 SavePlayer(client);
@@ -255,6 +256,7 @@ namespace OpenWorldServer
                 ConsoleUtils.LogToConsole("Player [" + client.username + "]'s Wealth Triggered Warning [" + wealthToCompare + " > " + (int) client.wealth + "]");
                 Console.ForegroundColor = ConsoleColor.White;
             }
+
             else
             {
                 SavePlayer(client);
@@ -287,21 +289,6 @@ namespace OpenWorldServer
                 if (client.homeTileID == tileID && !client.eventShielded && !client.isImmunized)
                 {
                     client.eventShielded = true;
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        public static bool CheckForPvpAvailability(string tileID)
-        {
-            ServerClient[] clients = Networking.connectedClients.ToArray();
-            foreach (ServerClient client in clients)
-            {
-                if (client.homeTileID == tileID && !client.inRTSE && !client.isImmunized)
-                {
-                    client.inRTSE = true;
                     return true;
                 }
             }
