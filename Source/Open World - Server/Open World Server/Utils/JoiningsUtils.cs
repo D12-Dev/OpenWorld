@@ -156,7 +156,8 @@ namespace OpenWorldServer
 
             else
             {
-                foreach (KeyValuePair<string, List<string>> pair in Server.savedSettlements)
+                Dictionary<string, List<string>> settlements = Server.savedSettlements;
+                foreach (KeyValuePair<string, List<string>> pair in settlements)
                 {
                     if (pair.Value[0] == client.username) continue;
 
@@ -298,7 +299,8 @@ namespace OpenWorldServer
 
         public static bool CompareConnectingClientWithConnecteds(ServerClient client)
         {
-            foreach (ServerClient sc in Networking.connectedClients)
+            ServerClient[] clients = Networking.connectedClients.ToArray();
+            foreach (ServerClient sc in clients)
             {
                 if (sc.username == client.username)
                 {
@@ -331,7 +333,7 @@ namespace OpenWorldServer
 
         public static bool CompareConnectingClientVersion(ServerClient client, string clientVersion)
         {
-            string latestVersion = "";
+            string latestVersion;
 
             try
             {
@@ -355,7 +357,8 @@ namespace OpenWorldServer
 
         public static bool CompareClientIPWithBans(ServerClient client)
         {
-            foreach (KeyValuePair<string, string> pair in Server.bannedIPs)
+            Dictionary<string, string> bannedIPs = Server.bannedIPs;
+            foreach (KeyValuePair<string, string> pair in bannedIPs)
             {
                 if (pair.Key == ((IPEndPoint)client.tcp.Client.RemoteEndPoint).Address.ToString() || pair.Value == client.username)
                 {

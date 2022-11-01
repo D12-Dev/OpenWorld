@@ -14,6 +14,8 @@ namespace OpenWorld
     {
 		public static void ResetGiftVariables()
 		{
+			Main._ParametersCache.receiveGiftsData = "";
+
 			Main._ParametersCache.giftedItemsString = "";
 
 			Main._ParametersCache.listToShowInGiftMenu.Clear();

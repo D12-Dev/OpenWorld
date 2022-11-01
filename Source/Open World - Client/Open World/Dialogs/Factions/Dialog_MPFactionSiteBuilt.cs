@@ -276,7 +276,9 @@ namespace OpenWorld
                         {
                             Main._ParametersCache.focusedSettlement = settlement;
                             Main._ParametersCache.focusedTile = settlement.Tile;
-                            Find.WindowStack.Add(new Dialog_MPTrade());
+
+                            if (RimworldHandler.CheckIfAnySocialPawn(0)) Find.WindowStack.Add(new Dialog_MPTrade());
+                            else Find.WindowStack.Add(new Dialog_MPNoSocialSkill());
                         }
                     }
                 }
@@ -286,9 +288,8 @@ namespace OpenWorld
                     {
                         if (settlement.Tile == pair.Key)
                         {
-                            Main._ParametersCache.focusedSettlement = settlement;
-                            Main._ParametersCache.focusedTile = settlement.Tile;
-                            Find.WindowStack.Add(new Dialog_MPBarter(false, null));
+                            if (RimworldHandler.CheckIfAnySocialPawn(0)) Find.WindowStack.Add(new Dialog_MPBarter(false, null));
+                            else Find.WindowStack.Add(new Dialog_MPNoSocialSkill());
                         }
                     }
                 }
@@ -300,7 +301,9 @@ namespace OpenWorld
                         {
                             Main._ParametersCache.focusedSettlement = settlement;
                             Main._ParametersCache.focusedTile = settlement.Tile;
-                            Find.WindowStack.Add(new Dialog_MPGift());
+
+                            if (RimworldHandler.CheckIfAnySocialPawn(0)) Find.WindowStack.Add(new Dialog_MPGift());
+                            else Find.WindowStack.Add(new Dialog_MPNoSocialSkill());
                         }
                     }
                 }

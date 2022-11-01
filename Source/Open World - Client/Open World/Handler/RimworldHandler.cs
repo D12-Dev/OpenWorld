@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -93,5 +94,26 @@ namespace OpenWorld
 			Main._ParametersCache.letterDescription = "";
 			Main._ParametersCache.letterType = null;
 		}
+
+		public static bool CheckIfAnySocialPawn(int searchLocation)
+        {
+			if (searchLocation == 0)
+            {
+				Caravan caravan = Main._ParametersCache.focusedCaravan;
+				Pawn playerNegotiator = caravan.PawnsListForReading.Find(fetch => fetch.IsColonist && !fetch.skills.skills[10].PermanentlyDisabled);
+				if (playerNegotiator == null) return false;
+				else return true;
+			}
+
+			else if (searchLocation == 1)
+            {
+				Map map = Find.AnyPlayerHomeMap;
+				Pawn playerNegotiator = map.mapPawns.AllPawns.Find(fetch => fetch.IsColonist && !fetch.skills.skills[10].PermanentlyDisabled);
+				if (playerNegotiator == null) return false;
+				else return true;
+			}
+
+			return false;
+        }
 	}
 }

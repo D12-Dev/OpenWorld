@@ -8,6 +8,8 @@ namespace OpenWorldServer
     {
         public static string EncryptString(string stuff)
         {
+            if (string.IsNullOrEmpty(stuff)) return null;
+
             string encryptedStuff = "";
 
             foreach (char ch in stuff)
@@ -23,6 +25,8 @@ namespace OpenWorldServer
 
         public static string DecryptString(string stuff)
         {
+            if (string.IsNullOrEmpty(stuff)) return null;
+
             List<string> encryptedList = stuff.Split(':').ToList();
 
             string decryptedStuff = "";

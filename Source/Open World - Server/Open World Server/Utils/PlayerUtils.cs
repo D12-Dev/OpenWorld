@@ -109,10 +109,15 @@ namespace OpenWorldServer
         {
             ServerClient savedClient = Server.savedClients.Find(fetch => fetch.username == client.username);
 
+            if (savedClient == null) return;
+
             client.username = savedClient.username;
             client.homeTileID = savedClient.homeTileID;
             client.giftString = savedClient.giftString;
             client.tradeString = savedClient.tradeString;
+
+            savedClient.giftString.Clear();
+            savedClient.tradeString.Clear();
 
             if (savedClient.faction != null)
             {
@@ -120,6 +125,8 @@ namespace OpenWorldServer
                 if (factionToGive != null) client.faction = factionToGive;
                 else client.faction = null;
             }
+
+            SavePlayer(savedClient);
         }
 
         public static void CheckAllAvailablePlayers(bool newLine)
@@ -133,7 +140,6 @@ namespace OpenWorldServer
             CheckSavedPlayers();
             CheckForBannedPlayers();
             CheckForWhitelistedPlayers();
-
             Console.WriteLine("");
         }
 
@@ -227,7 +233,7 @@ namespace OpenWorldServer
 
             if (client.wealth - wealthToCompare > Server.banWealthThreshold && Server.banWealthThreshold > 0)
             {
-                PlayerUtils.SavePlayer(client);
+                SavePlayer(client);
                 Server.savedClients.Find(fetch => fetch.username == client.username).wealth = client.wealth;
                 Server.savedClients.Find(fetch => fetch.username == client.username).pawnCount = client.pawnCount;
 
@@ -241,7 +247,7 @@ namespace OpenWorldServer
             }
             else if (client.wealth - wealthToCompare > Server.warningWealthThreshold && Server.warningWealthThreshold > 0)
             {
-                PlayerUtils.SavePlayer(client);
+                SavePlayer(client);
                 Server.savedClients.Find(fetch => fetch.username == client.username).wealth = client.wealth;
                 Server.savedClients.Find(fetch => fetch.username == client.username).pawnCount = client.pawnCount;
 
@@ -251,7 +257,7 @@ namespace OpenWorldServer
             }
             else
             {
-                PlayerUtils.SavePlayer(client);
+                SavePlayer(client);
                 Server.savedClients.Find(fetch => fetch.username == client.username).wealth = client.wealth;
                 Server.savedClients.Find(fetch => fetch.username == client.username).pawnCount = client.pawnCount;
             }
@@ -259,7 +265,8 @@ namespace OpenWorldServer
 
         public static bool CheckForConnectedPlayers(string tileID)
         {
-            foreach (ServerClient client in Networking.connectedClients)
+            ServerClient[] clients = Networking.connectedClients.ToArray();
+            foreach (ServerClient client in clients)
             {
                 if (client.homeTileID == tileID) return true;
             }
@@ -274,7 +281,8 @@ namespace OpenWorldServer
 
         public static bool CheckForPlayerShield(string tileID)
         {
-            foreach (ServerClient client in Networking.connectedClients)
+            ServerClient[] clients = Networking.connectedClients.ToArray();
+            foreach (ServerClient client in clients)
             {
                 if (client.homeTileID == tileID && !client.eventShielded && !client.isImmunized)
                 {
@@ -288,7 +296,8 @@ namespace OpenWorldServer
 
         public static bool CheckForPvpAvailability(string tileID)
         {
-            foreach (ServerClient client in Networking.connectedClients)
+            ServerClient[] clients = Networking.connectedClients.ToArray();
+            foreach (ServerClient client in clients)
             {
                 if (client.homeTileID == tileID && !client.inRTSE && !client.isImmunized)
                 {
@@ -302,7 +311,8 @@ namespace OpenWorldServer
 
         public static string GetSpyData(string tileID, ServerClient origin)
         {
-            foreach (ServerClient client in Networking.connectedClients)
+            ServerClient[] clients = Networking.connectedClients.ToArray();
+            foreach (ServerClient client in clients)
             {
                 if (client.homeTileID == tileID)
                 {
@@ -331,7 +341,8 @@ namespace OpenWorldServer
         {
             string dataToSend = "ForcedEvent│" + data.Split('│')[1];
 
-            foreach (ServerClient sc in Networking.connectedClients)
+            ServerClient[] clients = Networking.connectedClients.ToArray();
+            foreach (ServerClient sc in clients)
             {
                 if (sc.homeTileID == data.Split('│')[2])
                 {
@@ -347,7 +358,8 @@ namespace OpenWorldServer
             string tileToSend = data.Split('│')[1];
             string dataToSend = "GiftedItems│" + data.Split('│')[2];
 
-            foreach (ServerClient sc in Networking.connectedClients)
+            ServerClient[] clients = Networking.connectedClients.ToArray();
+            foreach (ServerClient sc in clients)
             {
                 if (sc.homeTileID == tileToSend)
                 {
@@ -359,7 +371,8 @@ namespace OpenWorldServer
 
             dataToSend = dataToSend.Replace("GiftedItems│", "");
 
-            foreach(ServerClient sc in Server.savedClients)
+            ServerClient[] savedClients = Server.savedClients.ToArray();
+            foreach(ServerClient sc in savedClients)
             {
                 if (sc.homeTileID == tileToSend)
                 {
@@ -375,7 +388,8 @@ namespace OpenWorldServer
         {
             string dataToSend = "TradeRequest│" + invoker.username + "│" + data.Split('│')[2] + "│" + data.Split('│')[3];
 
-            foreach (ServerClient sc in Networking.connectedClients)
+            ServerClient[] clients = Networking.connectedClients.ToArray();
+            foreach (ServerClient sc in clients)
             {
                 if (sc.homeTileID == data.Split('│')[1])
                 {
@@ -389,7 +403,8 @@ namespace OpenWorldServer
         {
             string dataToSend = "BarterRequest│" + invoker.homeTileID + "│" + data.Split('│')[2];
 
-            foreach (ServerClient sc in Networking.connectedClients)
+            ServerClient[] clients = Networking.connectedClients.ToArray();
+            foreach (ServerClient sc in clients)
             {
                 if (sc.homeTileID == data.Split('│')[1])
                 {

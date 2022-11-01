@@ -119,7 +119,7 @@ namespace OpenWorld
 			Current.Game.storyteller.difficulty.tradePriceFactorLoss = 0.65f;
 			Current.Game.storyteller.difficulty.maintenanceCostFactor = 1.0f;
 			Current.Game.storyteller.difficulty.scariaRotChance = 1.0f;
-			Current.Game.storyteller.difficulty.enemyDeathOnDownedChanceFactor = 0.5f;
+			Current.Game.storyteller.difficulty.enemyDeathOnDownedChanceFactor = 1.0f;
 
 			Current.Game.storyteller.difficulty.colonistMoodOffset = -10f;
 			Current.Game.storyteller.difficulty.foodPoisonChanceFactor = 1.50f;
@@ -141,7 +141,11 @@ namespace OpenWorld
 
 		public void ExecuteEvent()
 		{
-			if (!Main._ParametersCache.hasLoadedCorrectly) return;
+			if (!Main._ParametersCache.hasLoadedCorrectly)
+            {
+				Main._ParametersCache.forcedEvent = "";
+				return;
+			}
 
 			if (Find.AnyPlayerHomeMap == null) return;
 
@@ -326,13 +330,21 @@ namespace OpenWorld
         {
 			if (string.IsNullOrWhiteSpace(Main._ParametersCache.receiveGiftsData)) return;
 
-			if (!Main._ParametersCache.hasLoadedCorrectly) return;
+			if (!Main._ParametersCache.hasLoadedCorrectly)
+            {
+				GiftHandler.ResetGiftVariables();
+				return;
+			}
 
-			if (Main._ParametersCache.inTrade) return;
+			if (Main._ParametersCache.inTrade)
+            {
+				GiftHandler.ResetGiftVariables();
+				return;
+			}
 
 			if (Find.AnyPlayerHomeMap == null)
             {
-				Main._ParametersCache.receiveGiftsData = "";
+				GiftHandler.ResetGiftVariables();
 				return;
 			}
 

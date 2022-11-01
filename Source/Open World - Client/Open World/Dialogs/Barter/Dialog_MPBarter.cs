@@ -44,14 +44,16 @@ namespace OpenWorld
 
             if (!rebarter)
             {
-                playerNegotiator = BestCaravanPawnUtility.FindBestNegotiator(caravan, settlement.Faction, settlement.TraderKind);
+                playerNegotiator = caravan.PawnsListForReading.Find(fetch => fetch.IsColonist && !fetch.skills.skills[10].PermanentlyDisabled);
             }
+
             else
             {
                 settlement = Find.WorldObjects.Settlements.Find(fetch => fetch.Tile == int.Parse(invoker));
                 Main._ParametersCache.focusedSettlement = settlement;
 
-                playerNegotiator = Find.AnyPlayerHomeMap.mapPawns.AllPawns.Find(fetch => fetch.IsColonist && fetch.IsSociallyProper(fetch));
+                Map map = Find.AnyPlayerHomeMap;
+                playerNegotiator = map.mapPawns.AllPawns.Find(fetch => fetch.IsColonist && !fetch.skills.skills[10].PermanentlyDisabled);
             }
 
             GenerateTradeList();

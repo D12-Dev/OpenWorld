@@ -9,8 +9,8 @@ namespace OpenWorldServer
     {
         //Security
         [NonSerialized] public TcpClient tcp;
-        public string username;
-        public string password;
+        public string username = "";
+        public string password = "";
         public bool isAdmin = false;
         public bool toWipe = false;
         [NonSerialized] public bool disconnectFlag;

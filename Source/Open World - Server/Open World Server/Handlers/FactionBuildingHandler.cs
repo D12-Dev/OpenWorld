@@ -12,7 +12,8 @@ namespace OpenWorldServer
 
             int factionValue = 0;
 
-            foreach (Faction faction in Server.savedFactions)
+            Faction[] factions = Server.savedFactions.ToArray();
+            foreach (Faction faction in factions)
             {
                 if (client.faction == null) factionValue = 0;
                 if (client.faction != null)
@@ -21,7 +22,8 @@ namespace OpenWorldServer
                     else factionValue = 2;
                 }
 
-                foreach (FactionStructure structure in faction.factionStructures)
+                FactionStructure[] structures = faction.factionStructures.ToArray();
+                foreach (FactionStructure structure in structures)
                 {
                     dataToSend += structure.structureTile + ":" + structure.structureType + ":" + factionValue + "»";
                 }

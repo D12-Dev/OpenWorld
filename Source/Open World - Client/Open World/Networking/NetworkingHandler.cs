@@ -243,9 +243,16 @@ namespace OpenWorld
             string splitedString = data.Split('│')[2];
             string silverRequested = data.Split('│')[3];
 
+            if (!Main._ParametersCache.hasLoadedCorrectly)
+            {
+                Networking.SendData("TradeStatus│Reject│" + invoker);
+                return;
+            }
+
             if (Main._ParametersCache.inTrade)
             {
                 Networking.SendData("TradeStatus│Reject│" + invoker);
+                return;
             }
 
             string[] tradeableItems = new string[0];
@@ -260,9 +267,16 @@ namespace OpenWorld
             string invoker = data.Split('│')[1];
             string[] splitedString = data.Split('│')[2].Split('»');
 
+            if (!Main._ParametersCache.hasLoadedCorrectly)
+            {
+                Networking.SendData("BarterStatus│Reject│" + invoker);
+                return;
+            }
+
             if (Main._ParametersCache.inTrade)
             {
                 Networking.SendData("BarterStatus│Reject│" + invoker);
+                return;
             }
 
             List<string> tradeableItems = new List<string>();

@@ -20,7 +20,9 @@ namespace OpenWorldServer
             if (siloToFech == null) return dataToSend;
 
             if (siloToFech.holdingItems == null) siloToFech.holdingItems = new Dictionary<int, List<string>>();
-            foreach (KeyValuePair<int, List<string>> pair in siloToFech.holdingItems)
+
+            Dictionary<int, List<string>> holdingItems = siloToFech.holdingItems;
+            foreach (KeyValuePair<int, List<string>> pair in holdingItems)
             {
                 dataToSend += pair.Value[0] + ":";
                 dataToSend += pair.Value[1] + ":";
@@ -42,7 +44,8 @@ namespace OpenWorldServer
 
             int newDictionaryCount = 0;
             Dictionary<int, List<string>> a = new Dictionary<int, List<string>>();
-            foreach (KeyValuePair<int, List<string>> pair in siloToFech.holdingItems)
+            Dictionary<int, List<string>> holdingItems = siloToFech.holdingItems;
+            foreach (KeyValuePair<int, List<string>> pair in holdingItems)
             {
                 a.Add(newDictionaryCount, pair.Value);
                 newDictionaryCount++;
@@ -106,7 +109,8 @@ namespace OpenWorldServer
 
             if (siloToFech == null) return;
 
-            foreach(KeyValuePair<int, List<string>> pair in siloToFech.holdingItems)
+            Dictionary<int, List<string>> items = siloToFech.holdingItems;
+            foreach (KeyValuePair<int, List<string>> pair in items)
             {
                 if (pair.Key == itemID)
                 {
@@ -125,7 +129,8 @@ namespace OpenWorldServer
 
             int newDictionaryCount = 0;
             Dictionary<int, List<string>> orderedDictionary = new Dictionary<int, List<string>>();
-            foreach (KeyValuePair<int, List<string>> pair in siloToFech.holdingItems)
+            Dictionary<int, List<string>> holdingItems = siloToFech.holdingItems;
+            foreach (KeyValuePair<int, List<string>> pair in holdingItems)
             {
                 orderedDictionary.Add(newDictionaryCount, pair.Value);
                 newDictionaryCount++;

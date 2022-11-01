@@ -38,9 +38,10 @@ namespace OpenWorld
 
         public Dialog_MPTrade()
         {
+            Pawn playerNegotiator = caravan.PawnsListForReading.Find(fetch => fetch.IsColonist && !fetch.skills.skills[10].PermanentlyDisabled);
+
             Main._ParametersCache.__MPTrade = this;
 
-            Pawn playerNegotiator = BestCaravanPawnUtility.FindBestNegotiator(caravan, settlement.Faction, settlement.TraderKind);
             GenerateTradeList();
             CacheTradeables();
             SetupParameters();
@@ -85,15 +86,6 @@ namespace OpenWorld
             {
                 Tradeable tradeable = new Tradeable();
                 tradeable.AddThing(item, Transactor.Colony);
-                Main._ParametersCache.listToShowInTradeMenu.Add(tradeable);
-            }
-
-            foreach(Pawn pawn in caravan.pawns)
-            {
-                if (pawn.NonHumanlikeOrWildMan()) continue;
-
-                Tradeable tradeable = new Tradeable();
-                tradeable.AddThing(pawn, Transactor.Colony);
                 Main._ParametersCache.listToShowInTradeMenu.Add(tradeable);
             }
         }

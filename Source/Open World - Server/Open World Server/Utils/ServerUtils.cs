@@ -24,12 +24,6 @@ namespace OpenWorldServer
         {
             Server.mainFolderPath = AppDomain.CurrentDomain.BaseDirectory;
 
-            Console.ForegroundColor = ConsoleColor.Green;
-            ConsoleUtils.LogToConsole("Server Startup:");
-            Console.ForegroundColor = ConsoleColor.White;
-
-            ConsoleUtils.LogToConsole("Base Directory At: [" + Server.mainFolderPath + "]");
-
             Server.logFolderPath = Server.mainFolderPath + Path.DirectorySeparatorChar + "Logs";
             Server.serverSettingsPath = Server.mainFolderPath + Path.DirectorySeparatorChar + "Server Settings.txt";
             Server.worldSettingsPath = Server.mainFolderPath + Path.DirectorySeparatorChar + "World Settings.txt";
@@ -39,6 +33,12 @@ namespace OpenWorldServer
             Server.whitelistedModsFolderPath = Server.mainFolderPath + Path.DirectorySeparatorChar + "Whitelisted Mods";
             Server.blacklistedModsFolderPath = Server.mainFolderPath + Path.DirectorySeparatorChar + "Blacklisted Mods";
             Server.whitelistedUsersPath = Server.mainFolderPath + Path.DirectorySeparatorChar + "Whitelisted Players.txt";
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            ConsoleUtils.LogToConsole("Server Startup:");
+            Console.ForegroundColor = ConsoleColor.White;
+
+            ConsoleUtils.LogToConsole("Base Directory At: [" + Server.mainFolderPath + "]");
         }
 
         public static void CheckServerVersion()
@@ -352,7 +352,8 @@ namespace OpenWorldServer
 
             Server.chatCache.Add("[" + DateTime.Now + "]" + " │ " + messageForConsole);
 
-            foreach (ServerClient sc in Networking.connectedClients)
+            ServerClient[] allConnectedClients = Networking.connectedClients.ToArray();
+            foreach (ServerClient sc in allConnectedClients)
             {
                 if (sc == client) continue;
                 else Networking.SendData(sc, data);
@@ -361,7 +362,8 @@ namespace OpenWorldServer
 
         public static void SendPlayerListToAll(ServerClient client)
         {
-            foreach (ServerClient sc in Networking.connectedClients)
+            ServerClient[] allConnectedClients = Networking.connectedClients.ToArray();
+            foreach (ServerClient sc in allConnectedClients)
             {
                 if (sc == client) continue;
 
@@ -383,7 +385,8 @@ namespace OpenWorldServer
 
             else
             {
-                foreach (ServerClient sc in Networking.connectedClients)
+                ServerClient[] allConnectedClients = Networking.connectedClients.ToArray();
+                foreach (ServerClient sc in allConnectedClients)
                 {
                     if (sc == client) continue;
 

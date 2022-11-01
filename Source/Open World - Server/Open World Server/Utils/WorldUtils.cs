@@ -12,7 +12,8 @@ namespace OpenWorldServer
             {
                 client.homeTileID = tileID;
 
-                foreach(ServerClient sc in Server.savedClients)
+                ServerClient[] savedClients = Server.savedClients.ToArray();
+                foreach (ServerClient sc in savedClients)
                 {
                     if (sc.username == client.username)
                     {
@@ -25,7 +26,8 @@ namespace OpenWorldServer
             }
 
             int factionValue = 0;
-            foreach (ServerClient sc in Networking.connectedClients)
+            ServerClient[] clients = Networking.connectedClients.ToArray();
+            foreach (ServerClient sc in clients)
             {
                 if (sc.username == client.username) continue;
                 else
@@ -54,7 +56,8 @@ namespace OpenWorldServer
             {
                 client.homeTileID = null;
 
-                foreach (ServerClient sc in Server.savedClients)
+                ServerClient[] savedClients = Server.savedClients.ToArray();
+                foreach (ServerClient sc in savedClients)
                 {
                     if (sc.username == client.username)
                     {
@@ -70,7 +73,8 @@ namespace OpenWorldServer
             {
                 string dataString = "SettlementBuilder│RemoveSettlement│" + tile;
 
-                foreach (ServerClient sc in Networking.connectedClients)
+                ServerClient[] clients = Networking.connectedClients.ToArray();
+                foreach (ServerClient sc in clients)
                 {
                     if (client != null)
                     {
@@ -88,7 +92,8 @@ namespace OpenWorldServer
 
         public static void CheckForTileDisponibility(ServerClient client, string tileID)
         {
-            foreach (ServerClient savedClient in Server.savedClients)
+            ServerClient[] savedClients = Server.savedClients.ToArray();
+            foreach (ServerClient savedClient in savedClients)
             {
                 if (savedClient.username == client.username)
                 {
@@ -96,7 +101,8 @@ namespace OpenWorldServer
 
                     else
                     {
-                        foreach (KeyValuePair<string, List<string>> pair in Server.savedSettlements)
+                        Dictionary<string, List<string>> settlements = Server.savedSettlements;
+                        foreach (KeyValuePair<string, List<string>> pair in settlements)
                         {
                             if (pair.Value[0] == client.username)
                             {

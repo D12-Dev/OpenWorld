@@ -267,8 +267,6 @@ namespace OpenWorld
 				Main._MPGame.SendPlayerSettlementData(__instance);
 
 				Main._ParametersCache.hasLoadedCorrectly = true;
-
-				Main._MPGame.CheckForGifts();
 			}
 		}
 	}
@@ -401,68 +399,27 @@ namespace OpenWorld
 
 			if (Main._ParametersCache.allFactions.Contains(TradeSession.trader.Faction))
 			{
-				string itemDefName = "";
+				string itemDefName;
 
-				if (___thingsColony[0] is Pawn)
-                {
-					Pawn sentPawn = (Pawn) ___thingsColony[0];
-					string pawnData = "pawn┼";
-					pawnData += sentPawn.Name + "┼";
-					pawnData += sentPawn.ageTracker.AgeBiologicalTicks + "┼";
-					pawnData += sentPawn.ageTracker.AgeChronologicalTicks + "┼";
-					pawnData += (int)sentPawn.gender + "┼";
+				QualityCategory qc = QualityCategory.Normal;
+				try { ___thingsColony[0].TryGetQuality(out qc); }
+				catch { }
 
-					pawnData += "‼";
+				string stuffDefName = "";
+				try { stuffDefName = ___thingsColony[0].Stuff.defName; }
+				catch { }
 
-					pawnData += sentPawn.story.Childhood.identifier + "┼";
-
-					pawnData += sentPawn.story.Adulthood.identifier + "┼";
-
-					pawnData += "‼";
-
-					foreach (SkillRecord s in sentPawn.skills.skills)
-                    {
-						pawnData += s.levelInt + "-";
-						pawnData += (int)s.passion + "┼";
-					}
-
-					pawnData += "‼";
-
-					foreach (Trait t in sentPawn.story.traits.allTraits)
-                    {
-						pawnData += t.Label + "┼";
-					}
-
-					pawnData = pawnData.Remove(pawnData.Count() - 1, 1);
-
-					//Add more
-
-					if (Main._ParametersCache.transferMode == 0) Main._ParametersCache.giftedItemsString += pawnData + "»";
-					else if (Main._ParametersCache.transferMode == 1) Main._ParametersCache.tradedItemString += pawnData + "»";
-				}
-
-				else
+				if (___thingsColony[0].def == ThingDefOf.MinifiedThing || ___thingsColony[0].def == ThingDefOf.MinifiedTree)
 				{
-					QualityCategory qc = QualityCategory.Normal;
-					try { ___thingsColony[0].TryGetQuality(out qc); }
-					catch { }
-
-					string stuffDefName = "";
-					try { stuffDefName = ___thingsColony[0].Stuff.defName; }
-					catch { }
-
-					if (___thingsColony[0].def == ThingDefOf.MinifiedThing || ___thingsColony[0].def == ThingDefOf.MinifiedTree)
-					{
-						Thing innerThing = ___thingsColony[0].GetInnerIfMinified();
-						itemDefName = "minified-" + innerThing.def.defName;
-					}
-					else itemDefName = ___thingsColony[0].def.defName;
-
-					if (Main._ParametersCache.transferMode == 0) Main._ParametersCache.giftedItemsString += itemDefName + "┼" + ___countToTransfer + "┼" + ((int)qc) + "┼" + stuffDefName + "»";
-					else if (Main._ParametersCache.transferMode == 1) Main._ParametersCache.tradedItemString += itemDefName + "┼" + ___countToTransfer + "┼" + ((int)qc) + "┼" + stuffDefName + "»";
-					else if (Main._ParametersCache.transferMode == 2) Main._ParametersCache.barteredItemString += itemDefName + "┼" + ___countToTransfer + "┼" + ((int)qc) + "┼" + stuffDefName + "»";
-					else if (Main._ParametersCache.transferMode == 3) Main._ParametersCache.depositItemsString += itemDefName + "┼" + ___countToTransfer + "┼" + ((int)qc) + "┼" + stuffDefName + "»";
+					Thing innerThing = ___thingsColony[0].GetInnerIfMinified();
+					itemDefName = "minified-" + innerThing.def.defName;
 				}
+				else itemDefName = ___thingsColony[0].def.defName;
+
+				if (Main._ParametersCache.transferMode == 0) Main._ParametersCache.giftedItemsString += itemDefName + "┼" + ___countToTransfer + "┼" + ((int)qc) + "┼" + stuffDefName + "»";
+				else if (Main._ParametersCache.transferMode == 1) Main._ParametersCache.tradedItemString += itemDefName + "┼" + ___countToTransfer + "┼" + ((int)qc) + "┼" + stuffDefName + "»";
+				else if (Main._ParametersCache.transferMode == 2) Main._ParametersCache.barteredItemString += itemDefName + "┼" + ___countToTransfer + "┼" + ((int)qc) + "┼" + stuffDefName + "»";
+				else if (Main._ParametersCache.transferMode == 3) Main._ParametersCache.depositItemsString += itemDefName + "┼" + ___countToTransfer + "┼" + ((int)qc) + "┼" + stuffDefName + "»";
 
 				return true;
 			}
@@ -787,7 +744,8 @@ namespace OpenWorld
 						Main._ParametersCache.focusedSettlement = __instance;
 						Main._ParametersCache.focusedCaravan = caravan;
 
-						Find.WindowStack.Add(new Dialog_MPTrade());
+						if (RimworldHandler.CheckIfAnySocialPawn(0)) Find.WindowStack.Add(new Dialog_MPTrade());
+						else Find.WindowStack.Add(new Dialog_MPNoSocialSkill());
 					}
 				};
 
@@ -803,7 +761,8 @@ namespace OpenWorld
 						Main._ParametersCache.focusedSettlement = __instance;
 						Main._ParametersCache.focusedCaravan = caravan;
 
-						Find.WindowStack.Add(new Dialog_MPBarter(false, null));
+						if (RimworldHandler.CheckIfAnySocialPawn(0)) Find.WindowStack.Add(new Dialog_MPBarter(false, null));
+						else Find.WindowStack.Add(new Dialog_MPNoSocialSkill());
 					}
 				};
 
@@ -819,7 +778,8 @@ namespace OpenWorld
 						Main._ParametersCache.focusedSettlement = __instance;
 						Main._ParametersCache.focusedCaravan = caravan;
 
-						Find.WindowStack.Add(new Dialog_MPGift());
+						if (RimworldHandler.CheckIfAnySocialPawn(0)) Find.WindowStack.Add(new Dialog_MPGift());
+						else Find.WindowStack.Add(new Dialog_MPNoSocialSkill());
 					}
 				};
 

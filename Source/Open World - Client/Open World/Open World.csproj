@@ -110,6 +110,7 @@
     <Compile Include="Dialogs\Online\Dialog_MPMultiplayerType.cs" />
     <Compile Include="Dialogs\Disconnects\Dialog_MPModifiedMods.cs" />
     <Compile Include="Dialogs\Online\Dialog_MPDisabledChat.cs" />
+    <Compile Include="Dialogs\Online\Dialog_MPNoSocialSkill.cs" />
     <Compile Include="Dialogs\Online\Dialog_MPUnavailableURL.cs" />
     <Compile Include="Dialogs\Disconnects\Dialog_MPMissingLogin.cs" />
     <Compile Include="Dialogs\Online\Dialog_MPServerDescription.cs" />

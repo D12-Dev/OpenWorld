@@ -77,7 +77,19 @@ namespace OpenWorld
                     Main._ParametersCache.letterType = LetterDefOf.PositiveEvent;
                     Injections.thingsToDoInUpdate.Add(RimworldHandler.GenerateLetter);
                 }
-                else Find.WindowStack.Add(new Dialog_MPBarter(true, invokerID));
+
+                else
+                {
+                    if (RimworldHandler.CheckIfAnySocialPawn(1)) Find.WindowStack.Add(new Dialog_MPBarter(true, invokerID));
+                    else
+                    {
+                        Networking.SendData("BarterStatus│Reject│" + invokerID);
+
+                        BarterHandler.ResetBarterVariables();
+                        Find.WindowStack.Add(new Dialog_MPNoSocialSkill());
+                        Close();
+                    }
+                }
             }
 
             if (Widgets.ButtonText(new Rect(new Vector2(rect.xMax - buttonX, rect.yMax - buttonY), new Vector2(buttonX, buttonY)), "Reject"))

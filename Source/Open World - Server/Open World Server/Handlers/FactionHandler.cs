@@ -99,6 +99,35 @@ namespace OpenWorldServer
                     s.Close();
                     s.Dispose();
 
+                    bool needsSave = false;
+                    Dictionary<ServerClient, MemberRank> factionMembers = factionToLoad.members;
+                    foreach (KeyValuePair<ServerClient, MemberRank> member in factionMembers)
+                    {
+                        ServerClient clientToFind = Server.savedClients.Find(fetch => fetch.username == member.Key.username);
+                        if (clientToFind == null)
+                        {
+                            needsSave = true;
+
+                            factionToLoad.members.Remove(member.Key);
+
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            ConsoleUtils.WriteWithTime("Faction Contained Non-Existing Player, Removing");
+                            Console.ForegroundColor = ConsoleColor.White;
+                        }
+                    }
+
+                    if (factionToLoad.members.Count == 0)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        ConsoleUtils.WriteWithTime("Faction Had 0 Members, Removing");
+                        Console.ForegroundColor = ConsoleColor.White;
+
+                        DisbandFaction(factionToLoad);
+                        continue;
+                    }
+
+                    if (needsSave) SaveFaction(factionToLoad);
+
                     if (!Server.savedFactions.Contains(factionToLoad)) Server.savedFactions.Add(factionToLoad);
                 }
                 catch { failedToLoadFactions++; }
@@ -134,7 +163,8 @@ namespace OpenWorldServer
 
                 dataToSend += factionToCheck.name + "│";
 
-                foreach (KeyValuePair<ServerClient, MemberRank> member in factionToCheck.members)
+                Dictionary<ServerClient, MemberRank> members = factionToCheck.members;
+                foreach (KeyValuePair<ServerClient, MemberRank> member in members)
                 {
                     dataToSend += member.Key.username + ":" + (int)member.Value + "»";
                 }
@@ -289,7 +319,8 @@ namespace OpenWorldServer
 
         public static MemberRank GetMemberPowers(Faction faction, ServerClient memberToCheck)
         {
-            foreach (KeyValuePair<ServerClient, MemberRank> pair in faction.members)
+            Dictionary<ServerClient, MemberRank> members = faction.members;
+            foreach (KeyValuePair<ServerClient, MemberRank> pair in members)
             {
                 if (pair.Key.username == memberToCheck.username)
                 {
