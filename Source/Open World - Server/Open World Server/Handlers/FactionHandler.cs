@@ -99,23 +99,6 @@ namespace OpenWorldServer
                     s.Close();
                     s.Dispose();
 
-                    bool needsSave = false;
-                    Dictionary<ServerClient, MemberRank> factionMembers = factionToLoad.members;
-                    foreach (KeyValuePair<ServerClient, MemberRank> member in factionMembers)
-                    {
-                        ServerClient clientToFind = Server.savedClients.Find(fetch => fetch.username == member.Key.username);
-                        if (clientToFind == null)
-                        {
-                            needsSave = true;
-
-                            factionToLoad.members.Remove(member.Key);
-
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            ConsoleUtils.WriteWithTime("Faction Contained Non-Existing Player, Removing");
-                            Console.ForegroundColor = ConsoleColor.White;
-                        }
-                    }
-
                     if (factionToLoad.members.Count == 0)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
@@ -126,9 +109,8 @@ namespace OpenWorldServer
                         continue;
                     }
 
-                    if (needsSave) SaveFaction(factionToLoad);
-
-                    if (!Server.savedFactions.Contains(factionToLoad)) Server.savedFactions.Add(factionToLoad);
+                    Faction factionToFetch = Server.savedFactions.Find(fetch => fetch.name == factionToLoad.name);
+                    if (factionToFetch == null) Server.savedFactions.Add(factionToLoad);
                 }
                 catch { failedToLoadFactions++; }
             }

@@ -158,13 +158,16 @@ namespace OpenWorldServer
 
             ModHandler.CheckMods(false);
             Console.ForegroundColor = ConsoleColor.Green;
-            ConsoleUtils.WriteWithTime("Mods Have Been Reloaded");
+
+            WorldHandler.CheckWorldFile();
+            Console.ForegroundColor = ConsoleColor.Green;
+
+            FactionHandler.CheckFactions(false);
+            Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("");
 
             PlayerUtils.CheckAllAvailablePlayers(false);
             Console.ForegroundColor = ConsoleColor.Green;
-            ConsoleUtils.WriteWithTime("Players Have Been Reloaded");
-            Console.WriteLine("");
         }
 
         public static void StatusCommand()
