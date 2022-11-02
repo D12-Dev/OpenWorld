@@ -131,13 +131,8 @@ namespace OpenWorldServer
                 NetworkStream s = client.tcp.GetStream();
                 StreamWriter sw = new StreamWriter(s);
 
-                string dataToSend = Encryption.EncryptString(data);
-                if (data == null) client.disconnectFlag = true;
-                else
-                {
-                    sw.WriteLine(Encryption.EncryptString(data));
-                    sw.Flush();
-                }
+                sw.WriteLine(Encryption.EncryptString(data));
+                sw.Flush();
             }
             catch { client.disconnectFlag = true; }
         }
@@ -168,8 +163,7 @@ namespace OpenWorldServer
                     foreach (ServerClient client in actualClients)
                     {
                         if (client.disconnectFlag) clientsToDisconnect.Add(client);
-
-                        SendData(client, "Ping");
+                        else SendData(client, "Ping");
                     }
 
                     foreach (ServerClient client in clientsToDisconnect)

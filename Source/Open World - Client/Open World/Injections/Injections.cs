@@ -63,7 +63,7 @@ namespace OpenWorld
 				Main._ParametersCache.hasLoadedCorrectly = false;
 			}
 
-			Vector2 buttonLocation2 = new Vector2(rect.x, rect.y + buttonSize.y + 7.5f);
+			Vector2 buttonLocation2 = new Vector2(rect.x, rect.y + buttonSize.y + 7.495f);
 			if (Widgets.ButtonText(new Rect(buttonLocation2.x, buttonLocation2.y, buttonSize.x, buttonSize.y), ""))
 			{
 				Main._ParametersCache.isGeneratingNewOnlineGame = false;
