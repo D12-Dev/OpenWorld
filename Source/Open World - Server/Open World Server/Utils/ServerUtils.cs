@@ -62,7 +62,7 @@ namespace OpenWorldServer
             catch
             {
                 Console.ForegroundColor = ConsoleColor.White;
-                ConsoleUtils.LogToConsole("Version Check Failed. This is not dangerous");
+                ConsoleUtils.LogToConsole("Version Check Failed. This Is Not Dangerous");
                 Console.ForegroundColor = ConsoleColor.White;
             }
 
@@ -90,13 +90,13 @@ namespace OpenWorldServer
 
                 Server.latestClientVersion = version;
 
-                ConsoleUtils.LogToConsole("Listening for version [" + Server.latestClientVersion + "]");
+                ConsoleUtils.LogToConsole("Listening For Version [" + Server.latestClientVersion + "]");
             }
 
             catch
             {
                 Console.ForegroundColor = ConsoleColor.White;
-                ConsoleUtils.LogToConsole("Version Check Failed. This is not dangerous");
+                ConsoleUtils.LogToConsole("Version Check Failed. This Is Not Dangerous");
                 Console.ForegroundColor = ConsoleColor.White;
             }
         }

@@ -328,8 +328,6 @@ namespace OpenWorldServer
                     client.disconnectFlag = true;
                 }
 
-                Thread.Sleep(1000);
-
                 ServerClient[] savedClients = Server.savedClients.ToArray();
                 foreach (ServerClient client in savedClients)
                 {

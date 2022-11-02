@@ -26,25 +26,16 @@ namespace OpenWorldServer
             Threading.GenerateThreads(1);
             Threading.GenerateThreads(2);
 
-            ListenForIncomingUsers();
+            while (true) ListenForIncomingUsers();
         }
 
         private static void ListenForIncomingUsers()
         {
-            server.BeginAcceptTcpClient(AcceptClients, server);
-        }
-
-        private static void AcceptClients(IAsyncResult ar)
-        {
-            TcpListener listener = (TcpListener)ar.AsyncState;
-
-            ServerClient newServerClient = new ServerClient(listener.EndAcceptTcpClient(ar));
+            ServerClient newServerClient = new ServerClient(server.AcceptTcpClient());
 
             connectedClients.Add(newServerClient);
 
             Threading.GenerateClientThread(newServerClient);
-
-            ListenForIncomingUsers();
         }
 
         public static void ListenToClient(ServerClient client)
@@ -54,79 +45,74 @@ namespace OpenWorldServer
 
             while (true)
             {
-                Thread.Sleep(1);
-
                 try
                 {
                     if (client.disconnectFlag) return;
 
                     string encryptedData = sr.ReadLine();
+                    string data = Encryption.DecryptString(encryptedData);
 
-                    if (encryptedData == null)
+                    if (data == null)
                     {
                         client.disconnectFlag = true;
                         return;
                     }
 
-                    string data = Encryption.DecryptString(encryptedData);
                     //if (data != "Ping") Debug.WriteLine(data);
 
-                    if (data != null)
+                    if (data.StartsWith("Connect│"))
                     {
-                        if (data.StartsWith("Connect│"))
-                        {
-                            NetworkingHandler.ConnectHandle(client, data);
-                        }
+                        NetworkingHandler.ConnectHandle(client, data);
+                    }
 
-                        else if (data.StartsWith("ChatMessage│"))
-                        {
-                            NetworkingHandler.ChatMessageHandle(client, data);
-                        }
+                    else if (data.StartsWith("ChatMessage│"))
+                    {
+                        NetworkingHandler.ChatMessageHandle(client, data);
+                    }
 
-                        else if (data.StartsWith("UserSettlement│"))
-                        {
-                            NetworkingHandler.UserSettlementHandle(client, data);
-                        }
+                    else if (data.StartsWith("UserSettlement│"))
+                    {
+                        NetworkingHandler.UserSettlementHandle(client, data);
+                    }
 
-                        else if (data.StartsWith("ForceEvent│"))
-                        {
-                            NetworkingHandler.ForceEventHandle(client, data);
-                        }
+                    else if (data.StartsWith("ForceEvent│"))
+                    {
+                        NetworkingHandler.ForceEventHandle(client, data);
+                    }
 
-                        else if (data.StartsWith("SendGiftTo│"))
-                        {
-                            NetworkingHandler.SendGiftHandle(client, data);
-                        }
+                    else if (data.StartsWith("SendGiftTo│"))
+                    {
+                        NetworkingHandler.SendGiftHandle(client, data);
+                    }
 
-                        else if (data.StartsWith("SendTradeTo│"))
-                        {
-                            NetworkingHandler.SendTradeHandle(client, data);
-                        }
+                    else if (data.StartsWith("SendTradeTo│"))
+                    {
+                        NetworkingHandler.SendTradeHandle(client, data);
+                    }
 
-                        else if (data.StartsWith("SendBarterTo│"))
-                        {
-                            NetworkingHandler.SendBarterHandle(client, data);
-                        }
+                    else if (data.StartsWith("SendBarterTo│"))
+                    {
+                        NetworkingHandler.SendBarterHandle(client, data);
+                    }
 
-                        else if (data.StartsWith("TradeStatus│"))
-                        {
-                            NetworkingHandler.TradeStatusHandle(client, data);
-                        }
+                    else if (data.StartsWith("TradeStatus│"))
+                    {
+                        NetworkingHandler.TradeStatusHandle(client, data);
+                    }
 
-                        else if (data.StartsWith("BarterStatus│"))
-                        {
-                            NetworkingHandler.BarterStatusHandle(client, data);
-                        }
+                    else if (data.StartsWith("BarterStatus│"))
+                    {
+                        NetworkingHandler.BarterStatusHandle(client, data);
+                    }
 
-                        else if (data.StartsWith("GetSpyInfo│"))
-                        {
-                            NetworkingHandler.SpyInfoHandle(client, data);
-                        }
+                    else if (data.StartsWith("GetSpyInfo│"))
+                    {
+                        NetworkingHandler.SpyInfoHandle(client, data);
+                    }
 
-                        else if (data.StartsWith("FactionManagement│"))
-                        {
-                            NetworkingHandler.FactionManagementHandle(client, data);
-                        }
+                    else if (data.StartsWith("FactionManagement│"))
+                    {
+                        NetworkingHandler.FactionManagementHandle(client, data);
                     }
                 }
 
@@ -140,19 +126,20 @@ namespace OpenWorldServer
 
         public static void SendData(ServerClient client, string data)
         {
-            if (!client.tcp.Connected) client.disconnectFlag = true;
-            else
+            try
             {
-                try
-                {
-                    NetworkStream s = client.tcp.GetStream();
-                    StreamWriter sw = new StreamWriter(s);
+                NetworkStream s = client.tcp.GetStream();
+                StreamWriter sw = new StreamWriter(s);
 
+                string dataToSend = Encryption.EncryptString(data);
+                if (data == null) client.disconnectFlag = true;
+                else
+                {
                     sw.WriteLine(Encryption.EncryptString(data));
                     sw.Flush();
                 }
-                catch { client.disconnectFlag = true; }
             }
+            catch { client.disconnectFlag = true; }
         }
 
         public static void KickClients(ServerClient client)
@@ -182,15 +169,11 @@ namespace OpenWorldServer
                     {
                         if (client.disconnectFlag) clientsToDisconnect.Add(client);
 
-                        Thread.Sleep(1);
-
                         SendData(client, "Ping");
                     }
 
                     foreach (ServerClient client in clientsToDisconnect)
                     {
-                        Thread.Sleep(1);
-
                         KickClients(client);
                     }
 

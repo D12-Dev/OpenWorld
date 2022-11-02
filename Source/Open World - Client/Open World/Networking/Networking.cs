@@ -56,8 +56,7 @@ namespace OpenWorld
 
         private static void ListenToServer()
         {
-            string connectionData = "";
-
+            string connectionData;
             if (!Main._ParametersCache.isLoadingExistingGame) connectionData = "Connect│" + username + "│" + password + "│" + Main._ParametersCache.versionCode + "│" + "NewGame" + "│" + Main._MPGame.GetCompactedModList();
             else connectionData = "Connect│" + username + "│" + password + "│" + Main._ParametersCache.versionCode + "│" + "LoadGame" + "│" + Main._MPGame.GetCompactedModList();
 
@@ -67,9 +66,8 @@ namespace OpenWorld
             {
                 if (!isConnectedToServer) return;
 
-                Thread.Sleep(1);
-
                 string data = sr.ReadLine();
+                data = Encryption.DecryptString(data);
 
                 if (data == null)
                 {
@@ -77,131 +75,126 @@ namespace OpenWorld
                     return;
                 }
 
-                data = Encryption.DecryptString(data);
-
                 //if (data != "Ping") Log.Message(data);
 
-                if (data != null)
+                if (data.StartsWith("Planet│"))
                 {
-                    if (data.StartsWith("Planet│"))
-                    {
-                        NetworkingHandler.PlanetHandle(data);
-                    }
+                    NetworkingHandler.PlanetHandle(data);
+                }
 
-                    else if (data.StartsWith("Settlements│"))
-                    {
-                        NetworkingHandler.SettlementsHandle(data);
-                    }
+                else if (data.StartsWith("Settlements│"))
+                {
+                    NetworkingHandler.SettlementsHandle(data);
+                }
 
-                    else if (data.StartsWith("FactionStructures│"))
-                    {
-                        NetworkingHandler.FactionStructuresHandle(data);
-                    }
+                else if (data.StartsWith("FactionStructures│"))
+                {
+                    NetworkingHandler.FactionStructuresHandle(data);
+                }
 
-                    else if (data.StartsWith("Variables│"))
-                    {
-                        NetworkingHandler.VariablesHandle(data);
-                    }
+                else if (data.StartsWith("Variables│"))
+                {
+                    NetworkingHandler.VariablesHandle(data);
+                }
 
-                    else if (data.StartsWith("PlayerList│"))
-                    {
-                        NetworkingHandler.PlayerListHandle(data);
-                    }
+                else if (data.StartsWith("PlayerList│"))
+                {
+                    NetworkingHandler.PlayerListHandle(data);
+                }
 
-                    else if (data == "NewGame│")
-                    {
-                        NetworkingHandler.NewGameHandle(data);
-                    }
+                else if (data == "NewGame│")
+                {
+                    NetworkingHandler.NewGameHandle(data);
+                }
 
-                    else if (data == "LoadGame│")
-                    {
-                        NetworkingHandler.LoadGameHandle(data);
-                    }
+                else if (data == "LoadGame│")
+                {
+                    NetworkingHandler.LoadGameHandle(data);
+                }
 
-                    else if (data.StartsWith("ChatMessage│"))
-                    {
-                        NetworkingHandler.ChatMessageHandle(data);
-                    }
+                else if (data.StartsWith("ChatMessage│"))
+                {
+                    NetworkingHandler.ChatMessageHandle(data);
+                }
 
-                    else if (data.StartsWith("Notification│"))
-                    {
-                        NetworkingHandler.NotificationHandle(data);
-                    }
+                else if (data.StartsWith("Notification│"))
+                {
+                    NetworkingHandler.NotificationHandle(data);
+                }
 
-                    else if (data.StartsWith("Admin│"))
-                    {
-                        NetworkingHandler.AdminHandle(data);
-                    }
+                else if (data.StartsWith("Admin│"))
+                {
+                    NetworkingHandler.AdminHandle(data);
+                }
 
-                    else if (data.StartsWith("SettlementBuilder│"))
-                    {
-                        NetworkingHandler.SettlementBuilderHandle(data);
-                    }
+                else if (data.StartsWith("SettlementBuilder│"))
+                {
+                    NetworkingHandler.SettlementBuilderHandle(data);
+                }
 
-                    else if (data.StartsWith("FactionStructureBuilder│"))
-                    {
-                        NetworkingHandler.FactionStructureBuilderHandler(data);
-                    }
+                else if (data.StartsWith("FactionStructureBuilder│"))
+                {
+                    NetworkingHandler.FactionStructureBuilderHandler(data);
+                }
 
-                    else if (data.StartsWith("│SentEvent│"))
-                    {
-                        NetworkingHandler.SentEventHandle(data);
-                    }
+                else if (data.StartsWith("│SentEvent│"))
+                {
+                    NetworkingHandler.SentEventHandle(data);
+                }
 
-                    else if (data.StartsWith("│SentTrade│"))
-                    {
-                        NetworkingHandler.SentTradeHandle(data);
-                    }
+                else if (data.StartsWith("│SentTrade│"))
+                {
+                    NetworkingHandler.SentTradeHandle(data);
+                }
 
-                    else if (data.StartsWith("│SentBarter│"))
-                    {
-                        NetworkingHandler.SentBarterHandle(data);
-                    }
+                else if (data.StartsWith("│SentBarter│"))
+                {
+                    NetworkingHandler.SentBarterHandle(data);
+                }
 
-                    else if (data.StartsWith("TradeRequest│"))
-                    {
-                        NetworkingHandler.TradeRequestHandle(data);
-                    }
+                else if (data.StartsWith("TradeRequest│"))
+                {
+                    NetworkingHandler.TradeRequestHandle(data);
+                }
 
-                    else if (data.StartsWith("BarterRequest│"))
-                    {
-                        NetworkingHandler.BarterRequestHandle(data);
-                    }
+                else if (data.StartsWith("BarterRequest│"))
+                {
+                    NetworkingHandler.BarterRequestHandle(data);
+                }
 
-                    else if (data.StartsWith("Spy│"))
-                    {
-                        NetworkingHandler.SpiedHandle(data);
-                    }
+                else if (data.StartsWith("Spy│"))
+                {
+                    NetworkingHandler.SpiedHandle(data);
+                }
 
-                    else if (data.StartsWith("│SentSpy│"))
-                    {
-                        NetworkingHandler.SentSpyHandle(data);
-                    }
+                else if (data.StartsWith("│SentSpy│"))
+                {
+                    NetworkingHandler.SentSpyHandle(data);
+                }
 
-                    else if (data.StartsWith("ForcedEvent│"))
-                    {
-                        NetworkingHandler.ForcedEventHandle(data);
-                    }
+                else if (data.StartsWith("ForcedEvent│"))
+                {
+                    NetworkingHandler.ForcedEventHandle(data);
+                }
 
-                    else if (data.StartsWith("GiftedItems│"))
-                    {
-                        NetworkingHandler.GiftedHandle(data);
-                    }
+                else if (data.StartsWith("GiftedItems│"))
+                {
+                    NetworkingHandler.GiftedHandle(data);
+                }
 
-                    else if (data.StartsWith("FactionManagement│"))
-                    {
-                        NetworkingHandler.FactionManagementHandle(data);
-                    }
+                else if (data.StartsWith("FactionManagement│"))
+                {
+                    NetworkingHandler.FactionManagementHandle(data);
+                }
 
-                    else if (data.StartsWith("PlayerNotConnected│"))
-                    {
-                        NetworkingHandler.PlayerNotConnectedHandle(data);
-                    }
+                else if (data.StartsWith("PlayerNotConnected│"))
+                {
+                    NetworkingHandler.PlayerNotConnectedHandle(data);
+                }
 
-                    else if (data.StartsWith("Disconnect│"))
-                    {
-                        NetworkingHandler.DisconnectHandle(data);
-                    }
+                else if (data.StartsWith("Disconnect│"))
+                {
+                    NetworkingHandler.DisconnectHandle(data);
                 }
             }
         }
