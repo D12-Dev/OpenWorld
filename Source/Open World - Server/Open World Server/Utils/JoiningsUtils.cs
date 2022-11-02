@@ -267,17 +267,17 @@ namespace OpenWorldServer
 
             if (flagged)
             {
-                ConsoleUtils.LogToConsole("Player [" + client.username + "] " + "Doesn't Have The Required Mod Or Mod Files Mismatch!");
                 flaggedMods = flaggedMods.Remove(flaggedMods.Count() - 1, 1);
-                Networking.SendData(client, "Disconnect│WrongMods│" + flaggedMods);
 
+                Networking.SendData(client, "Disconnect│WrongMods│" + flaggedMods);
                 client.disconnectFlag = true;
+                ConsoleUtils.LogToConsole("Player [" + client.username + "] " + "Doesn't Have The Required Mod Or Mod Files Mismatch!");
                 return false;
             }
             else return true;
         }
 
-        public static bool CompareConnectingClientWithConnecteds(ServerClient client)
+        public static void CompareConnectingClientWithConnecteds(ServerClient client)
         {
             ServerClient[] clients = Networking.connectedClients.ToArray();
             foreach (ServerClient sc in clients)
@@ -288,11 +288,9 @@ namespace OpenWorldServer
 
                     Networking.SendData(sc, "Disconnect│AnotherLogin");
                     sc.disconnectFlag = true;
-                    return false;
+                    return;
                 }
             }
-
-            return true;
         }
 
         public static bool CompareConnectingClientWithWhitelist(ServerClient client)

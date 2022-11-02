@@ -396,3 +396,6 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+Autobuilder/
+Source/Open World - Server/Open World Server/Publish.bat
