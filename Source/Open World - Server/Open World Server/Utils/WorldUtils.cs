@@ -107,7 +107,6 @@ namespace OpenWorldServer
                             if (pair.Value[0] == client.username)
                             {
                                 RemoveSettlement(client, pair.Key);
-                                Thread.Sleep(100);
                                 break;
                             }
                         }

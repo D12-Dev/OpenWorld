@@ -140,18 +140,28 @@ namespace OpenWorldServer
                 {"deimmunize", AdvancedCommands.DeimmunizeCommand}
             };
 
-            if (simpleCommands.ContainsKey(commandBase))
+            try
             {
-                simpleCommands[commandBase]();
+                if (simpleCommands.ContainsKey(commandBase))
+                {
+                    simpleCommands[commandBase]();
+                }
+
+                else if (advancedCommands.ContainsKey(commandBase))
+                {
+                    AdvancedCommands.commandData = commandArguments;
+                    advancedCommands[commandBase]();
+                }
+
+                else SimpleCommands.UnknownCommand(commandBase);
             }
 
-            else if (advancedCommands.ContainsKey(commandBase))
+            catch 
             {
-                AdvancedCommands.commandData = commandArguments;
-                advancedCommands[commandBase]();
+                Console.ForegroundColor = ConsoleColor.Red;
+                ConsoleUtils.WriteWithTime("Command Caught Exception");
+                Console.ForegroundColor = ConsoleColor.White;
             }
-
-            else SimpleCommands.UnknownCommand(commandBase);
         }
     }
 }

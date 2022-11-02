@@ -56,8 +56,6 @@ namespace OpenWorldServer
 
             Networking.SendData(factionLeader, "FactionManagement│Created");
 
-            Thread.Sleep(100);
-
             Networking.SendData(factionLeader, GetFactionDetails(factionLeader));
         }
 

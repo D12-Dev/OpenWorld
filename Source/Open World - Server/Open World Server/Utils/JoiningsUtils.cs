@@ -54,50 +54,35 @@ namespace OpenWorldServer
             PlayerUtils.SaveNewPlayerFile(client.username, client.password);
 
             Networking.SendData(client, GetPlanetToSend());
-            Thread.Sleep(100);
 
-            string settlementsToSend = GetSettlementsToSend(client);
-            Networking.SendData(client, settlementsToSend);
-            Thread.Sleep(100);
+            Networking.SendData(client, GetSettlementsToSend(client));
 
             Networking.SendData(client, GetVariablesToSend(client));
-            Thread.Sleep(100);
 
             ServerUtils.SendPlayerList(client);
-            Thread.Sleep(100);
 
             Networking.SendData(client, FactionHandler.GetFactionDetails(client));
-            Thread.Sleep(100);
 
             Networking.SendData(client, FactionBuildingHandler.GetAllFactionStructures(client));
-            Thread.Sleep(100);
 
             Networking.SendData(client, "NewGame│");
         }
 
         private static void SendLoadGameData(ServerClient client)
         {
-            string settlementsToSend = GetSettlementsToSend(client);
-            Networking.SendData(client, settlementsToSend);
-            Thread.Sleep(100);
+            Networking.SendData(client, GetSettlementsToSend(client));
 
             Networking.SendData(client, GetVariablesToSend(client));
-            Thread.Sleep(100);
 
             ServerUtils.SendPlayerList(client);
-            Thread.Sleep(100);
 
             Networking.SendData(client, FactionHandler.GetFactionDetails(client));
-            Thread.Sleep(100);
 
             Networking.SendData(client, FactionBuildingHandler.GetAllFactionStructures(client));
-            Thread.Sleep(100);
 
             Networking.SendData(client, GetGiftsToSend(client));
-            Thread.Sleep(100);
 
             Networking.SendData(client, GetTradesToSend(client));
-            Thread.Sleep(100);
 
             Networking.SendData(client, "LoadGame│");
         }

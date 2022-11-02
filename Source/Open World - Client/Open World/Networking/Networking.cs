@@ -224,8 +224,9 @@ namespace OpenWorld
 
         public static void DisconnectFromServer()
         {
-            try { connection.Dispose(); }
-            catch { }
+            connection.Dispose();
+
+            Find.WindowStack.Add(new Dialog_MPDisconnected());
 
             isConnectedToServer = false;
         }

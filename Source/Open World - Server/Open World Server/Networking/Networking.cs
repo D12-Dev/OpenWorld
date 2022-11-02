@@ -152,33 +152,28 @@ namespace OpenWorldServer
 
             while (true)
             {
-                Thread.Sleep(100);
+                Thread.Sleep(1000);
 
-                try
+                ServerClient[] actualClients = connectedClients.ToArray();
+
+                List<ServerClient> clientsToDisconnect = new List<ServerClient>();
+
+                foreach (ServerClient client in actualClients)
                 {
-                    ServerClient[] actualClients = connectedClients.ToArray();
-
-                    List<ServerClient> clientsToDisconnect = new List<ServerClient>();
-
-                    foreach (ServerClient client in actualClients)
-                    {
-                        if (client.disconnectFlag) clientsToDisconnect.Add(client);
-                        else SendData(client, "Ping");
-                    }
-
-                    foreach (ServerClient client in clientsToDisconnect)
-                    {
-                        KickClients(client);
-                    }
-
-                    if (clientsToDisconnect.Count > 0)
-                    {
-                        ConsoleUtils.UpdateTitle();
-                        ServerUtils.SendPlayerListToAll(null);
-                    }
+                    if (client.disconnectFlag) clientsToDisconnect.Add(client);
+                    else SendData(client, "Ping");
                 }
 
-                catch { ConsoleUtils.WriteWithTime("CRITICAL ERROR"); }
+                foreach (ServerClient client in clientsToDisconnect)
+                {
+                    KickClients(client);
+                }
+
+                if (clientsToDisconnect.Count > 0)
+                {
+                    ConsoleUtils.UpdateTitle();
+                    ServerUtils.SendPlayerListToAll(null);
+                }
             }
         }
     }
