@@ -70,6 +70,13 @@ namespace OpenWorld
                 Thread.Sleep(1);
 
                 string data = sr.ReadLine();
+
+                if (data == null)
+                {
+                    DisconnectFromServer();
+                    return;
+                }
+
                 data = Encryption.DecryptString(data);
 
                 //if (data != "Ping") Log.Message(data);
