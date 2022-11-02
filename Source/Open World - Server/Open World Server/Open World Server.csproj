@@ -1,15 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<RuntimeIdentifiers>linux-arm64</RuntimeIdentifiers>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<RootNamespace>OpenWorldServer</RootNamespace>
+		<Platforms>AnyCPU;ARM32;ARM64</Platforms>
+	</PropertyGroup>
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-	<RuntimeIdentifiers>linux-arm64</RuntimeIdentifiers>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-    <RootNamespace>OpenWorldServer</RootNamespace>
-    <Platforms>AnyCPU;ARM32;ARM64</Platforms>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<PlatformTarget>AnyCPU</PlatformTarget>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-  </PropertyGroup>
-
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Relese|AnyCPU'">
+		<PlatformTarget>AnyCPU</PlatformTarget>
+	</PropertyGroup>
 </Project>

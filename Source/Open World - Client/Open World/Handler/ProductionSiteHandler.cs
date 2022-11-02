@@ -27,49 +27,49 @@ namespace OpenWorld
 				if (randomNumber == 0)
 				{
 					itemID = "RawRice";
-					itemQuantity = 100;
+					itemQuantity = 30;
 				}
 
 				else if (randomNumber == 1)
 				{
 					itemID = "Silver";
-					itemQuantity = 100;
+					itemQuantity = 30;
 				}
 
 				else if (randomNumber == 2)
 				{
 					itemID = "ComponentIndustrial";
-					itemQuantity = 2;
+					itemQuantity = 1;
 				}
 
 				else if (randomNumber == 3)
 				{
 					itemID = "Chemfuel";
-					itemQuantity = 25;
+					itemQuantity = 10;
 				}
 			}
 			else if (Main._ParametersCache.productionSiteProduct == 1)
 			{
 				itemID = "RawRice";
-				itemQuantity = 100;
+				itemQuantity = 50;
 			}
 
 			else if (Main._ParametersCache.productionSiteProduct == 2)
 			{
 				itemID = "Silver";
-				itemQuantity = 100;
+				itemQuantity = 50;
 			}
 
 			else if (Main._ParametersCache.productionSiteProduct == 3)
 			{
 				itemID = "ComponentIndustrial";
-				itemQuantity = 3;
+				itemQuantity = 2;
 			}
 
 			else if (Main._ParametersCache.productionSiteProduct == 4)
 			{
 				itemID = "Chemfuel";
-				itemQuantity = 25;
+				itemQuantity = 20;
 			}
 
 			Thing thingToAdd = RimworldHandler.GetItemFromData(itemID, itemQuantity, itemQuality, itemMaterial, false);

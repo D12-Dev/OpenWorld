@@ -195,7 +195,7 @@ namespace OpenWorld
 
             else if (data == "│SentBarter│Deny│")
             {
-                TradeHandler.ReturnTradesToCaravan();
+                BarterHandler.ReturnBarterToCaravan();
                 Main._ParametersCache.__MPBarter.Close();
                 Find.WindowStack.Add(new Dialog_MPPlayerNotConnected());
             }

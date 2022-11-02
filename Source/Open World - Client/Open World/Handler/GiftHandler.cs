@@ -51,6 +51,8 @@ namespace OpenWorld
 
 			foreach (string str in items)
 			{
+				if (string.IsNullOrWhiteSpace(str)) continue;
+
 				string itemDefName = str.Split('┼')[0];
 
 				if (itemDefName == "pawn")
@@ -268,7 +270,7 @@ namespace OpenWorld
 			if (Main._ParametersCache.giftedItemsString.Count() > 0) Main._ParametersCache.giftedItemsString = Main._ParametersCache.giftedItemsString.Remove(Main._ParametersCache.giftedItemsString.Count() - 1, 1);
 			else return;
 
-			string giftedString = "SendGiftTo│" + targetSettlement.Tile + "│" + Main._ParametersCache.giftedItemsString + "│" + "Pod";
+			string giftedString = "SendGiftTo│" + targetSettlement.Tile + "│" + Main._ParametersCache.giftedItemsString;
 
 			Networking.SendData(giftedString);
 

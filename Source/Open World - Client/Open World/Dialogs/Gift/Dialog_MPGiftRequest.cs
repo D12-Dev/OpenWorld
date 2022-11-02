@@ -92,6 +92,8 @@ namespace OpenWorld
 
             foreach (string str in orderedList)
             {
+                if (string.IsNullOrWhiteSpace(str)) continue;
+
                 if (num > num2 && num < num3)
                 {
                     Rect rect = new Rect(0f, mainRect.y + num, viewRect.width, 21f);

@@ -8,6 +8,8 @@ namespace OpenWorld
     {
         public static string EncryptString(string stuff)
         {
+            if (string.IsNullOrWhiteSpace(stuff)) return null;
+
             string encryptedStuff = "";
 
             foreach (char ch in stuff)
@@ -23,6 +25,8 @@ namespace OpenWorld
 
         public static string DecryptString(string stuff)
         {
+            if (string.IsNullOrWhiteSpace(stuff)) return null;
+
             List<string> encryptedList = stuff.Split(':').ToList();
 
             string decryptedStuff = "";

@@ -68,6 +68,7 @@ namespace OpenWorldServer
         public static int overallRainfall;
         public static int overallTemperature;
         public static int overallPopulation;
+        public static string latestClientVersion;
 
         static void Main()
         {

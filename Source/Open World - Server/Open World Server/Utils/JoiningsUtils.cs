@@ -36,11 +36,7 @@ namespace OpenWorldServer
 
         private static void CheckForJoinMode(ServerClient client, string joinMode)
         {
-            if (joinMode == "NewGame")
-            {
-                SendNewGameData(client);
-                ConsoleUtils.LogToConsole("Player [" + client.username + "] Has Reset Game Progress");
-            }
+            if (joinMode == "NewGame") SendNewGameData(client);
 
             else if (joinMode == "LoadGame")
             {
@@ -48,8 +44,7 @@ namespace OpenWorldServer
                 SendLoadGameData(client);
             }
 
-            ConsoleUtils.LogToConsole("Player [" + client.username + "] " + "[" + 
-                ((IPEndPoint)client.tcp.Client.RemoteEndPoint).Address.ToString() + "] " + "Has Connected");
+            ConsoleUtils.LogToConsole("Player [" + client.username + "] Has Connected");
         }
 
         private static void SendNewGameData(ServerClient client)
@@ -220,7 +215,7 @@ namespace OpenWorldServer
             {
                 string giftsToSend = "";
 
-                foreach (string str in client.giftString) giftsToSend += str + "│";
+                foreach (string str in client.giftString) giftsToSend += str + "»";
 
                 dataToSend += giftsToSend;
 
@@ -240,7 +235,7 @@ namespace OpenWorldServer
             {
                 string tradesToSend = "";
 
-                foreach (string str in client.tradeString) tradesToSend += str + "│";
+                foreach (string str in client.tradeString) tradesToSend += str + "»";
 
                 dataToSend += tradesToSend;
 
@@ -333,19 +328,24 @@ namespace OpenWorldServer
 
         public static bool CompareConnectingClientVersion(ServerClient client, string clientVersion)
         {
-            string latestVersion;
-
-            try
+            if (string.IsNullOrWhiteSpace(Server.latestClientVersion))
             {
-                WebClient wc = new WebClient();
-                latestVersion = wc.DownloadString("https://raw.githubusercontent.com/TastyLollipop/OpenWorld/main/Latest%20Versions%20Cache");
-                latestVersion = latestVersion.Split('│')[2].Replace("- Latest Client Version: ", "");
-                latestVersion = latestVersion.Remove(0, 1);
-                latestVersion = latestVersion.Remove(latestVersion.Count() - 1, 1);
-            }
-            catch { return true; }
+                try
+                {
+                    string version;
 
-            if (clientVersion == latestVersion) return true;
+                    WebClient wc = new WebClient();
+                    version = wc.DownloadString("https://raw.githubusercontent.com/TastyLollipop/OpenWorld/main/Latest%20Versions%20Cache");
+                    version = version.Split('│')[2].Replace("- Latest Client Version: ", "");
+                    version = version.Remove(0, 1);
+                    version = version.Remove(version.Count() - 1, 1);
+
+                    Server.latestClientVersion = version;
+                }
+                catch { return true; }
+            }
+
+            if (clientVersion == Server.latestClientVersion) return true;
             else
             {
                 Networking.SendData(client, "Disconnect│Version");

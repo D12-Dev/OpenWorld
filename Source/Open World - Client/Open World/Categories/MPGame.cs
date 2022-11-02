@@ -110,9 +110,9 @@ namespace OpenWorld
 			Current.Game.storyteller.difficulty.predatorsHuntHumanlikes = true;
 			Current.Game.storyteller.difficulty.allowExtremeWeatherIncidents = true;
 
-			Current.Game.storyteller.difficulty.cropYieldFactor = 0.40f;
-			Current.Game.storyteller.difficulty.mineYieldFactor = 0.40f;
-			Current.Game.storyteller.difficulty.butcherYieldFactor = 0.40f;
+			Current.Game.storyteller.difficulty.cropYieldFactor = 0.50f;
+			Current.Game.storyteller.difficulty.mineYieldFactor = 0.50f;
+			Current.Game.storyteller.difficulty.butcherYieldFactor = 0.50f;
 			Current.Game.storyteller.difficulty.researchSpeedFactor = 0.90f;
 			Current.Game.storyteller.difficulty.questRewardValueFactor = 0.5f;
 			Current.Game.storyteller.difficulty.raidLootPointsFactor = 0.50f;
@@ -330,11 +330,7 @@ namespace OpenWorld
         {
 			if (string.IsNullOrWhiteSpace(Main._ParametersCache.receiveGiftsData)) return;
 
-			if (!Main._ParametersCache.hasLoadedCorrectly)
-            {
-				GiftHandler.ResetGiftVariables();
-				return;
-			}
+			if (!Main._ParametersCache.hasLoadedCorrectly) return;
 
 			if (Main._ParametersCache.inTrade)
             {
@@ -351,6 +347,8 @@ namespace OpenWorld
 			string[] tradeableItems;
 			if (Main._ParametersCache.receiveGiftsData.Contains('»')) tradeableItems = Main._ParametersCache.receiveGiftsData.Split('»').ToArray();
 			else tradeableItems = new string[1] { Main._ParametersCache.receiveGiftsData };
+
+			GiftHandler.ResetGiftVariables();
 
 			Find.WindowStack.Add(new Dialog_MPGiftRequest(tradeableItems));
 		}

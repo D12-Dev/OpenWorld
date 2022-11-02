@@ -267,6 +267,8 @@ namespace OpenWorld
 				Main._MPGame.SendPlayerSettlementData(__instance);
 
 				Main._ParametersCache.hasLoadedCorrectly = true;
+
+				Main._MPGame.CheckForGifts();
 			}
 		}
 	}

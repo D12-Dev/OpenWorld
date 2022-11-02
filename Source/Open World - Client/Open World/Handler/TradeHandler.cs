@@ -40,6 +40,8 @@ namespace OpenWorld
 		{
 			Caravan caravan = Main._ParametersCache.focusedCaravan;
 
+			if (caravan == null) return;
+
 			string tradedString = Main._ParametersCache.tradedItemString;
 			string[] receivedItems = new string[0];
 			if (tradedString.Contains('»')) receivedItems = tradedString.Split('»').ToArray();

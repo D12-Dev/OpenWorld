@@ -113,8 +113,8 @@ namespace OpenWorldServer
 
             client.username = savedClient.username;
             client.homeTileID = savedClient.homeTileID;
-            client.giftString = savedClient.giftString;
-            client.tradeString = savedClient.tradeString;
+            client.giftString = savedClient.giftString.ToList();
+            client.tradeString = savedClient.tradeString.ToList();
 
             savedClient.giftString.Clear();
             savedClient.tradeString.Clear();

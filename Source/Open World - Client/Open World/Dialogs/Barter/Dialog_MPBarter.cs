@@ -116,8 +116,6 @@ namespace OpenWorld
                     {
                         if (item is Pawn) continue;
                         if (item.stackCount < 1) continue;
-                        if (!item.def.tradeability.PlayerCanSell()) continue;
-                        if (!item.def.tradeability.TraderCanSell()) continue;
                         if (!item.def.alwaysHaulable) continue;
                         if (!DefDatabase<ThingDef>.AllDefs.Contains(item.def)) continue;
 

@@ -144,23 +144,17 @@ namespace OpenWorldServer
                     sw.WriteLine(Encryption.EncryptString(data));
                     sw.Flush();
                 }
-                catch { }
+                catch { client.disconnectFlag = true; }
             }
         }
 
-        public static void KickClients(ServerClient client, string kickMode)
+        public static void KickClients(ServerClient client)
         {
             connectedClients.Remove(client);
 
-            try { client.tcp.Dispose(); }
-            catch { }
+            client.tcp.Dispose();
 
-            if (kickMode == "Normal") ConsoleUtils.LogToConsole("Player [" + client.username + "] Has Disconnected");
-            else if (kickMode == "Silent") { }
-
-            ServerUtils.SendPlayerListToAll(null);
-
-            ConsoleUtils.UpdateTitle();
+            ConsoleUtils.LogToConsole("Player [" + client.username + "] Has Disconnected");
         }
 
         public static void CheckClientsConnection()
@@ -169,7 +163,7 @@ namespace OpenWorldServer
 
             while (true)
             {
-                Thread.Sleep(1000);
+                Thread.Sleep(100);
 
                 try
                 {
@@ -190,11 +184,17 @@ namespace OpenWorldServer
                     {
                         Thread.Sleep(1);
 
-                        KickClients(client, "Normal");
+                        KickClients(client);
+                    }
+
+                    if (clientsToDisconnect.Count > 0)
+                    {
+                        ConsoleUtils.UpdateTitle();
+                        ServerUtils.SendPlayerListToAll(null);
                     }
                 }
 
-                catch { continue; }
+                catch { ConsoleUtils.WriteWithTime("CRITICAL ERROR"); }
             }
         }
     }
