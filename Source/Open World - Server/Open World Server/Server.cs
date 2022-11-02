@@ -76,6 +76,7 @@ namespace OpenWorldServer
             ServerUtils.SetCulture();
 
             ServerUtils.CheckServerVersion();
+            ServerUtils.CheckClientVersionRequirement();
             ServerUtils.CheckSettingsFile();
 
             ModHandler.CheckMods(true);

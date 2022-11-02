@@ -328,22 +328,7 @@ namespace OpenWorldServer
 
         public static bool CompareConnectingClientVersion(ServerClient client, string clientVersion)
         {
-            if (string.IsNullOrWhiteSpace(Server.latestClientVersion))
-            {
-                try
-                {
-                    string version;
-
-                    WebClient wc = new WebClient();
-                    version = wc.DownloadString("https://raw.githubusercontent.com/TastyLollipop/OpenWorld/main/Latest%20Versions%20Cache");
-                    version = version.Split('│')[2].Replace("- Latest Client Version: ", "");
-                    version = version.Remove(0, 1);
-                    version = version.Remove(version.Count() - 1, 1);
-
-                    Server.latestClientVersion = version;
-                }
-                catch { return true; }
-            }
+            if (string.IsNullOrWhiteSpace(Server.latestClientVersion)) return true;
 
             if (clientVersion == Server.latestClientVersion) return true;
             else

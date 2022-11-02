@@ -45,7 +45,7 @@ namespace OpenWorldServer
         {
             Console.WriteLine("");
             Console.ForegroundColor = ConsoleColor.Green;
-            ConsoleUtils.LogToConsole("Version Check:");
+            ConsoleUtils.LogToConsole("Server Version Check:");
             Console.ForegroundColor = ConsoleColor.White;
 
             string latestVersion = "";
@@ -69,6 +69,36 @@ namespace OpenWorldServer
             if (Server.serverVersion == latestVersion) ConsoleUtils.LogToConsole("Running Latest Version");
             else ConsoleUtils.LogToConsole("Running Outdated Or Unstable version. Please Update From Github At Earliest Convenience To Prevent Errors");
             Console.ForegroundColor = ConsoleColor.White;
+        }
+
+        public static void CheckClientVersionRequirement()
+        {
+            Console.WriteLine("");
+            Console.ForegroundColor = ConsoleColor.Green;
+            ConsoleUtils.LogToConsole("Client Version Check:");
+            Console.ForegroundColor = ConsoleColor.White;
+
+            try
+            {
+                string version;
+
+                WebClient wc = new WebClient();
+                version = wc.DownloadString("https://raw.githubusercontent.com/TastyLollipop/OpenWorld/main/Latest%20Versions%20Cache");
+                version = version.Split('│')[2].Replace("- Latest Client Version: ", "");
+                version = version.Remove(0, 1);
+                version = version.Remove(version.Count() - 1, 1);
+
+                Server.latestClientVersion = version;
+
+                ConsoleUtils.LogToConsole("Listening for version [" + Server.latestClientVersion + "]");
+            }
+
+            catch
+            {
+                Console.ForegroundColor = ConsoleColor.White;
+                ConsoleUtils.LogToConsole("Version Check Failed. This is not dangerous");
+                Console.ForegroundColor = ConsoleColor.White;
+            }
         }
 
         public static void CheckSettingsFile()

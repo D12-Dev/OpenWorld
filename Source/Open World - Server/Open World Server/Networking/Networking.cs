@@ -61,6 +61,13 @@ namespace OpenWorldServer
                     if (client.disconnectFlag) return;
 
                     string encryptedData = sr.ReadLine();
+
+                    if (encryptedData == null)
+                    {
+                        client.disconnectFlag = true;
+                        return;
+                    }
+
                     string data = Encryption.DecryptString(encryptedData);
                     //if (data != "Ping") Debug.WriteLine(data);
 
