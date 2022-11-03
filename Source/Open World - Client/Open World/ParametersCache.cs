@@ -93,7 +93,6 @@ namespace OpenWorld
 
         //General Purpose
         public string gameSavePath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData).Replace("Roaming", "LocalLow") + Path.DirectorySeparatorChar + "Ludeon Studios" + Path.DirectorySeparatorChar + "RimWorld by Ludeon Studios" + Path.DirectorySeparatorChar + "Saves";
-        public Dialog_MPDisconnected __MPDisconnected;
 
         //Dialog_MPParameters
         public string ipText;

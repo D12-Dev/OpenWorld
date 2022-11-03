@@ -55,7 +55,7 @@ namespace OpenWorld
                     Main._ParametersCache.blackEventType = "";
                     Close();
                     Main._ParametersCache.__MPBlackMarket.Close();
-                    Find.WindowStack.Add(new Dialog_MPNoFunds());
+                    Find.WindowStack.Add(new OW_ErrorDialog("You don't have enough funds for this action"));
                 }
             }
 

@@ -72,22 +72,6 @@ namespace OpenWorld
                 {
                     text = "Violet was here! Such a good person!";
                 }
-                else if (command.StartsWith("Msg") || command.StartsWith("msg"))
-                {
-                    cacheInputText = "";
-                    return;
-                }
-                else if (command == "Easter" || command == "easter")
-                {
-                    text = "No easter eggs hiding in here! Probably!";
-                }
-                else if (command == "Ping" || command == "ping")
-                {
-                    Networking.SendData("│Ping│");
-
-                    if (!Networking.isConnectedToServer) Find.WindowStack.Add(new Dialog_MPDisconnected());
-                    else text = "Pong!";
-                }
                 else
                 {
                     cacheInputText = "";

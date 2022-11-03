@@ -56,26 +56,26 @@ namespace OpenWorld
                 {
                     if(buildingType == 3 && pair.Value[0] == 3)
                     {
-                        Find.WindowStack.Add(new Dialog_MPFactionStructureLimit());
+                        Find.WindowStack.Add(new OW_ErrorDialog("You reached this structure limit"));
                         return;
                     }
 
                     if (buildingType == 2 && pair.Value[0] == 2 && pair.Value[1] == 1)
                     {
-                        Find.WindowStack.Add(new Dialog_MPFactionStructureLimit());
+                        Find.WindowStack.Add(new OW_ErrorDialog("You reached this structure limit"));
                         return;
                     }
 
                     if (buildingType == 0 && pair.Value[0] == 0 && pair.Value[1] == 1)
                     {
-                        Find.WindowStack.Add(new Dialog_MPFactionStructureLimit());
+                        Find.WindowStack.Add(new OW_ErrorDialog("You reached this structure limit"));
                         return;
                     }
                 }
 
                 if (!MPCaravan.TakeFundsFromCaravan(silverCost))
                 {
-                    Find.WindowStack.Add(new Dialog_MPNoFunds());
+                    Find.WindowStack.Add(new OW_ErrorDialog("You don't have enough funds for this action"));
                     return;
                 }
 
