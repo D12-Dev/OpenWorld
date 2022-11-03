@@ -15,7 +15,9 @@ namespace OpenWorld
 	{
 		public override string ModIdentifier => Main._ParametersCache.modIdentifier;
 
-		public List<Action> thingsToDoInUpdate = new List<Action>();
+		public static List<Action> thingsToDoInUpdate = new List<Action>();
+
+		public static List<Action> queuedActions = new List<Action>();
 	}
 
 	//Inject Orders To ModBase
@@ -25,74 +27,114 @@ namespace OpenWorld
 		[HarmonyPostfix]
 		public static void InjectToRoot()
 		{
-			if (Main._Injections.thingsToDoInUpdate.Count > 0)
+			if (Injections.thingsToDoInUpdate.Count > 0)
 			{
-				foreach (Action a in Main._Injections.thingsToDoInUpdate)
+				foreach(Action a in Injections.thingsToDoInUpdate)
+                {
+					Injections.queuedActions.Add(a);
+				}
+
+				Injections.thingsToDoInUpdate.Clear();
+
+				foreach (Action a in Injections.queuedActions)
 				{
 					a.Invoke();
 				}
 
-				Main._Injections.thingsToDoInUpdate.Clear();
+				Injections.queuedActions.Clear();
 			}
 		}
 	}
 
-	//Render Multiplayer Button In New Game Page
-	[HarmonyPatch(typeof(Page_CreateWorldParams), "DoWindowContents")]
-	public static class CreateMultiplayerButtonPatchNG
+	//Render Multiplayer Button In Main Menu
+	[HarmonyPatch(typeof(MainMenuDrawer), "DoMainMenuControls")]
+	public static class InjectMultiplayerButtonOnMainScreen
 	{
 		[HarmonyPrefix]
-		public static bool DrawMultiplayerButtonBack(Page_CreateWorldParams __instance, Rect rect)
+		public static bool PreInjectToMainScreen(Rect rect)
 		{
 			if (!(Current.ProgramState == ProgramState.Entry)) return true;
 
-			Vector2 buttonSize = new Vector2(150f, 38f);
-			if (Widgets.ButtonText(new Rect(0, rect.height - buttonSize.y, buttonSize.x, buttonSize.y), "Multiplayer"))
+			Vector2 buttonLocation = new Vector2(rect.x, rect.y);
+			Vector2 buttonSize = new Vector2(170f, 45f);
+			if (Widgets.ButtonText(new Rect(buttonLocation.x, buttonLocation.y, buttonSize.x, buttonSize.y), ""))
 			{
-				Main._ParametersCache.__createWorldParams = __instance;
+				Find.WindowStack.Add(new Dialog_MPMultiplayerType());
+				Main._ParametersCache.hasLoadedCorrectly = false;
+			}
 
-				Dialog_MPParameters mpDialog = new Dialog_MPParameters();
-
-				Find.WindowStack.Add(mpDialog);
-
-				Main._ParametersCache.isLoadingExistingGame = false;
+			Vector2 buttonLocation2 = new Vector2(rect.x, rect.y + buttonSize.y + 7.495f);
+			if (Widgets.ButtonText(new Rect(buttonLocation2.x, buttonLocation2.y, buttonSize.x, buttonSize.y), ""))
+			{
+				Main._ParametersCache.isGeneratingNewOnlineGame = false;
+				Find.WindowStack.Add(new Page_SelectScenario());
 			}
 
 			return true;
 		}
 
 		[HarmonyPostfix]
-		public static void DrawMultiplayerButtonFront(Page_CreateWorldParams __instance, Rect rect)
+		public static void PostInjectToMainScreen(Rect rect)
 		{
 			if (!(Current.ProgramState == ProgramState.Entry)) return;
 
-			Vector2 buttonSize = new Vector2(150f, 38f);
-			if (Widgets.ButtonText(new Rect(0, rect.height - buttonSize.y, buttonSize.x, buttonSize.y), "Multiplayer"))
+			Vector2 buttonLocation = new Vector2(rect.x, rect.y);
+			Vector2 buttonSize = new Vector2(170f, 45f);
+			if (Widgets.ButtonText(new Rect(buttonLocation.x, buttonLocation.y, buttonSize.x, buttonSize.y), "Multiplayer"))
 			{
-				//Do Nothing Since It's A Dummy.
+				//Do nothing since it's a dummy
 			}
 		}
 	}
 
-	//Render Multiplayer Button In Load Game Page
-	[HarmonyPatch(typeof(Dialog_FileList), "DoWindowContents")]
-	public static class CreateMultiplayerButtonPatchLG
+	//Inject Multiplayer Joining At Create World Selection
+	[HarmonyPatch(typeof(Page_CreateWorldParams), "DoWindowContents")]
+	public static class InjectMultiplayerJoinAtWorldParams
 	{
-		[HarmonyPostfix]
-		public static void DrawMultiplayerButton(Dialog_SaveFileList_Load __instance, Rect inRect)
+		[HarmonyPrefix]
+		public static bool PreInjectToWorldParams(Rect rect, Page_CreateWorldParams __instance)
 		{
-			if (!(__instance is Dialog_SaveFileList_Load)) return;
+			if (!Main._ParametersCache.isGeneratingNewOnlineGame) return true;
+			if (!(Current.ProgramState == ProgramState.Entry)) return true;
+
+			Vector2 buttonSize = new Vector2(150f, 38f);
+			Vector2 buttonLocation = new Vector2(rect.xMax - buttonSize.x, rect.yMax - buttonSize.y);
+			if (Widgets.ButtonText(new Rect(buttonLocation.x, buttonLocation.y, buttonSize.x, buttonSize.y), ""))
+			{
+				Main._ParametersCache.__createWorldParams = __instance;
+				Find.WindowStack.Add(new Dialog_MPParameters());
+			}
+
+			Vector2 buttonLocation2 = new Vector2(rect.xMin, rect.yMax - buttonSize.y);
+			if (Widgets.ButtonText(new Rect(buttonLocation2.x, buttonLocation2.y, buttonSize.x, buttonSize.y), ""))
+			{
+				Main._ParametersCache.isGeneratingNewOnlineGame = false;
+				__instance.Close();
+			}
+
+			return true;
+		}
+
+		[HarmonyPostfix]
+		public static void PostInjectToWorldParams(Rect rect)
+		{
+			if (!Main._ParametersCache.isGeneratingNewOnlineGame) return;
 			if (!(Current.ProgramState == ProgramState.Entry)) return;
 
 			Vector2 buttonSize = new Vector2(150f, 38f);
-			if (Widgets.ButtonText(new Rect(0, inRect.height - buttonSize.y, buttonSize.x, buttonSize.y), "Multiplayer"))
+			Vector2 buttonLocation = new Vector2(rect.xMax - buttonSize.x, rect.yMax - buttonSize.y);
+			if (Widgets.ButtonText(new Rect(buttonLocation.x, buttonLocation.y, buttonSize.x, buttonSize.y), "Join"))
 			{
-				Dialog_MPParameters mpDialog = new Dialog_MPParameters();
-
-				Find.WindowStack.Add(mpDialog);
-
-				Main._ParametersCache.isLoadingExistingGame = true;
+				//Do nothing since it's a dummy
 			}
+
+			Vector2 buttonLocation2 = new Vector2(rect.xMin, rect.yMax - buttonSize.y);
+			if (Widgets.ButtonText(new Rect(buttonLocation2.x, buttonLocation2.y, buttonSize.x, buttonSize.y), "Close"))
+			{
+				//Do nothing since it's a dummy
+			}
+
+			return;
 		}
 	}
 
@@ -112,7 +154,7 @@ namespace OpenWorld
 				LongEventHandler.QueueLongEvent(delegate
 				{
 					Main._ParametersCache.isPlayingOnline = false;
-					if (Main._Networking.isConnectedToServer) Main._Networking.DisconnectFromServer();
+					if (Networking.isConnectedToServer) Networking.DisconnectFromServer();
 
 					Find.GameInfo.permadeathModeUniqueName = Main._ParametersCache.onlineFileSaveName + " - " + Main._ParametersCache.connectedServerIdentifier + " - " + Main._ParametersCache.usernameText;
 					GameDataSaveLoader.SaveGame(Find.GameInfo.permadeathModeUniqueName);
@@ -167,7 +209,7 @@ namespace OpenWorld
 			if ((Widgets.ButtonText(new Rect(num6, num7, 150f, 38f), "Back".Translate()) || KeyBindingDefOf.Cancel.KeyDownEvent))
 			{
 				Main._ParametersCache.isPlayingOnline = false;
-				if (Main._Networking.isConnectedToServer) Main._Networking.DisconnectFromServer();
+				if (Networking.isConnectedToServer) Networking.DisconnectFromServer();
 
 				if (__instance.prev != null)
 				{
@@ -187,13 +229,17 @@ namespace OpenWorld
 		[HarmonyPostfix]
 		public static void GetIDFromNewGame(Game __instance)
 		{
-			string dataToSend = "NewSettlementID│";
-			dataToSend += __instance.CurrentMap.Tile + "│";
-			dataToSend += (int) __instance.CurrentMap.wealthWatcher.WealthTotal + "│";
-			dataToSend += __instance.CurrentMap.mapPawns.AllPawns.FindAll(pawn => pawn.IsColonistPlayerControlled).Count();
+			if (!Networking.isConnectedToServer) return;
+			else
+            {
+				Main._MPGame.EnforceDificultyTweaks();
 
-			if (Main._Networking.isConnectedToServer) Main._Networking.SendData(dataToSend);
-			else return;
+				Main._MPGame.DisableDevOptions();
+
+				Main._MPGame.SendPlayerSettlementData(__instance);
+
+				Main._ParametersCache.hasLoadedCorrectly = true;
+			}
 		}
 	}
 
@@ -204,102 +250,113 @@ namespace OpenWorld
 		[HarmonyPostfix]
 		public static void GetIDFromExistingGame(Game __instance)
 		{
-			Main._MPWorld.FindOnlineFactionInWorld();
+			FactionHandler.FindOnlineFactionsInWorld();
 
 			if (Main._ParametersCache.isPlayingOnline)
 			{
-				List<Settlement> settlementList = new List<Settlement>();
+				SettlementHandler.ManageSettlementsInWorld();
 
-				foreach (Settlement st in Find.WorldObjects.Settlements)
-				{
-					if (st.Faction == Main._ParametersCache.faction) settlementList.Add(st);
-				}
+				FactionHandler.ManageFactionStructuresInWorld();
 
-				foreach (Settlement wo in settlementList) Find.WorldObjects.Remove(wo);
+				Main._MPWorld.HandleRoadGeneration();
 
-				foreach (KeyValuePair<string, List<string>> pair in Main._ParametersCache.onlineSettlements)
-				{
-					Settlement settlement = (Settlement)WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
-					settlement.SetFaction(Main._ParametersCache.faction);
-					settlement.Tile = int.Parse(pair.Key);
-					settlement.Name = pair.Value[0] + "'s Settlement";
-					Find.WorldObjects.Add(settlement);
-				}
+				Main._MPGame.EnforceDificultyTweaks();
 
-				if (Main._ParametersCache.roadMode != 0)
-                {
-					if (Main._ParametersCache.roadMode == 1)
-                    {
-                        List<WorldGenStepDef> GenStepsInOrder = DefDatabase<WorldGenStepDef>.AllDefs.ToList();
-                        WorldGenStepDef roadGenerator = GenStepsInOrder.Find(a => a.defName == "Roads");
-                        try { roadGenerator.worldGenStep.GenerateFresh(Find.World.info.seedString); }
-                        catch { }
-                    }
-					else if (Main._ParametersCache.roadMode == 2)
-                    {
-                        List<WorldGenStepDef> GenStepsInOrder = DefDatabase<WorldGenStepDef>.AllDefs.ToList();
-                        WorldGenStepDef roadGenerator = GenStepsInOrder.Find(a => a.defName == "Roads");
-                        try { roadGenerator.worldGenStep.GenerateFromScribe(Find.World.info.seedString); }
-                        catch { }
-                    }
-				}
+				Main._MPGame.DisableDevOptions();
 
-                string dataToSend = "NewSettlementID│";
-				dataToSend += __instance.CurrentMap.Tile + "│";
-				dataToSend += (int) __instance.CurrentMap.wealthWatcher.WealthTotal + "│";
-				dataToSend += __instance.CurrentMap.mapPawns.AllPawns.FindAll(pawn => pawn.IsColonistPlayerControlled).Count();
+				Main._MPGame.SendPlayerSettlementData(__instance);
 
-				Map map = Find.AnyPlayerHomeMap;
-				string dataToSend2 = "NewSettlementID│";
-				dataToSend2 += map.Tile + "│";
-				dataToSend2 += (int) map.wealthWatcher.WealthTotal + "│";
-				dataToSend2 += map.mapPawns.AllPawns.FindAll(pawn => pawn.IsColonistPlayerControlled).Count();
-
-				if (Find.CurrentMap != null && Find.CurrentMap == Find.AnyPlayerHomeMap) Main._Networking.SendData(dataToSend);
-				else if (Find.AnyPlayerHomeMap != null) Main._Networking.SendData(dataToSend);
-				else Main._Networking.SendData("│NoSettlementInLoad│");
+				Main._ParametersCache.hasLoadedCorrectly = true;
 
 				Main._MPGame.CheckForGifts();
-
-				return;
 			}
-
-			else return;
 		}
 	}
 
-	//Plant Settlements Of Other Players In The World
-	[HarmonyPatch(typeof(FactionGenerator), "GenerateFactionsIntoWorld")]
-	public static class SpawnSettlements
-	{
-		[HarmonyPrefix]
-		public static bool SpawnOnlineSettlements()
-		{
-			if (!Main._ParametersCache.isPlayingOnline) return true;
+	//Spawn All Online Materials Before Starting Site
+	[HarmonyPatch(typeof(Page_SelectStartingSite), "PreOpen")]
+	public static class SpawnOnlineMaterials
+    {
+		[HarmonyPostfix]
+		public static void SpawnMaterials()
+        {
+			if (!Main._ParametersCache.isPlayingOnline) return;
 
 			foreach (FactionDef item in DefDatabase<FactionDef>.AllDefs.OrderBy((FactionDef x) => x.hidden))
 			{
-				if (item.defName == "Online")
+				if (item.defName == "OnlineNeutral")
 				{
-					Main._ParametersCache.faction = FactionGenerator.NewGeneratedFaction(new FactionGeneratorParms(item));
-					Find.FactionManager.Add(Main._ParametersCache.faction);
+					Main._ParametersCache.onlineNeutralFaction = FactionGenerator.NewGeneratedFaction(new FactionGeneratorParms(item));
+					Find.FactionManager.Add(Main._ParametersCache.onlineNeutralFaction);
 
-					foreach(KeyValuePair<string, List<string>> pair in Main._ParametersCache.onlineSettlements)
+					foreach (KeyValuePair<int, List<string>> pair in Main._ParametersCache.onlineNeutralSettlements)
 					{
 						Settlement settlement = (Settlement)WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
-						settlement.SetFaction(Main._ParametersCache.faction);
-						settlement.Tile = int.Parse(pair.Key);
-						settlement.Name = pair.Value[0] + "'s Settlement";
+						settlement.Name = pair.Value[0];
+						settlement.Tile = pair.Key;
+						settlement.SetFaction(Main._ParametersCache.onlineNeutralFaction);
 						Find.WorldObjects.Add(settlement);
 					}
+				}
 
-					return true;
+				else if (item.defName == "OnlineAlly")
+				{
+					Main._ParametersCache.onlineAllyFaction = FactionGenerator.NewGeneratedFaction(new FactionGeneratorParms(item));
+					Find.FactionManager.Add(Main._ParametersCache.onlineAllyFaction);
+
+					foreach (KeyValuePair<int, List<string>> pair in Main._ParametersCache.onlineAllySettlements)
+					{
+						Settlement settlement = (Settlement)WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
+						settlement.Name = pair.Value[0];
+						settlement.Tile = pair.Key;
+						settlement.SetFaction(Main._ParametersCache.onlineAllyFaction);
+						Find.WorldObjects.Add(settlement);
+					}
+				}
+
+				else if (item.defName == "OnlineEnemy")
+				{
+					Main._ParametersCache.onlineEnemyFaction = FactionGenerator.NewGeneratedFaction(new FactionGeneratorParms(item));
+					Find.FactionManager.Add(Main._ParametersCache.onlineEnemyFaction);
+
+					foreach (KeyValuePair<int, List<string>> pair in Main._ParametersCache.onlineEnemySettlements)
+					{
+						Settlement settlement = (Settlement)WorldObjectMaker.MakeWorldObject(WorldObjectDefOf.Settlement);
+						settlement.Name = pair.Value[0];
+						settlement.Tile = pair.Key;
+						settlement.SetFaction(Main._ParametersCache.onlineEnemyFaction);
+						Find.WorldObjects.Add(settlement);
+					}
 				}
 			}
 
-			return true;
+			foreach (KeyValuePair<int, List<int>> pair in Main._ParametersCache.allFactionStructures)
+			{
+				string siteName = "";
+				if (pair.Value[0] == 0) siteName = "Resource Silo";
+				else if (pair.Value[0] == 1) siteName = "Marketplace";
+				else if (pair.Value[0] == 2) siteName = "Production Site";
+				else if (pair.Value[0] == 3) siteName = "Wonder Structure";
+
+				Faction factionToGet = null;
+				if (pair.Value[1] == 0) factionToGet = Main._ParametersCache.onlineNeutralFaction;
+				else if (pair.Value[1] == 1) factionToGet = Main._ParametersCache.onlineAllyFaction;
+				else if (pair.Value[1] == 2) factionToGet = Main._ParametersCache.onlineEnemyFaction;
+
+				Site newSite = SiteMaker.MakeSite(sitePart: SitePartDefOf.Outpost,
+												  tile: pair.Key,
+												  threatPoints: 5000,
+												  faction: factionToGet);
+
+				newSite.customLabel = siteName;
+				Find.WorldObjects.Add(newSite);
+			}
+
+			FactionHandler.FindOnlineFactionsInWorld();
+
+			return;
 		}
-	}
+    }
 
 	//Get Tile ID Of New Settlement
 	[HarmonyPatch(typeof(SettleInEmptyTileUtility), "Settle")]
@@ -308,9 +365,9 @@ namespace OpenWorld
 		[HarmonyPostfix]
 		public static void GetIDFromNewSettlement(ref Caravan caravan)
 		{
-			if (Main._Networking.isConnectedToServer)
+			if (Networking.isConnectedToServer)
 			{
-				if (Find.AnyPlayerHomeMap == null) Main._Networking.SendData("NewSettlementID│" + caravan.Tile);
+				if (Find.AnyPlayerHomeMap == null) Networking.SendData("UserSettlement│NewSettlementID│" + caravan.Tile);
 				else return;
 			}
 			else return;
@@ -324,9 +381,9 @@ namespace OpenWorld
 		[HarmonyPostfix]
 		public static void GetIDFromAbandonedSettlement(ref Settlement settlement)
 		{
-			if (Main._Networking.isConnectedToServer)
+			if (Networking.isConnectedToServer)
 			{
-				if (Find.AnyPlayerHomeMap == null) Main._Networking.SendData("AbandonSettlementID│" + settlement.Tile);
+				if (Find.AnyPlayerHomeMap == null) Networking.SendData("UserSettlement│AbandonSettlementID│" + settlement.Tile);
 				else return;
 			}
 			else return;
@@ -340,72 +397,32 @@ namespace OpenWorld
 		[HarmonyPrefix]
 		public static bool GetItemsGifted(List<Thing> ___thingsColony, int ___countToTransfer)
 		{
-			if (!Main._Networking.isConnectedToServer) return true;
+			if (!Networking.isConnectedToServer) return true;
 
-			if (TradeSession.trader.Faction == Main._ParametersCache.faction)
+			if (Main._ParametersCache.allFactions.Contains(TradeSession.trader.Faction))
 			{
-				string itemDefName = "";
+				string itemDefName;
 
-				if (___thingsColony[0] is Pawn)
-                {
-					Pawn sentPawn = (Pawn) ___thingsColony[0];
-					string pawnData = "pawn┼";
-					pawnData += sentPawn.Name + "┼";
-					pawnData += sentPawn.ageTracker.AgeBiologicalTicks + "┼";
-					pawnData += sentPawn.ageTracker.AgeChronologicalTicks + "┼";
-					pawnData += (int)sentPawn.gender + "┼";
+				QualityCategory qc = QualityCategory.Normal;
+				try { ___thingsColony[0].TryGetQuality(out qc); }
+				catch { }
 
-					pawnData += "‼";
+				string stuffDefName = "";
+				try { stuffDefName = ___thingsColony[0].Stuff.defName; }
+				catch { }
 
-					try { pawnData += sentPawn.story.childhood.identifier + "┼"; }
-					catch { }
-
-					try { pawnData += sentPawn.story.adulthood.identifier + "┼"; }
-					catch { }
-
-					pawnData += "‼";
-
-					foreach (SkillRecord s in sentPawn.skills.skills)
-                    {
-						pawnData += s.levelInt + "-";
-						pawnData += (int)s.passion + "┼";
-					}
-
-					pawnData += "‼";
-
-					foreach (Trait t in sentPawn.story.traits.allTraits)
-                    {
-						pawnData += t.Label + "┼";
-					}
-
-					pawnData = pawnData.Remove(pawnData.Count() - 1, 1);
-
-					//Add more
-
-					if (Main._ParametersCache.transferMode == "Gift") Main._ParametersCache.giftedItemsString += pawnData + "»";
-					else if (Main._ParametersCache.transferMode == "Trade") Main._ParametersCache.tradedItemString += pawnData + "»";
-				}
-
-				else
+				if (___thingsColony[0].def == ThingDefOf.MinifiedThing || ___thingsColony[0].def == ThingDefOf.MinifiedTree)
 				{
-					QualityCategory qc = QualityCategory.Normal;
-					try { ___thingsColony[0].TryGetQuality(out qc); }
-					catch { }
-
-					string stuffDefName = "";
-					try { stuffDefName = ___thingsColony[0].Stuff.defName; }
-					catch { }
-
-					if (___thingsColony[0].def == ThingDefOf.MinifiedThing || ___thingsColony[0].def == ThingDefOf.MinifiedTree)
-					{
-						Thing innerThing = ___thingsColony[0].GetInnerIfMinified();
-						itemDefName = "minified-" + innerThing.def.defName;
-					}
-					else itemDefName = ___thingsColony[0].def.defName;
-
-					if (Main._ParametersCache.transferMode == "Gift") Main._ParametersCache.giftedItemsString += itemDefName + "┼" + ___countToTransfer + "┼" + ((int)qc) + "┼" + stuffDefName + "»";
-					else if (Main._ParametersCache.transferMode == "Trade") Main._ParametersCache.tradedItemString += itemDefName + "┼" + ___countToTransfer + "┼" + ((int)qc) + "┼" + stuffDefName + "»";
+					Thing innerThing = ___thingsColony[0].GetInnerIfMinified();
+					itemDefName = "minified-" + innerThing.def.defName;
 				}
+				else itemDefName = ___thingsColony[0].def.defName;
+
+				if (Main._ParametersCache.transferMode == 0) Main._ParametersCache.giftedItemsString += itemDefName + "┼" + ___countToTransfer + "┼" + ((int)qc) + "┼" + stuffDefName + "»";
+				else if (Main._ParametersCache.transferMode == 1) Main._ParametersCache.tradedItemString += itemDefName + "┼" + ___countToTransfer + "┼" + ((int)qc) + "┼" + stuffDefName + "»";
+				else if (Main._ParametersCache.transferMode == 2) Main._ParametersCache.barteredItemString += itemDefName + "┼" + ___countToTransfer + "┼" + ((int)qc) + "┼" + stuffDefName + "»";
+				else if (Main._ParametersCache.transferMode == 3) Main._ParametersCache.depositItemsString += itemDefName + "┼" + ___countToTransfer + "┼" + ((int)qc) + "┼" + stuffDefName + "»";
+
 				return true;
 			}
 
@@ -420,12 +437,12 @@ namespace OpenWorld
         [HarmonyPostfix]
         public static void ChangeOptions(ref IEnumerable<FloatMenuOption> __result, Settlement settlement, CompLaunchable representative)
         {
-            if (settlement.Faction == Main._ParametersCache.faction)
+            if (Main._ParametersCache.allFactions.Contains(settlement.Faction))
             {
                 var floatMenuList = __result.ToList();
                 floatMenuList.Clear();
 
-                if (!Main._Networking.isConnectedToServer)
+                if (!Networking.isConnectedToServer)
                 {
                     __result = floatMenuList;
                     return;
@@ -433,7 +450,7 @@ namespace OpenWorld
 
                 Action action = delegate
                 {
-                    Main._MPCaravan.SendGiftedPodsToSettlement(representative.TransportersInGroup, settlement);
+                    GiftHandler.SendGiftedPodsToSettlement(representative.TransportersInGroup, settlement);
                     representative.TryLaunch(settlement.Tile, new TransportPodsArrivalAction_GiveGift(settlement));
                 };
 
@@ -455,7 +472,7 @@ namespace OpenWorld
 		[HarmonyPostfix]
 		public static void ForbidAttack(ref IEnumerable<FloatMenuOption> __result, Settlement settlement, CompLaunchable representative)
 		{
-			if (settlement.Faction == Main._ParametersCache.faction)
+			if (Main._ParametersCache.allFactions.Contains(settlement.Faction))
 			{
 				var floatMenuList = __result.ToList();
 				floatMenuList.Clear();
@@ -475,9 +492,14 @@ namespace OpenWorld
 		[HarmonyPrefix]
 		public static bool AllowAllItems(ref List<Tradeable> ___tradeables)
 		{
-			if (TradeSession.trader.Faction == Main._ParametersCache.faction)
+			if (Main._ParametersCache.allFactions.Contains(TradeSession.trader.Faction))
 			{
-				___tradeables = Main._ParametersCache.listToShowInGiftMenu;
+				___tradeables = new List<Tradeable>();
+				___tradeables.AddRange(Main._ParametersCache.listToShowInGiftMenu);
+				___tradeables.AddRange(Main._ParametersCache.listToShowInTradeMenu);
+				___tradeables.AddRange(Main._ParametersCache.listToShowInBarterMenu);
+				___tradeables.AddRange(Main._ParametersCache.listToShowInSiloMenu);
+
 				return false;
 			}
 
@@ -498,6 +520,19 @@ namespace OpenWorld
 		}
 	}
 
+	//Enforce Difficulty Tweaks
+	[HarmonyPatch(typeof(Page_SelectStorytellerInGame), "DoWindowContents")]
+	public static class EnforceDifficultyTweaks
+	{
+		[HarmonyPostfix]
+		public static void EnforceDifficulty()
+		{
+			if (!Main._ParametersCache.isPlayingOnline) return;
+
+			Main._MPGame.EnforceDificultyTweaks();
+		}
+	}
+
 	//Prevent Goodwill Change Next To Other Player
 	[HarmonyPatch(typeof(SettlementProximityGoodwillUtility), "AppendProximityGoodwillOffsets")]
 	public static class PrevenGoodwillChangeOnSettle
@@ -510,7 +545,9 @@ namespace OpenWorld
 			for (int i = 0; i < settlements.Count; i++)
 			{
 				Settlement settlement = settlements[i];
-				if (settlement.Faction == null || settlement.Faction == Main._ParametersCache.faction || settlement.Faction == Faction.OfPlayer || settlement.Faction.def.permanentEnemy || settlement.Faction.PlayerGoodwill == -100)
+				if (Main._ParametersCache.allFactions.Contains(settlement.Faction) || 
+					settlement.Faction == Faction.OfPlayer || 
+					settlement.Faction.def.permanentEnemy)
 				{
 					continue;
 				}
@@ -537,14 +574,14 @@ namespace OpenWorld
 		[HarmonyPostfix]
 		public static void SetSettlementGizmos(ref IEnumerable<Gizmo> __result, Settlement __instance)
 		{
-			if (__instance.Faction == Main._ParametersCache.faction)
+			if (Main._ParametersCache.allFactions.Contains(__instance.Faction))
 			{
 				Main._ParametersCache.focusedSettlement = __instance;
 
 				var gizmoList = __result.ToList();
 				gizmoList.Clear();
 
-				if (!Main._Networking.isConnectedToServer)
+				if (!Networking.isConnectedToServer)
 				{
 					__result = gizmoList;
 					return;
@@ -557,7 +594,7 @@ namespace OpenWorld
             {
 				var gizmoList = __result.ToList();
 
-				if (!Main._Networking.isConnectedToServer) return;
+				if (!Networking.isConnectedToServer) return;
 
 				Command_Action command_TradingPost = new Command_Action
 				{
@@ -571,7 +608,19 @@ namespace OpenWorld
 					}
 				};
 
+				Command_Action command_FactionMenu = new Command_Action
+				{
+					defaultLabel = "Faction Menu",
+					defaultDesc = "Open Your Faction Menu",
+					icon = ContentFinder<Texture2D>.Get("UI/Icons/VisitorsHelp"),
+					action = delegate
+					{
+						Find.WindowStack.Add(new Dialog_MPFactionMenu());
+					}
+				};
+
 				gizmoList.Add(command_TradingPost);
+				gizmoList.Add(command_FactionMenu);
 				__result = gizmoList;
 			}
 
@@ -586,7 +635,7 @@ namespace OpenWorld
 		[HarmonyPostfix]
 		public static void SetCaravanGizmos(ref IEnumerable<Gizmo> __result, Settlement __instance, Caravan caravan)
 		{
-			if (__instance.Faction == Main._ParametersCache.faction)
+			if (Main._ParametersCache.allFactions.Contains(__instance.Faction))
 			{
 				var gizmoList = __result.ToList();
 				List<Gizmo> removeList = new List<Gizmo>();
@@ -599,7 +648,7 @@ namespace OpenWorld
 				}
 				foreach(Gizmo g in removeList) gizmoList.Remove(g);
 
-				if (!Main._Networking.isConnectedToServer)
+				if (!Networking.isConnectedToServer)
 				{
 					__result = gizmoList;
 					return;
@@ -612,30 +661,60 @@ namespace OpenWorld
 					icon = ContentFinder<Texture2D>.Get("UI/Commands/AttackSettlement"),
 					action = delegate
 					{
-						if (!Main._Networking.isConnectedToServer) return;
+						if (!Networking.isConnectedToServer) return;
 
 						Main._ParametersCache.focusedSettlement = __instance;
 						Main._ParametersCache.focusedCaravan = caravan;
-
-						//Main._MPRTSE.SetupRaidParameters();
 
 						Find.WindowStack.Add(new Dialog_MPNotImplemented());
 					}
 				};
 
-				Command_Action command_Visit = new Command_Action
+				Command_Action command_RealtimeAttack = new Command_Action
 				{
-					defaultLabel = "Visit",
-					defaultDesc = "Visit this settlement",
-					icon = ContentFinder<Texture2D>.Get("UI/Commands/Settle"),
+					defaultLabel = "Realtime Attack",
+					defaultDesc = "Attack this settlement realtime",
+					icon = ContentFinder<Texture2D>.Get("UI/Commands/AttackSettlement"),
 					action = delegate
 					{
-						if (!Main._Networking.isConnectedToServer) return;
+						if (!Networking.isConnectedToServer) return;
 
 						Main._ParametersCache.focusedSettlement = __instance;
 						Main._ParametersCache.focusedCaravan = caravan;
 
 						Find.WindowStack.Add(new Dialog_MPNotImplemented());
+					}
+				};
+
+				Command_Action command_RealtimeVisit = new Command_Action
+				{
+					defaultLabel = "Realtime Visit",
+					defaultDesc = "Visit this settlement realtime",
+					icon = ContentFinder<Texture2D>.Get("UI/Commands/Settle"),
+					action = delegate
+					{
+						if (!Networking.isConnectedToServer) return;
+
+						Main._ParametersCache.focusedSettlement = __instance;
+						Main._ParametersCache.focusedCaravan = caravan;
+
+						Find.WindowStack.Add(new Dialog_MPNotImplemented());
+					}
+				};
+
+				Command_Action command_Faction = new Command_Action
+				{
+					defaultLabel = "Faction Menu",
+					defaultDesc = "Open the faction menu",
+					icon = ContentFinder<Texture2D>.Get("UI/Icons/VisitorsHelp"),
+					action = delegate
+					{
+						if (!Networking.isConnectedToServer) return;
+
+						Main._ParametersCache.focusedSettlement = __instance;
+						Main._ParametersCache.focusedCaravan = caravan;
+
+						Find.WindowStack.Add(new Dialog_MPFactionOnPlayer());
 					}
 				};
 
@@ -646,7 +725,7 @@ namespace OpenWorld
 					icon = ContentFinder<Texture2D>.Get("UI/Commands/ShowMap"),
 					action = delegate
 					{
-						if (!Main._Networking.isConnectedToServer) return;
+						if (!Networking.isConnectedToServer) return;
 
 						Main._ParametersCache.focusedSettlement = __instance;
 						Main._ParametersCache.focusedCaravan = caravan;
@@ -662,12 +741,13 @@ namespace OpenWorld
 					icon = ContentFinder<Texture2D>.Get("UI/Commands/Trade"),
 					action = delegate
 					{
-						if (!Main._Networking.isConnectedToServer) return;
+						if (!Networking.isConnectedToServer) return;
 
 						Main._ParametersCache.focusedSettlement = __instance;
 						Main._ParametersCache.focusedCaravan = caravan;
 
-						Find.WindowStack.Add(new Dialog_MPTrade());
+						if (RimworldHandler.CheckIfAnySocialPawn(0)) Find.WindowStack.Add(new Dialog_MPTrade());
+						else Find.WindowStack.Add(new Dialog_MPNoSocialSkill());
 					}
 				};
 
@@ -678,13 +758,13 @@ namespace OpenWorld
 					icon = ContentFinder<Texture2D>.Get("UI/Commands/FulfillTradeRequest"),
 					action = delegate
 					{
-						if (!Main._Networking.isConnectedToServer) return;
+						if (!Networking.isConnectedToServer) return;
 
 						Main._ParametersCache.focusedSettlement = __instance;
 						Main._ParametersCache.focusedCaravan = caravan;
 
-						//Main._Injections.OpenDialogs(3);
-						Find.WindowStack.Add(new Dialog_MPBarter(false, null));
+						if (RimworldHandler.CheckIfAnySocialPawn(0)) Find.WindowStack.Add(new Dialog_MPBarter(false, null));
+						else Find.WindowStack.Add(new Dialog_MPNoSocialSkill());
 					}
 				};
 
@@ -695,12 +775,13 @@ namespace OpenWorld
 					icon = ContentFinder<Texture2D>.Get("UI/Commands/OfferGifts"),
 					action = delegate
 					{
-						if (!Main._Networking.isConnectedToServer) return;
+						if (!Networking.isConnectedToServer) return;
 
 						Main._ParametersCache.focusedSettlement = __instance;
 						Main._ParametersCache.focusedCaravan = caravan;
 
-						Find.WindowStack.Add(new Dialog_MPGift());
+						if (RimworldHandler.CheckIfAnySocialPawn(0)) Find.WindowStack.Add(new Dialog_MPGift());
+						else Find.WindowStack.Add(new Dialog_MPNoSocialSkill());
 					}
 				};
 
@@ -711,7 +792,7 @@ namespace OpenWorld
 					icon = ContentFinder<Texture2D>.Get("UI/Commands/CallAid"),
 					action = delegate
 					{
-						if (!Main._Networking.isConnectedToServer) return;
+						if (!Networking.isConnectedToServer) return;
 
 						Main._ParametersCache.focusedSettlement = __instance;
 						Main._ParametersCache.focusedCaravan = caravan;
@@ -721,12 +802,18 @@ namespace OpenWorld
 				};
 
 				gizmoList.Add(command_Attack);
-				gizmoList.Add(command_Visit);
+				gizmoList.Add(command_RealtimeAttack);
+				gizmoList.Add(command_RealtimeVisit);
 				gizmoList.Add(command_Spy);
 				gizmoList.Add(command_Trade);
 				gizmoList.Add(command_Barter);
 				gizmoList.Add(command_Gift);
 				gizmoList.Add(command_InvokeEvent);
+
+				if (Main._ParametersCache.hasFaction == true)
+                {
+					gizmoList.Add(command_Faction);
+                }
 
 				__result = gizmoList;
 			}
@@ -742,7 +829,7 @@ namespace OpenWorld
 		[HarmonyPostfix]
 		public static void SetGizmos(ref IEnumerable<FloatMenuOption> __result, Caravan caravan, Settlement __instance)
 		{
-			if (__instance.Faction == Main._ParametersCache.faction)
+			if (Main._ParametersCache.allFactions.Contains(__instance.Faction))
 			{
 				var gizmoList = __result.ToList();
 				gizmoList.Clear();
@@ -762,6 +849,116 @@ namespace OpenWorld
 		}
 	}
 
+	//Get All World Map Gizmos For Online Settlements
+	[HarmonyPatch(typeof(Site), "GetFloatMenuOptions")]
+	public static class SetSiteFloatingOptions
+	{
+		[HarmonyPostfix]
+		public static void SetFloatingOptions(Site __instance, ref IEnumerable<FloatMenuOption> __result)
+		{
+			if (Main._ParametersCache.allFactions.Contains(__instance.Faction))
+			{
+				var gizmoList = __result.ToList();
+				gizmoList.Clear();
+
+				__result = gizmoList;
+				return;
+			}
+		}
+	}
+
+	//Get All World Map Gizmos For Globe
+	[HarmonyPatch(typeof(Caravan), "GetGizmos")]
+	public static class SetGlobeGizmos
+	{
+		[HarmonyPostfix]
+		public static void SetGizmos(ref IEnumerable<Gizmo> __result, Caravan __instance)
+		{
+			if (Networking.isConnectedToServer && Main._ParametersCache.hasFaction)
+			{
+				List<WorldObject> worldObjects = Find.WorldObjects.AllWorldObjects;
+
+				WorldObject objectToFind = worldObjects.Find(fetch => fetch.Tile == __instance.Tile && fetch != __instance);
+
+				List<Gizmo> gizmoList = __result.ToList();
+
+				if (objectToFind != null)
+                {
+					if (objectToFind.def != WorldObjectDefOf.Site) return;
+					else
+                    {
+						Command_Action Command_AttackSite = new Command_Action
+						{
+							defaultLabel = "Attack site",
+							defaultDesc = "Attack this site",
+							icon = ContentFinder<Texture2D>.Get("UI/Commands/AttackSettlement"),
+							action = delegate
+							{
+								Main._ParametersCache.focusedTile = objectToFind.Tile;
+								Find.WindowStack.Add(new Dialog_MPNotImplemented());
+							}
+						};
+
+						Command_Action Command_AccessSite = new Command_Action
+						{
+							defaultLabel = "Access Site",
+							defaultDesc = "Access this site",
+							icon = ContentFinder<Texture2D>.Get("UI/Commands/Install"),
+							action = delegate
+							{
+								int siteType = 0;
+								foreach(KeyValuePair<int, List<int>> pair in Main._ParametersCache.allFactionStructures)
+                                {
+									if (pair.Key == objectToFind.Tile) siteType = pair.Value[0];
+                                }
+
+								Main._ParametersCache.focusedTile = objectToFind.Tile;
+								Main._ParametersCache.focusedCaravan = __instance;
+								Find.WindowStack.Add(new Dialog_MPFactionSiteBuilt(siteType));
+							}
+						};
+
+						Command_Action Command_DemolishSite = new Command_Action
+						{
+							defaultLabel = "Demolish Site",
+							defaultDesc = "Demolish this site",
+							icon = ContentFinder<Texture2D>.Get("UI/Commands/AbandonHome"),
+							action = delegate
+							{
+								Main._ParametersCache.focusedTile = objectToFind.Tile;
+								Find.WindowStack.Add(new Dialog_MPFactionSiteDemolish());
+							}
+						};
+
+						gizmoList.Add(Command_AttackSite);
+						if (objectToFind.Faction == Main._ParametersCache.onlineAllyFaction) gizmoList.Add(Command_AccessSite);
+						if (objectToFind.Faction == Main._ParametersCache.onlineAllyFaction) gizmoList.Add(Command_DemolishSite);
+						__result = gizmoList;
+						return;
+					}
+                }
+
+				Command_Action Command_BuildOnlineSite = new Command_Action
+				{
+					defaultLabel = "Build Faction Site",
+					defaultDesc = "Build an utility site for your faction",
+					icon = ContentFinder<Texture2D>.Get("UI/Commands/Install"),
+					action = delegate
+					{
+						Main._ParametersCache.focusedTile = __instance.Tile;
+						Main._ParametersCache.focusedCaravan = __instance;
+						Find.WindowStack.Add(new Dialog_MPFactionSiteBuilding());
+					}
+				};
+
+				gizmoList.Add(Command_BuildOnlineSite);
+				__result = gizmoList;
+			}
+
+			else return;
+		}
+	}
+
 	//Add Find Button To Planet View
 	[HarmonyPatch(typeof(WorldInspectPane), "SetInitialSizeAndPosition")]
 	public static class AddFindButton
@@ -769,14 +966,18 @@ namespace OpenWorld
 		[HarmonyPrefix]
 		public static bool AddButton(ref WITab[] ___TileTabs)
         {
-			if (___TileTabs.Count() == 3) return true;
+			if (___TileTabs.Count() == 4) return true;
 
-			___TileTabs = new WITab[3]
+			if (Networking.isConnectedToServer)
 			{
-				new MP_WITabFind(),
-				new WITab_Terrain(),
-				new WITab_Planet()
-			};
+				___TileTabs = new WITab[4]
+				{
+					new MP_WITabOnlinePlayers(),
+					new MP_WITabSettlementList(),
+					new WITab_Terrain(),
+					new WITab_Planet()
+				};
+			}
 
 			return true;
         }

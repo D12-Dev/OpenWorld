@@ -53,7 +53,7 @@ namespace OpenWorld
 
         public void SendMessage()
         {
-            string message = DateTime.Now.ToString("h:mm tt") + " | " + "[" + Main._Networking.username + "]" + ": " + cacheInputText;
+            string message = DateTime.Now.ToString("h:mm tt") + " | " + "[" + Networking.username + "]" + ": " + cacheInputText;
 
             if (cacheInputText.StartsWith("/"))
             {
@@ -83,9 +83,9 @@ namespace OpenWorld
                 }
                 else if (command == "Ping" || command == "ping")
                 {
-                    Main._Networking.SendData("│Ping│");
+                    Networking.SendData("│Ping│");
 
-                    if (!Main._Networking.isConnectedToServer) Find.WindowStack.Add(new Dialog_MPDisconnected());
+                    if (!Networking.isConnectedToServer) Find.WindowStack.Add(new Dialog_MPDisconnected());
                     else text = "Pong!";
                 }
                 else
@@ -120,7 +120,7 @@ namespace OpenWorld
 
                 Main._MPChat.cacheChatText.Insert(0, message);
 
-                Main._Networking.SendData("ChatMessage│" + Main._Networking.username + "│" + cacheInputText);
+                Networking.SendData("ChatMessage│" + Networking.username + "│" + cacheInputText);
 
                 cacheInputText = "";
             }

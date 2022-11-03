@@ -4,10 +4,12 @@ using System.Linq;
 
 namespace OpenWorld
 {
-    public class Encryption
+    public static class Encryption
     {
-        public string EncryptString(string stuff)
+        public static string EncryptString(string stuff)
         {
+            if (string.IsNullOrWhiteSpace(stuff)) return null;
+
             string encryptedStuff = "";
 
             foreach (char ch in stuff)
@@ -21,8 +23,10 @@ namespace OpenWorld
             return encryptedStuff;
         }
 
-        public string DecryptString(string stuff)
+        public static string DecryptString(string stuff)
         {
+            if (string.IsNullOrWhiteSpace(stuff)) return null;
+
             List<string> encryptedList = stuff.Split(':').ToList();
 
             string decryptedStuff = "";

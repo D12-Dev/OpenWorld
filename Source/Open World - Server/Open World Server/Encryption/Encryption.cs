@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Open_World_Server
+namespace OpenWorldServer
 {
-    public class Encryption
+    public static class Encryption
     {
-        public string EncryptString(string stuff)
+        public static string EncryptString(string stuff)
         {
+            if (string.IsNullOrEmpty(stuff)) return null;
+
             string encryptedStuff = "";
 
             foreach (char ch in stuff)
@@ -21,8 +23,10 @@ namespace Open_World_Server
             return encryptedStuff;
         }
 
-        public string DecryptString(string stuff)
+        public static string DecryptString(string stuff)
         {
+            if (string.IsNullOrEmpty(stuff)) return null;
+
             List<string> encryptedList = stuff.Split(':').ToList();
 
             string decryptedStuff = "";

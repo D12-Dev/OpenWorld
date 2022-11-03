@@ -17,7 +17,7 @@
     <DebugSymbols>false</DebugSymbols>
     <DebugType>none</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>C:\Program Files %28x86%29\Steam\steamapps\common\RimWorld\Mods\Open World\1.3\Assemblies\</OutputPath>
+    <OutputPath>..\..\..\..\..\..\Videogames\Steam\steamapps\common\RimWorld\Mods\Open World\1.4\Assemblies\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -25,7 +25,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>C:\Program Files %28x86%29\Steam\steamapps\common\RimWorld\Mods\Open World\1.3\Assemblies\</OutputPath>
+    <OutputPath>..\..\..\..\..\..\Videogames\Steam\steamapps\common\RimWorld\Mods\Open World\1.4\Assemblies\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -42,15 +42,15 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony">
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\2009463077\Current\Assemblies\0Harmony.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Videogames\Steam\steamapps\workshop\content\294100\2009463077\Current\Assemblies\0Harmony.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp">
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Videogames\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="HugsLib">
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\workshop\content\294100\818773962\v1.3\Assemblies\HugsLib.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Videogames\Steam\steamapps\workshop\content\294100\818773962\Assemblies\HugsLib.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -63,19 +63,19 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="UnityEngine">
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Videogames\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Videogames\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.IMGUIModule">
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Videogames\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.TextRenderingModule">
-      <HintPath>C:\Program Files (x86)\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Videogames\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
@@ -84,56 +84,89 @@
     <Compile Include="Categories\MPChat.cs" />
     <Compile Include="Categories\MPGame.cs" />
     <Compile Include="Categories\MPWorld.cs" />
-    <Compile Include="Dialogs\Dialog_MPModifiedMods.cs" />
-    <Compile Include="Dialogs\Dialog_MPDisabledChat.cs" />
-    <Compile Include="Dialogs\Dialog_MPUnavailableURL.cs" />
-    <Compile Include="Dialogs\Dialog_MPMissingLogin.cs" />
-    <Compile Include="Dialogs\Dialog_MPServerDescription.cs" />
-    <Compile Include="Dialogs\Dialog_MPServerList.cs" />
-    <Compile Include="Dialogs\Dialog_MPBarter.cs" />
-    <Compile Include="Dialogs\Dialog_MPConfirmBarter.cs" />
-    <Compile Include="Dialogs\Dialog_MPBarterRequest.cs" />
-    <Compile Include="Dialogs\Dialog_MPWrongVersion.cs" />
-    <Compile Include="Dialogs\Dialog_MPSpyResult.cs" />
-    <Compile Include="Dialogs\Dialog_MPSpy.cs" />
-    <Compile Include="Dialogs\Dialog_MPConfig.cs" />
-    <Compile Include="Dialogs\Dialog_MPDemote.cs" />
-    <Compile Include="Dialogs\Dialog_MPWhitelisted.cs" />
-    <Compile Include="Dialogs\Dialog_MPPromote.cs" />
-    <Compile Include="Dialogs\Dialog_MPServerFull.cs" />
-    <Compile Include="Dialogs\Dialog_MPBanned.cs" />
-    <Compile Include="Dialogs\Dialog_MPGiftRequest.cs" />
-    <Compile Include="Dialogs\Dialog_MPTradeRequest.cs" />
-    <Compile Include="Dialogs\Dialog_MPAddListing.cs" />
-    <Compile Include="Dialogs\Dialog_MPConfirmTrade.cs" />
-    <Compile Include="Dialogs\Dialog_MPConfirmGift.cs" />
-    <Compile Include="Dialogs\Dialog_MPRejectedTrade.cs" />
-    <Compile Include="Dialogs\Dialog_MPGift.cs" />
-    <Compile Include="Dialogs\Dialog_MPDisconnected.cs" />
-    <Compile Include="Dialogs\Dialog_MPMarket.cs" />
-    <Compile Include="Dialogs\Dialog_MPNoFunds.cs" />
-    <Compile Include="Dialogs\Dialog_MPPlayerNotConnected.cs" />
-    <Compile Include="Dialogs\Dialog_MPConfirmEvent.cs" />
-    <Compile Include="Dialogs\Dialog_MPBlackMarket.cs" />
-    <Compile Include="Dialogs\Dialog_MPNotImplemented.cs" />
-    <Compile Include="Dialogs\Dialog_MPTrade.cs" />
-    <Compile Include="Dialogs\Dialog_MPWaiting.cs" />
-    <Compile Include="Dialogs\Dialog_MPWrongMods.cs" />
-    <Compile Include="Dialogs\Dialog_MPTimeout.cs" />
-    <Compile Include="Dialogs\Dialog_MPWrongUserPassword.cs" />
+    <Compile Include="Dialogs\Factions\Dialog_MPFactionProductionProductChanged.cs" />
+    <Compile Include="Dialogs\Factions\Dialog_MPFactionInvite.cs" />
+    <Compile Include="Dialogs\Factions\Dialog_MPFactionStructureLimit.cs" />
+    <Compile Include="Dialogs\Factions\Dialog_MPFactionSiteBuild.cs" />
+    <Compile Include="Dialogs\Factions\Dialog_MPFactionSiteBuilt.cs" />
+    <Compile Include="Dialogs\Factions\Dialog_MPFactionSiteDemolish.cs" />
+    <Compile Include="Dialogs\Factions\Dialog_MPFactionSiteBuilding.cs" />
+    <Compile Include="Dialogs\Factions\Dialog_MPFactionSiloDeposit.cs" />
+    <Compile Include="Dialogs\Factions\Dialog_MPConfirmDeposit.cs" />
+    <Compile Include="Dialogs\Online\Dialog_MPMissingSave.cs" />
+    <Compile Include="Dialogs\Factions\Dialog_MPFactionPromote.cs" />
+    <Compile Include="Dialogs\Factions\Dialog_MPFactionDemote.cs" />
+    <Compile Include="Dialogs\Factions\Dialog_MPFactionNoPower.cs" />
+    <Compile Include="Dialogs\Factions\Dialog_MPFactionNotInFaction.cs" />
+    <Compile Include="Dialogs\Factions\Dialog_MPFactionAlreadyInFaction.cs" />
+    <Compile Include="Dialogs\Factions\Dialog_MPFactionRecruit.cs" />
+    <Compile Include="Dialogs\Factions\Dialog_MPFactionKick.cs" />
+    <Compile Include="Dialogs\Factions\Dialog_MPFactionOnPlayer.cs" />
+    <Compile Include="Dialogs\Factions\Dialog_MPFactionLeave.cs" />
+    <Compile Include="Dialogs\Factions\Dialog_MPFactionDisband.cs" />
+    <Compile Include="Dialogs\Factions\Dialog_MPFactionNameInUse.cs" />
+    <Compile Include="Dialogs\Factions\Dialog_MPFactionCreated.cs" />
+    <Compile Include="Dialogs\Factions\Dialog_MPFactionMenu.cs" />
+    <Compile Include="Dialogs\Online\Dialog_MPMultiplayerType.cs" />
+    <Compile Include="Dialogs\Disconnects\Dialog_MPModifiedMods.cs" />
+    <Compile Include="Dialogs\Online\Dialog_MPDisabledChat.cs" />
+    <Compile Include="Dialogs\Online\Dialog_MPNoSocialSkill.cs" />
+    <Compile Include="Dialogs\Online\Dialog_MPUnavailableURL.cs" />
+    <Compile Include="Dialogs\Disconnects\Dialog_MPMissingLogin.cs" />
+    <Compile Include="Dialogs\Online\Dialog_MPServerDescription.cs" />
+    <Compile Include="Dialogs\Online\Dialog_MPServerList.cs" />
+    <Compile Include="Dialogs\Barter\Dialog_MPBarter.cs" />
+    <Compile Include="Dialogs\Barter\Dialog_MPConfirmBarter.cs" />
+    <Compile Include="Dialogs\Barter\Dialog_MPBarterRequest.cs" />
+    <Compile Include="Dialogs\Disconnects\Dialog_MPWrongVersion.cs" />
+    <Compile Include="Dialogs\Spy\Dialog_MPSpyResult.cs" />
+    <Compile Include="Dialogs\Spy\Dialog_MPSpy.cs" />
+    <Compile Include="Dialogs\Online\Dialog_MPConfig.cs" />
+    <Compile Include="Dialogs\Online\Dialog_MPDemote.cs" />
+    <Compile Include="Dialogs\Disconnects\Dialog_MPWhitelisted.cs" />
+    <Compile Include="Dialogs\Online\Dialog_MPPromote.cs" />
+    <Compile Include="Dialogs\Disconnects\Dialog_MPServerFull.cs" />
+    <Compile Include="Dialogs\Disconnects\Dialog_MPBanned.cs" />
+    <Compile Include="Dialogs\Gift\Dialog_MPGiftRequest.cs" />
+    <Compile Include="Dialogs\Trade\Dialog_MPTradeRequest.cs" />
+    <Compile Include="Dialogs\Trade\Dialog_MPConfirmTrade.cs" />
+    <Compile Include="Dialogs\Gift\Dialog_MPConfirmGift.cs" />
+    <Compile Include="Dialogs\Trade\Dialog_MPRejectedTrade.cs" />
+    <Compile Include="Dialogs\Gift\Dialog_MPGift.cs" />
+    <Compile Include="Dialogs\Disconnects\Dialog_MPDisconnected.cs" />
+    <Compile Include="Dialogs\Trade\Dialog_MPNoFunds.cs" />
+    <Compile Include="Dialogs\Online\Dialog_MPPlayerNotConnected.cs" />
+    <Compile Include="Dialogs\Black Market\Dialog_MPConfirmEvent.cs" />
+    <Compile Include="Dialogs\Black Market\Dialog_MPBlackMarket.cs" />
+    <Compile Include="Dialogs\Online\Dialog_MPNotImplemented.cs" />
+    <Compile Include="Dialogs\Trade\Dialog_MPTrade.cs" />
+    <Compile Include="Dialogs\Online\Dialog_MPWaiting.cs" />
+    <Compile Include="Dialogs\Disconnects\Dialog_MPWrongMods.cs" />
+    <Compile Include="Dialogs\Disconnects\Dialog_MPTimeout.cs" />
+    <Compile Include="Dialogs\Disconnects\Dialog_MPWrongUserPassword.cs" />
     <Compile Include="Encryption.cs" />
+    <Compile Include="Handler\FactionHandler.cs" />
+    <Compile Include="Handler\BarterHandler.cs" />
+    <Compile Include="Handler\GiftHandler.cs" />
+    <Compile Include="Handler\ProductionSiteHandler.cs" />
+    <Compile Include="Handler\RimworldHandler.cs" />
+    <Compile Include="Handler\SiloHandler.cs" />
+    <Compile Include="Handler\TradeHandler.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="ModStuff.cs" />
     <Compile Include="ModConfigs.cs" />
+    <Compile Include="Networking\NetworkingHandler.cs" />
     <Compile Include="Save System\SaveDataHolder.cs" />
     <Compile Include="Save System\SaveSystem.cs" />
+    <Compile Include="Handler\SettlementHandler.cs" />
     <Compile Include="Tabs\MP_MainTabWindow_Online.cs" />
-    <Compile Include="Tabs\MP_WITabFind.cs" />
-    <Compile Include="Networking.cs" />
+    <Compile Include="Tabs\MP_WITabOnlinePlayers.cs" />
+    <Compile Include="Tabs\MP_WITabSettlementList.cs" />
+    <Compile Include="Networking\Networking.cs" />
     <Compile Include="ParametersCache.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Injections\Injections.cs" />
-    <Compile Include="Dialogs\Dialog_MPParameters.cs" />
+    <Compile Include="Dialogs\Online\Dialog_MPParameters.cs" />
     <Compile Include="Threading.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

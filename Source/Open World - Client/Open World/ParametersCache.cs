@@ -2,19 +2,97 @@
 using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Verse;
 
 namespace OpenWorld
 {
     public class ParametersCache
     {
-        //GENERAL PURPOSE GOES HERE
-        public string gameSavePath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData).Replace("Roaming", "LocalLow") + "Ludeon Studios/RimWorld by Ludeon Studios/Saves" + "\\";
+        //Planet Parameters
+        public float globalCoverage;
+        public string seed;
+        public int rainfall;
+        public int temperature;
+        public int population;
+
+        //Server Parameters
+        public int roadMode = 0;
+        public int chatMode = 0;
+        public int modVerificationMode = 0;
+        public int profanityMode = 0;
+        public int enforcedDifficultyMode = 0;
+
+        //Player Flags
         public bool pvpFlag;
         public bool offlinePvpFlag;
         public bool visitFlag;
         public bool secretFlag;
         public bool spyWarnFlag;
+        public bool hasLoadedCorrectly;
+
+        //Planet Factions
+        public List<Faction> allFactions = new List<Faction>();
+        public Faction onlineNeutralFaction;
+        public Faction onlineAllyFaction;
+        public Faction onlineEnemyFaction;
+
+        public Dictionary<int, List<int>> allFactionStructures = new Dictionary<int, List<int>>();
+
+        //Faction Silo
+        public Dictionary<int, List<string>> siloContents = new Dictionary<int, List<string>>();
+        public bool canWithdrawSilo;
+
+        //Online Player Faction
+        public bool hasFaction;
+        public string factionName;
+        public Dictionary<string, int> factionMembers = new Dictionary<string, int>();
+
+        //Online Settlements Lists
+        public Dictionary<int, List<string>> allSettlements = new Dictionary<int, List<string>>();
+        public Dictionary<int, List<string>> onlineNeutralSettlements = new Dictionary<int, List<string>>();
+        public Dictionary<int, List<string>> onlineAllySettlements = new Dictionary<int, List<string>>();
+        public Dictionary<int, List<string>> onlineEnemySettlements = new Dictionary<int, List<string>>();
+
+        //Online Players
+        public List<string> playerList = new List<string>();
+        public int playerCount = 0;
+
+        //Item Transfer Caches
+        public Dialog_MPGift __MPGift;
+        public Dialog_MPTrade __MPTrade;
+        public Dialog_MPBarter __MPBarter;
+        public Dialog_MPFactionSiloDeposit __MPSiloDeposit;
+
+        public string giftedItemsString = "";
+        public string tradedItemString = "";
+        public string barteredItemString = "";
+        public string depositItemsString = "";
+
+        public List<Tradeable> listToShowInGiftMenu = new List<Tradeable>();
+        public List<Tradeable> listToShowInTradeMenu = new List<Tradeable>();
+        public List<Tradeable> listToShowInBarterMenu = new List<Tradeable>();
+        public List<Tradeable> listToShowInSiloMenu = new List<Tradeable>();
+
+        //Trade References
+        public Dialog_MPWaiting __MPWaiting;
+        public string wantedSilver;
+        public bool inTrade;
+
+        //Barter References
+        public Dialog_MPBarterRequest __MPBarterRequest;
+        public List<string> cachedItems;
+        public bool awaitingRebarter;
+
+        //Black Market References
+        public Dialog_MPBlackMarket __MPBlackMarket;
+        public string blackEventType;
+
+        //Production Site References
+        public int productionSiteProduct = 0;
+
+        //General Purpose
+        public string gameSavePath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData).Replace("Roaming", "LocalLow") + Path.DirectorySeparatorChar + "Ludeon Studios" + Path.DirectorySeparatorChar + "RimWorld by Ludeon Studios" + Path.DirectorySeparatorChar + "Saves";
         public Dialog_MPDisconnected __MPDisconnected;
 
         //Dialog_MPParameters
@@ -28,49 +106,11 @@ namespace OpenWorld
         public string modIdentifier = "OpenWorld";
         public string connectedServerIdentifier = "";
         public bool isLoadingExistingGame = false;
+        public bool isGeneratingNewOnlineGame = false;
         public bool isPlayingOnline = false;
         public bool isAdmin = false;
-        public int roadMode = 0;
-        public int chatMode = 0;
-        public int modVerificationMode = 0;
-        public int profanityMode = 0;
-        public int connectedPlayers = 0;
-        public Faction faction;
-        public Dictionary<string, List<string>> onlineSettlements = new Dictionary<string, List<string>>();
 
-        //Dialog_MPBlackMarket
-        public Dialog_MPBlackMarket __MPBlackMarket;
-        public string blackEventType;
-        public int silverAmount;
-
-        //Dialog_MPGift
-        public List<Tradeable> listToShowInGiftMenu = new List<Tradeable>();
-        public Dialog_MPGift __MPGift;
-        public string giftedItemsString;
-
-        //Dialog_MPMarket
-        public Dialog_MPMarket __MPMarket;
-        public Dictionary<int, List<string>> buyListings = new Dictionary<int, List<string>>();
-        public Dictionary<int, List<string>> sellListings = new Dictionary<int, List<string>>();
-        public Dictionary<int, List<string>> yourListings = new Dictionary<int, List<string>>();
-
-        //Dialog_MPTrade
-        public Dialog_MPTrade __MPTrade;
-        public Dialog_MPWaiting __MPWaiting;
-        public string tradedItemString;
-        public string wantedSilver;
-        public bool inTrade;
-
-        //Dialog_MPBarter
-        public Dialog_MPBarter __MPBarter;
-        public Dialog_MPBarterRequest __MPBarterRequest;
-        public string[] cachedItems;
-        public bool awaitingRebarter;
-
-        //Dialog_MPServerList
-        public Dialog_MPServerList __MPServerList;
-
-        //MPGame
+        //Letters
         public string letterTitle;
         public string letterDescription;
         public LetterDef letterType;
@@ -78,20 +118,12 @@ namespace OpenWorld
         //Injections
         public Settlement focusedSettlement;
         public Caravan focusedCaravan;
+        public int focusedTile;
         public SoundDef soundToUse;
         public string forcedEvent;
-        public string addSettlementData;
-        public string removeSettlementData;
         public string receiveGiftsData;
         public string serverStatusString;
-        public string transferMode;
-        public string versionCode = "6G";
-
-        //RTS
-        public bool isInRTS;
-        public string rtsBuffer = "";
-        public string rtsGenerationData = "";
-        public List<Pawn> playerPawnData = new List<Pawn>();
-        public List<Pawn> enemyPawnData = new List<Pawn>();
+        public int transferMode;
+        public string versionCode = "Faction Warfare";
     }
 }
