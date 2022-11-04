@@ -131,16 +131,16 @@ namespace OpenWorldServer
 
         public static void CheckAllAvailablePlayers(bool newLine)
         {
-            if (newLine) Console.WriteLine("");
+            if (newLine) ConsoleUtils.LogToConsole("");;
 
             Console.ForegroundColor = ConsoleColor.Green;
-            ConsoleUtils.LogToConsole("Players Check:");
+            ConsoleUtils.LogToConsole("Players Check", ConsoleUtils.ConsoleLogMode.Heading);
             Console.ForegroundColor = ConsoleColor.White;
 
             CheckSavedPlayers();
             CheckForBannedPlayers();
             CheckForWhitelistedPlayers();
-            Console.WriteLine("");
+            ConsoleUtils.LogToConsole("");;
         }
 
         private static void CheckSavedPlayers()

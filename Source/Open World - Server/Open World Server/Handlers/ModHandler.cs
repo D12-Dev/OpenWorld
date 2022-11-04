@@ -10,7 +10,7 @@ namespace OpenWorldServer
     {
         public static void CheckMods(bool newLine)
         {
-            if (newLine) Console.WriteLine("");
+            if (newLine) ConsoleUtils.LogToConsole("");;
 
             Console.ForegroundColor = ConsoleColor.Green;
             ConsoleUtils.LogToConsole("Mods Check:");

@@ -15,10 +15,10 @@ namespace OpenWorldServer
 
         public static void CheckFactions(bool newLine)
         {
-            if (newLine) Console.WriteLine("");
+            if (newLine) ConsoleUtils.LogToConsole("");;
 
             Console.ForegroundColor = ConsoleColor.Green;
-            ConsoleUtils.LogToConsole("Factions Check:");
+            ConsoleUtils.LogToConsole("Factions Check", ConsoleUtils.ConsoleLogMode.Heading);
             Console.ForegroundColor = ConsoleColor.White;
 
             if (!Directory.Exists(Server.factionsFolderPath))
@@ -100,7 +100,7 @@ namespace OpenWorldServer
                     if (factionToLoad.members.Count == 0)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        ConsoleUtils.WriteWithTime("Faction Had 0 Members, Removing");
+                        ConsoleUtils.LogToConsole("Faction Had 0 Members, Removing");
                         Console.ForegroundColor = ConsoleColor.White;
 
                         DisbandFaction(factionToLoad);

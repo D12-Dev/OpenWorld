@@ -35,7 +35,7 @@ namespace OpenWorldServer
             Server.whitelistedUsersPath = Server.mainFolderPath + Path.DirectorySeparatorChar + "Whitelisted Players.txt";
 
             Console.ForegroundColor = ConsoleColor.Green;
-            ConsoleUtils.LogToConsole("Server Startup:");
+            ConsoleUtils.LogToConsole("Server Startup", ConsoleUtils.ConsoleLogMode.Heading);
             Console.ForegroundColor = ConsoleColor.White;
 
             ConsoleUtils.LogToConsole("Base Directory At: [" + Server.mainFolderPath + "]");
@@ -43,9 +43,8 @@ namespace OpenWorldServer
 
         public static void CheckServerVersion()
         {
-            Console.WriteLine("");
             Console.ForegroundColor = ConsoleColor.Green;
-            ConsoleUtils.LogToConsole("Server Version Check:");
+            ConsoleUtils.LogToConsole("Server Version Check", ConsoleUtils.ConsoleLogMode.Heading);
             Console.ForegroundColor = ConsoleColor.White;
 
             string latestVersion = "";
@@ -73,7 +72,6 @@ namespace OpenWorldServer
 
         public static void CheckClientVersionRequirement()
         {
-            Console.WriteLine("");
             Console.ForegroundColor = ConsoleColor.Green;
             ConsoleUtils.LogToConsole("Client Version Check:");
             Console.ForegroundColor = ConsoleColor.White;
@@ -103,9 +101,8 @@ namespace OpenWorldServer
 
         public static void CheckSettingsFile()
         {
-            Console.WriteLine("");
             Console.ForegroundColor = ConsoleColor.Green;
-            ConsoleUtils.LogToConsole("Settings Check:");
+            ConsoleUtils.LogToConsole("Settings Check", ConsoleUtils.ConsoleLogMode.Heading);
             Console.ForegroundColor = ConsoleColor.White;
 
             if (File.Exists(Server.serverSettingsPath))

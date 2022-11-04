@@ -159,7 +159,7 @@ namespace OpenWorldServer
             catch 
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                ConsoleUtils.WriteWithTime("Command Caught Exception");
+                ConsoleUtils.LogToConsole("Command Caught Exception");
                 Console.ForegroundColor = ConsoleColor.White;
             }
         }
