@@ -79,10 +79,10 @@ namespace OpenWorldServer
             ServerUtils.CheckClientVersionRequirement();
             ServerUtils.CheckSettingsFile();
 
-            ModHandler.CheckMods(true);
-            FactionHandler.CheckFactions(true);
+            ModHandler.CheckMods();
+            FactionHandler.CheckFactions();
             WorldHandler.CheckWorldFile();
-            PlayerUtils.CheckAllAvailablePlayers(false);
+            PlayerUtils.CheckAllAvailablePlayers();
 
             Threading.GenerateThreads(0);
 

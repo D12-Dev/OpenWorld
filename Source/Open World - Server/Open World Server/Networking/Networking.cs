@@ -148,7 +148,8 @@ namespace OpenWorldServer
 
         public static void CheckClientsConnection()
         {
-            ConsoleUtils.DisplayNetworkStatus();
+            ConsoleUtils.LogToConsole("Network Check", ConsoleUtils.ConsoleLogMode.Heading);
+            ConsoleUtils.LogToConsole("Server Started\nType 'Help' To See Available Commands\nNetwork Line Started");
 
             while (true)
             {

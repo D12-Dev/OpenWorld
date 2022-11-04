@@ -53,7 +53,7 @@ namespace OpenWorldServer
                     }
                 }
 
-                ConsoleUtils.LogToConsole("Loaded World File", ConsoleUtils.ConsoleLogMode.Info);
+                ConsoleUtils.LogToConsole("Loaded World File");
             }
 
             else

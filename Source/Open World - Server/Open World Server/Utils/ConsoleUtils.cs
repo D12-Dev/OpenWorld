@@ -8,11 +8,7 @@ namespace OpenWorldServer
 {
     public static class ConsoleUtils
     {
-        public static void UpdateTitle()
-        {
-            Console.Title = Server.serverName + " " + Server.serverVersion + " / " + Networking.localAddress.ToString() + " / " + Networking.connectedClients.Count + " Of " + Server.maxPlayers + " Connected Players";
-        }
-
+        public static void UpdateTitle() => Console.Title = $"OpenWorld {Server.serverVersion} - {Server.serverName} | {Networking.localAddress}:{Networking.serverPort} | {Networking.connectedClients.Count} of {Server.maxPlayers} Players";
 
         public enum ConsoleLogMode
         {
@@ -23,7 +19,7 @@ namespace OpenWorldServer
             Warning,
             Error
         }
-        private static Dictionary<ConsoleLogMode, ConsoleColor> ConsoleLogColors = new Dictionary<ConsoleLogMode, ConsoleColor>()
+        private static readonly Dictionary<ConsoleLogMode, ConsoleColor> ConsoleLogColors = new Dictionary<ConsoleLogMode, ConsoleColor>()
         {
             { ConsoleLogMode.Heading, ConsoleColor.White},
             { ConsoleLogMode.Normal, ConsoleColor.Gray},
@@ -40,7 +36,7 @@ namespace OpenWorldServer
                 {
                     lines = lines.Prepend(new string('-', lines.Max(x => x.Length))).Append(new string('-', lines.Max(x => x.Length))).ToArray();
                 }
-                string formattedData = string.Join('\n', lines.Select(x => $"[{DateTime.Now.ToString("HH:mm:ss")}] | {x}"));
+                string formattedData = string.Join('\n', lines.Select(x => $"[{DateTime.Now:HH:mm:ss}] | {x}"));
 
                 // Reset to the left margin to overwrite our "Enter Command>" prompt.
                 Console.SetCursorPosition(0, Console.CursorTop);
@@ -60,7 +56,6 @@ namespace OpenWorldServer
 
                 Console.ForegroundColor = Console.ForegroundColor = ConsoleLogColors[ConsoleLogMode.Normal];
                 Console.Write("Command> ");
-                
             }
         }
 
@@ -76,7 +71,6 @@ namespace OpenWorldServer
             General,
             WarningError
         }
-
         public static void LogToFile(string data, FileLogMode mode = FileLogMode.General)
         {
             // Year-Month-Day is always superior because chronological=alphabetical.
@@ -97,16 +91,13 @@ namespace OpenWorldServer
             };
 
             try { File.AppendAllText(pathToday + Path.DirectorySeparatorChar + files[mode], $"{data}\n"); }
-            catch { }
-        }
-
-        public static void DisplayNetworkStatus()
-        {
-            LogToConsole("Network Check", ConsoleLogMode.Heading);
-
-            LogToConsole("Server Started");
-            LogToConsole("Type 'Help' To See Available Commands");
-            LogToConsole("Network Line Started");
+            catch 
+            { 
+                // This can't use LogToConsole as it will cause an infinite loop, potentially.
+                Console.ForegroundColor = ConsoleColor.Red; 
+                Console.WriteLine($"ERROR WRITING LOG FILE: {pathToday + Path.DirectorySeparatorChar + files[mode]}");
+                Console.ForegroundColor = ConsoleColor.Gray;
+            }
         }
     }
 }
