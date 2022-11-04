@@ -458,12 +458,12 @@ namespace OpenWorld
         {
             if (data == "Disconnect│UserTaken")
             {
-                Find.WindowStack.Add(new OW_ErrorDialog("Username is already in use or password is incorrect"));
+                Find.WindowStack.Add(new OW_ErrorDialog("Username already in use or incorrect password"));
             }
 
             else if (data == "Disconnect│WrongPassword")
             {
-                Find.WindowStack.Add(new OW_ErrorDialog("Username is already in use or password is incorrect"));
+                Find.WindowStack.Add(new OW_ErrorDialog("Username already in use or incorrect password"));
             }
 
             else if (data.StartsWith("Disconnect│WrongMods│"))
@@ -475,7 +475,7 @@ namespace OpenWorld
 
             else if (data == "Disconnect│Version")
             {
-                Find.WindowStack.Add(new OW_ErrorDialog("You are running an outdated or invalid version"));
+                Find.WindowStack.Add(new OW_ErrorDialog("Running an outdated or invalid version"));
             }
 
             else if (data == "Disconnect│Whitelist")

@@ -21,7 +21,6 @@ namespace OpenWorld
 			Find.GameInitData.permadeath = true;
 
 			Main._ParametersCache.isPlayingOnline = true;
-			Main._ParametersCache.isGeneratingNewOnlineGame = false;
 
 			Main._MPGame.DisableDevOptions();
 

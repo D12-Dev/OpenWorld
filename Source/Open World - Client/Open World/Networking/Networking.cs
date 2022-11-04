@@ -227,8 +227,6 @@ namespace OpenWorld
             connection.Dispose();
 
             isConnectedToServer = false;
-
-            Find.WindowStack.Add(new OW_ErrorDialog("Connection timeout, please check and try again"));
         }
     }
 }

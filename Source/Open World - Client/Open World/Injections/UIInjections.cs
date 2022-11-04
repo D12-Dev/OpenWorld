@@ -36,8 +36,8 @@ namespace OpenWorld
 				Vector2 buttonLocation2 = new Vector2(rect.x, rect.y + buttonSize.y + 7.495f);
 				if (Widgets.ButtonText(new Rect(buttonLocation2.x, buttonLocation2.y, buttonSize.x, buttonSize.y), ""))
 				{
-					Main._ParametersCache.isGeneratingNewOnlineGame = false;
 					Main._ParametersCache.isPlayingOnline = false;
+					Main._ParametersCache.isGeneratingNewOnlineGame = false;
 					Find.WindowStack.Add(new Page_SelectScenario());
 				}
 
@@ -66,7 +66,7 @@ namespace OpenWorld
 			public static bool PreInjectToWorldParams(Rect rect, Page_CreateWorldParams __instance)
 			{
 				if (!Main._ParametersCache.isGeneratingNewOnlineGame) return true;
-				if (!(Current.ProgramState == ProgramState.Entry)) return true;
+				if (Current.ProgramState != ProgramState.Entry) return true;
 
 				Vector2 buttonSize = new Vector2(150f, 38f);
 				Vector2 buttonLocation = new Vector2(rect.xMax - buttonSize.x, rect.yMax - buttonSize.y);
@@ -90,7 +90,7 @@ namespace OpenWorld
 			public static void PostInjectToWorldParams(Rect rect)
 			{
 				if (!Main._ParametersCache.isGeneratingNewOnlineGame) return;
-				if (!(Current.ProgramState == ProgramState.Entry)) return;
+				if (Current.ProgramState != ProgramState.Entry) return;
 
 				Vector2 buttonSize = new Vector2(150f, 38f);
 				Vector2 buttonLocation = new Vector2(rect.xMax - buttonSize.x, rect.yMax - buttonSize.y);
@@ -117,6 +117,7 @@ namespace OpenWorld
 			public static bool ModifySaveButton()
 			{
 				if (!Main._ParametersCache.isPlayingOnline) return true;
+				if (Current.ProgramState == ProgramState.Entry) return true;
 
 				Vector2 buttonSize = new Vector2(170f, 45f);
 				if (Widgets.ButtonText(new Rect(0, (buttonSize.y + 7) * 2, buttonSize.x, buttonSize.y), ""))
@@ -185,7 +186,7 @@ namespace OpenWorld
 			{
 				if (___TileTabs.Count() == 4) return true;
 
-				if (Networking.isConnectedToServer)
+				if (Main._ParametersCache.isPlayingOnline)
 				{
 					___TileTabs = new WITab[4]
 					{

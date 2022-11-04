@@ -121,6 +121,9 @@ namespace OpenWorld
         {
 			if (!Main._ParametersCache.isPlayingOnline) return;
 
+			Settlement alreadyGenerated = Find.WorldObjects.Settlements.Find(fetch => Main._ParametersCache.allFactions.Contains(fetch.Faction));
+			if (alreadyGenerated != null) return;
+
 			foreach (FactionDef item in DefDatabase<FactionDef>.AllDefs.OrderBy((FactionDef x) => x.hidden))
 			{
 				if (item.defName == "OnlineNeutral")
