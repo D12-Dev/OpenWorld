@@ -8,13 +8,10 @@ namespace OpenWorldServer
 {
     public static class ModHandler
     {
-        public static void CheckMods(bool newLine)
+        public static void CheckMods()
         {
-            if (newLine) ConsoleUtils.LogToConsole("");;
 
-            Console.ForegroundColor = ConsoleColor.Green;
             ConsoleUtils.LogToConsole("Mods Check", ConsoleUtils.ConsoleLogMode.Heading);
-            Console.ForegroundColor = ConsoleColor.White;
 
             CheckEnforcedMods();
             CheckWhitelistedMods();

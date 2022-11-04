@@ -9,7 +9,6 @@ namespace OpenWorldServer
     {
         public static void CheckWorldFile()
         {
-            ConsoleUtils.LogToConsole("");;
             ConsoleUtils.LogToConsole("World Check", ConsoleUtils.ConsoleLogMode.Heading);
 
             if (File.Exists(Server.worldSettingsPath))
@@ -54,8 +53,7 @@ namespace OpenWorldServer
                     }
                 }
 
-                ConsoleUtils.LogToConsole("Loaded World File");
-                ConsoleUtils.LogToConsole("");;
+                ConsoleUtils.LogToConsole("Loaded World File", ConsoleUtils.ConsoleLogMode.Info);
             }
 
             else

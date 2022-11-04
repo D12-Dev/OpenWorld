@@ -13,10 +13,8 @@ namespace OpenWorldServer
     {
         public enum MemberRank { Member, Moderator, Leader }
 
-        public static void CheckFactions(bool newLine)
+        public static void CheckFactions()
         {
-            if (newLine) ConsoleUtils.LogToConsole("");;
-
             Console.ForegroundColor = ConsoleColor.Green;
             ConsoleUtils.LogToConsole("Factions Check", ConsoleUtils.ConsoleLogMode.Heading);
             Console.ForegroundColor = ConsoleColor.White;
@@ -42,10 +40,12 @@ namespace OpenWorldServer
 
         public static void CreateFaction(string factionName, ServerClient factionLeader)
         {
-            Faction newFaction = new Faction();
-            newFaction.name = factionName;
-            newFaction.wealth = 0;
-            newFaction.members.Add(factionLeader, MemberRank.Leader);
+            Faction newFaction = new Faction()
+            { 
+                name = factionName,
+                wealth = 0,
+                members = new Dictionary<ServerClient, MemberRank>() { { factionLeader, MemberRank.Leader } }
+            };
             SaveFaction(newFaction);
 
             factionLeader.faction = newFaction;

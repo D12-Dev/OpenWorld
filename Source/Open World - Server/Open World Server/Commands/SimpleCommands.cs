@@ -94,11 +94,11 @@ namespace OpenWorldServer
         public static void ReloadCommand()
         {
             Console.Clear();
-            ModHandler.CheckMods(false);
+            ModHandler.CheckMods();
             WorldHandler.CheckWorldFile();
-            FactionHandler.CheckFactions(false);
-            ConsoleUtils.LogToConsole(""); ;
-            PlayerUtils.CheckAllAvailablePlayers(false);
+            FactionHandler.CheckFactions();
+
+            PlayerUtils.CheckAllAvailablePlayers();
         }
 
         public static void StatusCommand()
@@ -171,7 +171,6 @@ namespace OpenWorldServer
             if (Server.whitelistedUsernames.Count == 0) ConsoleUtils.LogToConsole("No Whitelisted Players Found");
             else foreach (string str in Server.whitelistedUsernames) ConsoleUtils.LogToConsole("" + str);
 
-            ConsoleUtils.LogToConsole(""); ;
         }
 
         //Check this one
@@ -259,7 +258,7 @@ namespace OpenWorldServer
                 }
             }
 
-            ConsoleUtils.LogToConsole(""); ;
+
 
             ConsoleUtils.LogToConsole("Saved Players: " + Server.savedClients.Count, ConsoleUtils.ConsoleLogMode.Heading);
 
@@ -345,7 +344,6 @@ namespace OpenWorldServer
 
             ConsoleUtils.LogToConsole("Command [" + command + "] Not Found", ConsoleUtils.ConsoleLogMode.Warning);
 
-            ConsoleUtils.LogToConsole(""); ;
         }
     }
 }
