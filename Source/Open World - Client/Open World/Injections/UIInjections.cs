@@ -29,7 +29,6 @@ namespace OpenWorld
 				if (Widgets.ButtonText(new Rect(buttonLocation.x, buttonLocation.y, buttonSize.x, buttonSize.y), ""))
 				{
 					Find.WindowStack.Add(new Dialog_MPMultiplayerType());
-					Find.WindowStack.Add(new Dialog_MPFactionSiteBuilding());
 					Main._ParametersCache.hasLoadedCorrectly = false;
 				}
 
@@ -126,6 +125,9 @@ namespace OpenWorld
 					{
 						if (Networking.isConnectedToServer) Networking.DisconnectFromServer();
 
+						Main._ParametersCache.isPlayingOnline = false;
+						Main._ParametersCache.isGeneratingNewOnlineGame = false;
+
 						Find.GameInfo.permadeathModeUniqueName = Main._ParametersCache.onlineFileSaveName + " - " + Main._ParametersCache.connectedServerIdentifier + " - " + Main._ParametersCache.usernameText;
 						GameDataSaveLoader.SaveGame(Find.GameInfo.permadeathModeUniqueName);
 						MemoryUtility.ClearAllMapsAndWorld();
@@ -165,6 +167,9 @@ namespace OpenWorld
 				if (Widgets.ButtonText(new Rect(num6, num7, 150f, 38f), "Back".Translate()) || KeyBindingDefOf.Cancel.KeyDownEvent)
 				{
 					if (Networking.isConnectedToServer) Networking.DisconnectFromServer();
+
+					Main._ParametersCache.isPlayingOnline = false;
+					Main._ParametersCache.isGeneratingNewOnlineGame = false;
 
 					if (__instance.prev != null)
 					{
