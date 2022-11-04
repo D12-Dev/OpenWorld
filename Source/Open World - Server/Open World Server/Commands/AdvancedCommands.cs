@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
@@ -15,12 +16,8 @@ namespace OpenWorldServer
 
         public static void SayCommand()
         {
-            if (string.IsNullOrWhiteSpace(commandData))
-            {
-                Console.ForegroundColor = ConsoleColor.Green;
-                ConsoleUtils.LogToConsole("Missing Parameters");
-                ConsoleUtils.LogToConsole("");
-            }
+            if (string.IsNullOrWhiteSpace(commandData)) ConsoleUtils.LogToConsole("Missing Parameters", ConsoleUtils.ConsoleLogMode.Warning);
+            
 
             else
             {
@@ -42,9 +39,7 @@ namespace OpenWorldServer
         {
             if (string.IsNullOrWhiteSpace(commandData))
             {
-                Console.ForegroundColor = ConsoleColor.Green;
-                ConsoleUtils.LogToConsole("Missing Parameters");
-                ConsoleUtils.LogToConsole("");
+                ConsoleUtils.LogToConsole("Missing Parameters", ConsoleUtils.ConsoleLogMode.Warning);
             }
 
             else
@@ -55,9 +50,7 @@ namespace OpenWorldServer
                     Networking.SendData(sc, "Notification│" + commandData);
                 }
 
-                Console.ForegroundColor = ConsoleColor.Green;
-                ConsoleUtils.LogToConsole("Letter Sent To Every Connected Player");
-                ConsoleUtils.LogToConsole("");
+                ConsoleUtils.LogToConsole("Letter Sent To Every Connected Player", ConsoleUtils.ConsoleLogMode.Info);
             }
         }
 
@@ -73,29 +66,21 @@ namespace OpenWorldServer
 
             if (isMissingParameters)
             {
-                Console.ForegroundColor = ConsoleColor.Green;
-                ConsoleUtils.LogToConsole("Missing Parameters");
-                ConsoleUtils.LogToConsole("");
+                ConsoleUtils.LogToConsole("Missing Parameters", ConsoleUtils.ConsoleLogMode.Warning);
             }
 
             else
             {
                 ServerClient targetClient = Networking.connectedClients.Find(fetch => fetch.username == clientID);
 
-                if (targetClient == null)
-                {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    ConsoleUtils.LogToConsole("Player [" + clientID + "] not found");
-                    ConsoleUtils.LogToConsole("");
-                }
+                if (targetClient == null) ConsoleUtils.LogToConsole("Player [" + clientID + "] not found", ConsoleUtils.ConsoleLogMode.Info);
+                
 
                 else
                 {
                     Networking.SendData(targetClient, "Notification│" + text);
 
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    ConsoleUtils.LogToConsole("Sent Letter To [" + targetClient.username + "]");
-                    ConsoleUtils.LogToConsole("");
+                    ConsoleUtils.LogToConsole("Sent Letter To [" + targetClient.username + "]", ConsoleUtils.ConsoleLogMode.Info);
                 }
             }
         }
@@ -120,10 +105,8 @@ namespace OpenWorldServer
 
             if (isMissingParameters)
             {
-                Console.ForegroundColor = ConsoleColor.Green;
-                ConsoleUtils.LogToConsole("Missing Parameters");
+                ConsoleUtils.LogToConsole("Missing Parameters", ConsoleUtils.ConsoleLogMode.Warning);
                 ConsoleUtils.LogToConsole("Usage: Giveitem [username] [itemID] [itemQuantity] [itemQuality]");
-                ConsoleUtils.LogToConsole("");
             }
             
             else
@@ -132,18 +115,14 @@ namespace OpenWorldServer
 
                 if (targetClient == null)
                 {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    ConsoleUtils.LogToConsole("Player [" + clientID + "] Not Found");
-                    ConsoleUtils.LogToConsole("");
+                    ConsoleUtils.LogToConsole("Player [" + clientID + "] Not Found", ConsoleUtils.ConsoleLogMode.Info);
                 }
 
                 else
                 {
                     Networking.SendData(targetClient, "GiftedItems│" + itemID + "┼" + itemQuantity + "┼" + itemQuality + "┼");
 
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    ConsoleUtils.LogToConsole("Item Has Neen Gifted To Player [" + targetClient.username + "]");
-                    ConsoleUtils.LogToConsole("");
+                    ConsoleUtils.LogToConsole("Item Has Neen Gifted To Player [" + targetClient.username + "]", ConsoleUtils.ConsoleLogMode.Info);
                 }
             }
         }
@@ -164,10 +143,8 @@ namespace OpenWorldServer
 
             if (isMissingParameters)
             {
-                Console.ForegroundColor = ConsoleColor.Green;
-                ConsoleUtils.LogToConsole("Missing Parameters");
+                ConsoleUtils.LogToConsole("Missing Parameters", ConsoleUtils.ConsoleLogMode.Warning);
                 ConsoleUtils.LogToConsole("Usage: Giveitemall [itemID] [itemQuantity] [itemQuality]");
-                ConsoleUtils.LogToConsole("");
             }
 
             else
@@ -177,9 +154,7 @@ namespace OpenWorldServer
                 {
                     Networking.SendData(client, "GiftedItems│" + itemID + "┼" + itemQuantity + "┼" + itemQuality + "┼");
 
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    ConsoleUtils.LogToConsole("Item Has Neen Gifted To All Players");
-                    ConsoleUtils.LogToConsole("");
+                    ConsoleUtils.LogToConsole("Item Has Neen Gifted To All Players", ConsoleUtils.ConsoleLogMode.Info);
                 }
             }
         }
@@ -192,23 +167,15 @@ namespace OpenWorldServer
 
             string clientID = commandData.Split(' ')[0];
 
-            if (string.IsNullOrWhiteSpace(clientID))
-            {
-                Console.ForegroundColor = ConsoleColor.Green;
-                ConsoleUtils.LogToConsole("Missing Parameters");
-                ConsoleUtils.LogToConsole("");
-            }
+            if (string.IsNullOrWhiteSpace(clientID)) ConsoleUtils.LogToConsole("Missing Parameters", ConsoleUtils.ConsoleLogMode.Warning);
+            
 
             else
             {
                 ServerClient targetClient = Networking.connectedClients.Find(fetch => fetch.username == clientID);
 
-                if (targetClient == null)
-                {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    ConsoleUtils.LogToConsole("Player [" + clientID + "] Not Found");
-                    ConsoleUtils.LogToConsole("");
-                }
+                if (targetClient == null) ConsoleUtils.LogToConsole("Player [" + clientID + "] Not Found", ConsoleUtils.ConsoleLogMode.Info);
+                
 
                 else
                 {
@@ -216,9 +183,7 @@ namespace OpenWorldServer
                     Server.savedClients.Find(fetch => fetch.username == targetClient.username).isImmunized = true;
                     PlayerUtils.SavePlayer(targetClient);
 
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    ConsoleUtils.LogToConsole("Player [" + targetClient.username + "] Has Been Inmmunized");
-                    ConsoleUtils.LogToConsole("");
+                    ConsoleUtils.LogToConsole("Player [" + targetClient.username + "] Has Been Inmmunized", ConsoleUtils.ConsoleLogMode.Info);
                 }
             }
         }
@@ -231,21 +196,16 @@ namespace OpenWorldServer
 
             if (string.IsNullOrWhiteSpace(clientID))
             {
-                Console.ForegroundColor = ConsoleColor.Green;
-                ConsoleUtils.LogToConsole("Missing Parameters");
-                ConsoleUtils.LogToConsole("");
+                ConsoleUtils.LogToConsole("Missing Parameters", ConsoleUtils.ConsoleLogMode.Warning);
             }
 
             else
             {
                 ServerClient targetClient = Networking.connectedClients.Find(fetch => fetch.username == clientID);
 
-                if (targetClient == null)
-                {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    ConsoleUtils.LogToConsole("Player [" + clientID + "] Not Found");
-                    ConsoleUtils.LogToConsole("");
-                }
+                if (targetClient == null) ConsoleUtils.LogToConsole("Player [" + clientID + "] Not Found", ConsoleUtils.ConsoleLogMode.Info);
+
+                
 
                 else
                 {
@@ -253,9 +213,8 @@ namespace OpenWorldServer
                     Server.savedClients.Find(fetch => fetch.username == targetClient.username).isImmunized = false;
                     PlayerUtils.SavePlayer(targetClient);
 
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    ConsoleUtils.LogToConsole("Player [" + targetClient.username + "] Has Been Deinmmunized");
-                    ConsoleUtils.LogToConsole("");
+                    ConsoleUtils.LogToConsole("Player [" + targetClient.username + "] Has Been Deinmmunized", ConsoleUtils.ConsoleLogMode.Info]
+                        );
                 }
             }
         }
@@ -266,32 +225,24 @@ namespace OpenWorldServer
 
             string clientID = commandData.Split(' ')[0];
 
-            if (string.IsNullOrWhiteSpace(clientID))
-            {
-                Console.ForegroundColor = ConsoleColor.Green;
-                ConsoleUtils.LogToConsole("Missing Parameters");
-                ConsoleUtils.LogToConsole("");
-            }
+            if (string.IsNullOrWhiteSpace(clientID)) ConsoleUtils.LogToConsole("Missing Parameters", ConsoleUtils.ConsoleLogMode.Warning);
 
             else
             {
                 ServerClient targetClient = Networking.connectedClients.Find(fetch => fetch.username == clientID);
 
-                if (targetClient == null)
-                {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    ConsoleUtils.LogToConsole("Player [" + clientID + "] Not Found");
-                    ConsoleUtils.LogToConsole("");
-                }
+                if (targetClient == null) ConsoleUtils.LogToConsole("Player [" + clientID + "] Not Found", ConsoleUtils.ConsoleLogMode.Info);
+
+               
 
                 else
                 {
                     targetClient.eventShielded = true;
                     Server.savedClients.Find(fetch => fetch.username == targetClient.username).eventShielded = true;
 
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    ConsoleUtils.LogToConsole("Player [" + targetClient.username + "] Has Been Protected");
-                    ConsoleUtils.LogToConsole("");
+
+                    ConsoleUtils.LogToConsole("Player [" + targetClient.username + "] Has Been Protected", ConsoleUtils.ConsoleLogMode.Info);
+
                 }
             }
         }
@@ -302,32 +253,23 @@ namespace OpenWorldServer
 
             string clientID = commandData.Split(' ')[0];
 
-            if (string.IsNullOrWhiteSpace(clientID))
-            {
-                Console.ForegroundColor = ConsoleColor.Green;
-                ConsoleUtils.LogToConsole("Missing Parameters");
-                ConsoleUtils.LogToConsole("");
-            }
+            if (string.IsNullOrWhiteSpace(clientID))                ConsoleUtils.LogToConsole("Missing Parameters", ConsoleUtils.ConsoleLogMode.Warning);
+
+            
 
             else
             {
                 ServerClient targetClient = Networking.connectedClients.Find(fetch => fetch.username == clientID);
 
-                if (targetClient == null)
-                {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    ConsoleUtils.LogToConsole("Player [" + clientID + "] Not Found");
-                    ConsoleUtils.LogToConsole("");
-                }
+                if (targetClient == null)                    ConsoleUtils.LogToConsole("Player [" + clientID + "] Not Found", ConsoleUtils.ConsoleLogMode.Info);
+
 
                 else
                 {
                     targetClient.eventShielded = false;
                     Server.savedClients.Find(fetch => fetch.username == targetClient.username).eventShielded = false;
 
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    ConsoleUtils.LogToConsole("Player [" + targetClient.username + "] Has Been Deprotected");
-                    ConsoleUtils.LogToConsole("");
+                    ConsoleUtils.LogToConsole("Player [" + targetClient.username + "] Has Been Deprotected", ConsoleUtils.ConsoleLogMode.Info);
                 }
             }
         }
@@ -347,30 +289,26 @@ namespace OpenWorldServer
             if (string.IsNullOrWhiteSpace(eventID)) isMissingParameters = true;
 
             if (isMissingParameters)
-            {
-                Console.ForegroundColor = ConsoleColor.Green;
-                ConsoleUtils.LogToConsole("Missing Parameters");
-                ConsoleUtils.LogToConsole("");
-            }
+                ConsoleUtils.LogToConsole("Missing Parameters", ConsoleUtils.ConsoleLogMode.Warning);
+   
+            
 
             else
             {
                 ServerClient targetClient = Networking.connectedClients.Find(fetch => fetch.username == clientID);
 
                 if (targetClient == null)
-                {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    ConsoleUtils.LogToConsole("Player [" + clientID + "] Not Found");
-                    ConsoleUtils.LogToConsole("");
-                }
+                    ConsoleUtils.LogToConsole("Player [" + clientID + "] Not Found", ConsoleUtils.ConsoleLogMode.Info);
+           
+                
 
                 else
                 {
                     Networking.SendData(targetClient, "ForcedEvent│" + eventID);
 
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    ConsoleUtils.LogToConsole("Sent Event [" + eventID + "] to [" + targetClient.username + "]");
-                    ConsoleUtils.LogToConsole("");
+     
+                    ConsoleUtils.LogToConsole("Sent Event [" + eventID + "] to [" + targetClient.username + "]", ConsoleUtils.ConsoleLogMode.Info);
+          
                 }
             }
         }
@@ -382,11 +320,11 @@ namespace OpenWorldServer
             string eventID = commandData.Split(' ')[0];
 
             if (string.IsNullOrWhiteSpace(eventID))
-            {
-                Console.ForegroundColor = ConsoleColor.Green;
-                ConsoleUtils.LogToConsole("Missing Parameters");
-                ConsoleUtils.LogToConsole("");
-            }
+            
+  
+                ConsoleUtils.LogToConsole("Missing Parameters", ConsoleUtils.ConsoleLogMode.Warning);
+
+            
 
             ServerClient[] clients = Networking.connectedClients.ToArray();
             foreach (ServerClient client in clients)
@@ -394,9 +332,9 @@ namespace OpenWorldServer
                 Networking.SendData(client, "ForcedEvent│" + eventID);
             }
 
-            Console.ForegroundColor = ConsoleColor.Green;
-            ConsoleUtils.LogToConsole("Sent Event [" + eventID + "] To Every Player");
-            ConsoleUtils.LogToConsole("");
+
+            ConsoleUtils.LogToConsole("Sent Event [" + eventID + "] To Every Player", ConsoleUtils.ConsoleLogMode.Info);
+
         }
 
         //Administration
@@ -408,11 +346,11 @@ namespace OpenWorldServer
             string clientID = commandData.Split(' ')[0];
 
             if (string.IsNullOrWhiteSpace(clientID))
-            {
-                Console.ForegroundColor = ConsoleColor.Green;
-                ConsoleUtils.LogToConsole("Missing Parameters");
-                ConsoleUtils.LogToConsole("");
-            }
+            
+ 
+                ConsoleUtils.LogToConsole("Missing Parameters", ConsoleUtils.ConsoleLogMode.Warning);
+   
+            
 
             else
             {
@@ -420,18 +358,18 @@ namespace OpenWorldServer
 
                 if (targetClient == null)
                 {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    ConsoleUtils.LogToConsole("Player [" + clientID + "] Not Found");
-                    ConsoleUtils.LogToConsole("");
+  
+                    ConsoleUtils.LogToConsole("Player [" + clientID + "] Not Found", ConsoleUtils.ConsoleLogMode.Info);
+
                 }
 
                 else
                 {
                     if (targetClient.isAdmin == true)
                     {
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        ConsoleUtils.LogToConsole("Player [" + targetClient.username + "] Was Already An Administrator");
-                        ConsoleUtils.LogToConsole(Environment.NewLine);
+             
+                        ConsoleUtils.LogToConsole("Player [" + targetClient.username + "] Was Already An Administrator", ConsoleUtils.ConsoleLogMode.Info);
+ 
                     }
 
                     else
@@ -442,9 +380,7 @@ namespace OpenWorldServer
 
                         Networking.SendData(targetClient, "Admin│Promote");
 
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        ConsoleUtils.LogToConsole("Player [" + targetClient.username + "] Has Been Promoted");
-                        ConsoleUtils.LogToConsole(Environment.NewLine);
+                        ConsoleUtils.LogToConsole("Player [" + targetClient.username + "] Has Been Promoted", ConsoleUtils.ConsoleLogMode.Info);
                     }
                 }
             }
@@ -458,9 +394,7 @@ namespace OpenWorldServer
 
             if (string.IsNullOrWhiteSpace(clientID))
             {
-                Console.ForegroundColor = ConsoleColor.Green;
-                ConsoleUtils.LogToConsole("Missing Parameters");
-                ConsoleUtils.LogToConsole("");
+                ConsoleUtils.LogToConsole("Missing Parameters", ConsoleUtils.ConsoleLogMode.Warning);
             }
 
             else
@@ -469,18 +403,14 @@ namespace OpenWorldServer
 
                 if (targetClient == null)
                 {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    ConsoleUtils.LogToConsole("Player [" + clientID + "] Not Found");
-                    ConsoleUtils.LogToConsole("");
+                    ConsoleUtils.LogToConsole("Player [" + clientID + "] Not Found", ConsoleUtils.ConsoleLogMode.Info);
                 }
 
                 else
                 {
                     if (!targetClient.isAdmin)
                     {
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        ConsoleUtils.LogToConsole("Player [" + targetClient.username + "] Is Not An Administrator");
-                        ConsoleUtils.LogToConsole(Environment.NewLine);
+                        ConsoleUtils.LogToConsole("Player [" + targetClient.username + "] Is Not An Administrator", ConsoleUtils.ConsoleLogMode.Info);
                     }
 
                     else
@@ -491,9 +421,7 @@ namespace OpenWorldServer
 
                         Networking.SendData(targetClient, "Admin│Demote");
 
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        ConsoleUtils.LogToConsole("Player [" + targetClient.username + "] Has Been Demoted");
-                        ConsoleUtils.LogToConsole(Environment.NewLine);
+                        ConsoleUtils.LogToConsole("Player [" + targetClient.username + "] Has Been Demoted", ConsoleUtils.ConsoleLogMode.Info);
                     }
                 }
             }
@@ -508,9 +436,7 @@ namespace OpenWorldServer
 
             if (string.IsNullOrWhiteSpace(clientID))
             {
-                Console.ForegroundColor = ConsoleColor.Green;
-                ConsoleUtils.LogToConsole("Missing Parameters");
-                ConsoleUtils.LogToConsole("");
+                ConsoleUtils.LogToConsole("Missing Parameters", ConsoleUtils.ConsoleLogMode.Warning);
             }
 
             else
@@ -519,9 +445,8 @@ namespace OpenWorldServer
 
                 if (targetClient == null)
                 {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    ConsoleUtils.LogToConsole("Player [" + clientID + "] Not Found");
-                    ConsoleUtils.LogToConsole("");
+                    ConsoleUtils.LogToConsole("Player [" + clientID + "] Not Found", ConsoleUtils.ConsoleLogMode.Warning);
+
                 }
 
                 else
@@ -536,44 +461,16 @@ namespace OpenWorldServer
                         ip = ((IPEndPoint)clientToInvestigate.tcp.Client.RemoteEndPoint).Address.ToString();
                     }
 
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    ConsoleUtils.LogToConsole("Player Details: ");
-                    Console.ForegroundColor = ConsoleColor.White;
-                    ConsoleUtils.LogToConsole("Username: [" + targetClient.username + "]");
-                    ConsoleUtils.LogToConsole("Password: [" + targetClient.password + "]");
-                    ConsoleUtils.LogToConsole("");
-
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    ConsoleUtils.LogToConsole("Security: ");
-                    Console.ForegroundColor = ConsoleColor.White;
-                    ConsoleUtils.LogToConsole("Connection IP: [" + ip + "]");
-                    ConsoleUtils.LogToConsole("Admin: [" + targetClient.isAdmin + "]");
-                    ConsoleUtils.LogToConsole("");
-
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    ConsoleUtils.LogToConsole("Status: ");
-                    Console.ForegroundColor = ConsoleColor.White;
-                    ConsoleUtils.LogToConsole("Online: [" + isConnected + "]");
-                    ConsoleUtils.LogToConsole("Immunized: [" + targetClient.isImmunized + "]");
-                    ConsoleUtils.LogToConsole("Event Shielded: [" + targetClient.eventShielded + "]");
-                    ConsoleUtils.LogToConsole("In RTSE: [" + targetClient.inRTSE + "]");
-                    ConsoleUtils.LogToConsole("");
-
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    ConsoleUtils.LogToConsole("Wealth: ");
-                    Console.ForegroundColor = ConsoleColor.White;
-                    ConsoleUtils.LogToConsole("Stored Gifts: [" + targetClient.giftString.Count + "]");
-                    ConsoleUtils.LogToConsole("Stored Trades: [" + targetClient.tradeString.Count + "]");
-                    ConsoleUtils.LogToConsole("Wealth Value: [" + targetClient.wealth + "]");
-                    ConsoleUtils.LogToConsole("Pawn Count: [" + targetClient.pawnCount + "]");
-                    ConsoleUtils.LogToConsole("");
-
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    ConsoleUtils.LogToConsole("Details: ");
-                    Console.ForegroundColor = ConsoleColor.White;
-                    ConsoleUtils.LogToConsole("Home Tile ID: [" + targetClient.homeTileID + "]");
-                    ConsoleUtils.LogToConsole("Faction: [" + (targetClient.faction == null ? "None" : targetClient.faction.name)  + "]");
-                    ConsoleUtils.LogToConsole("");
+                    ConsoleUtils.LogToConsole("Player Details", ConsoleUtils.ConsoleLogMode.Heading);
+                    ConsoleUtils.LogToConsole("Username: [" + targetClient.username + "]\nPassword: [" + targetClient.password + "]");
+                    ConsoleUtils.LogToConsole("Security", ConsoleUtils.ConsoleLogMode.Heading);
+                    ConsoleUtils.LogToConsole("Connection IP: [" + ip + "]\nAdmin: [" + targetClient.isAdmin + "]");
+                    ConsoleUtils.LogToConsole("Status", ConsoleUtils.ConsoleLogMode.Heading);
+                    ConsoleUtils.LogToConsole("Online: [" + isConnected + "]\nImmunized: [" + targetClient.isImmunized + "]\nEvent Shielded: [" + targetClient.eventShielded + "]\nIn RTSE: [" + targetClient.inRTSE + "]");
+                    ConsoleUtils.LogToConsole("Wealth",ConsoleUtils.ConsoleLogMode.Heading);
+                    ConsoleUtils.LogToConsole("Stored Gifts: [" + targetClient.giftString.Count + "]\nStored Trades: [" + targetClient.tradeString.Count + "]\nWealth Value: [" + targetClient.wealth + "]\nPawn Count: [" + targetClient.pawnCount + "]");
+                    ConsoleUtils.LogToConsole("Details",ConsoleUtils.ConsoleLogMode.Heading);
+                    ConsoleUtils.LogToConsole("Home Tile ID: [" + targetClient.homeTileID + "]\nFaction: [" + (targetClient.faction == null ? "None" : targetClient.faction.name) + "]");
                 }
             }
         }
@@ -581,13 +478,11 @@ namespace OpenWorldServer
         public static void FactionDetailsCommand()
         {
             Console.Clear();
-            Console.ForegroundColor = ConsoleColor.Green;
 
             string factionID = commandData.Split(' ')[0];
             if (string.IsNullOrWhiteSpace(factionID))
             {
-                ConsoleUtils.LogToConsole("Missing Parameters");
-                ConsoleUtils.LogToConsole("");
+                ConsoleUtils.LogToConsole("Missing Parameters", ConsoleUtils.ConsoleLogMode.Warning);
             }
 
             else
@@ -596,46 +491,18 @@ namespace OpenWorldServer
 
                 if (factionToSearch == null)
                 {
-                    ConsoleUtils.LogToConsole("Faction " + commandData + " Was Not Found");
-                    ConsoleUtils.LogToConsole("");
+                    ConsoleUtils.LogToConsole("Faction " + commandData + " Was Not Found", ConsoleUtils.ConsoleLogMode.Info);
                 }
 
                 else
                 {
-                    ConsoleUtils.LogToConsole("Faction Details Of [" + factionToSearch.name + "]:");
-                    ConsoleUtils.LogToConsole("");
-
-                    ConsoleUtils.LogToConsole("Members:");
-                    Console.ForegroundColor = ConsoleColor.White;
-
-                    foreach (KeyValuePair<ServerClient, FactionHandler.MemberRank> member in factionToSearch.members)
-                    {
-                        ConsoleUtils.LogToConsole("[" + member.Value + "]" + " - " + member.Key.username);
-                    }
-
-                    ConsoleUtils.LogToConsole("");
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    ConsoleUtils.LogToConsole("Wealth:");
-                    Console.ForegroundColor = ConsoleColor.White;
-
+                    ConsoleUtils.LogToConsole("Faction Details Of [" + factionToSearch.name + "]", ConsoleUtils.ConsoleLogMode.Heading);
+                    ConsoleUtils.LogToConsole("Members",ConsoleUtils.ConsoleLogMode.Heading);
+                    ConsoleUtils.LogToConsole(string.Join('\n', factionToSearch.members.Select(x => $"[{x.Value}] - {x.Key.username}")));
+                    ConsoleUtils.LogToConsole("Wealth", ConsoleUtils.ConsoleLogMode.Heading);
                     ConsoleUtils.LogToConsole(factionToSearch.wealth.ToString());
-                    ConsoleUtils.LogToConsole("");
-
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    ConsoleUtils.LogToConsole("Structures:");
-                    Console.ForegroundColor = ConsoleColor.White;
-
-                    if (factionToSearch.factionStructures.Count == 0) ConsoleUtils.LogToConsole("No Structures");
-                    else
-                    {
-                        FactionStructure[] structures = factionToSearch.factionStructures.ToArray();
-                        foreach (FactionStructure structure in structures)
-                        {
-                            ConsoleUtils.LogToConsole("[" + structure.structureTile + "]" + " - " + structure.structureName);
-                        }
-                    }
-
-                    ConsoleUtils.LogToConsole("");
+                    ConsoleUtils.LogToConsole("Structures", ConsoleUtils.ConsoleLogMode.Heading);
+                    ConsoleUtils.LogToConsole(factionToSearch.factionStructures.Count == 0 ? "No Structures" : string.Join('\n', factionToSearch.factionStructures.Select(x => $"[{x.structureTile}] - {x.structureName}")));
                 }
             }
         }
@@ -650,9 +517,7 @@ namespace OpenWorldServer
 
             if (string.IsNullOrWhiteSpace(clientID))
             {
-                Console.ForegroundColor = ConsoleColor.Green;
-                ConsoleUtils.LogToConsole("Missing Parameters");
-                ConsoleUtils.LogToConsole("");
+                ConsoleUtils.LogToConsole("Missing Parameters", ConsoleUtils.ConsoleLogMode.Warning);
             }
 
             else
@@ -661,9 +526,7 @@ namespace OpenWorldServer
 
                 if (targetClient == null)
                 {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    ConsoleUtils.LogToConsole("Player [" + clientID + "] Not Found");
-                    ConsoleUtils.LogToConsole("");
+                    ConsoleUtils.LogToConsole("Player [" + clientID + "] Not Found", ConsoleUtils.ConsoleLogMode.Info);
                 }
 
                 else
@@ -672,9 +535,7 @@ namespace OpenWorldServer
                     targetClient.disconnectFlag = true;
 
                     SaveSystem.SaveBannedIPs(Server.bannedIPs);
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    ConsoleUtils.LogToConsole("Player [" + targetClient.username + "] Has Been Banned");
-                    ConsoleUtils.LogToConsole(Environment.NewLine);
+                    ConsoleUtils.LogToConsole("Player [" + targetClient.username + "] Has Been Banned", ConsoleUtils.ConsoleLogMode.Info);
                 }
             }
         }
@@ -687,9 +548,7 @@ namespace OpenWorldServer
 
             if (string.IsNullOrWhiteSpace(clientID))
             {
-                Console.ForegroundColor = ConsoleColor.Green;
-                ConsoleUtils.LogToConsole("Missing Parameters");
-                ConsoleUtils.LogToConsole("");
+                ConsoleUtils.LogToConsole("Missing Parameters", ConsoleUtils.ConsoleLogMode.Warning);
             }
 
             else
@@ -700,17 +559,13 @@ namespace OpenWorldServer
                     {
                         Server.bannedIPs.Remove(pair.Key);
                         SaveSystem.SaveBannedIPs(Server.bannedIPs);
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        ConsoleUtils.LogToConsole("Player [" + pair.Value + "] Has Been Unbanned");
-                        Console.ForegroundColor = ConsoleColor.White;
-                        ConsoleUtils.LogToConsole(Environment.NewLine);
+                        ConsoleUtils.LogToConsole("Player [" + pair.Value + "] Has Been Unbanned", ConsoleUtils.ConsoleLogMode.Info);
+                        // TODO: This is unstructured.
                         return;
                     }
                 }
 
-                Console.ForegroundColor = ConsoleColor.Green;
-                ConsoleUtils.LogToConsole("Player [" + clientID + "] Not Found");
-                ConsoleUtils.LogToConsole("");
+                ConsoleUtils.LogToConsole("Player [" + clientID + "] Not Found", ConsoleUtils.ConsoleLogMode.Info);
             }    
         }
 
@@ -722,9 +577,7 @@ namespace OpenWorldServer
 
             if (string.IsNullOrWhiteSpace(clientID))
             {
-                Console.ForegroundColor = ConsoleColor.Green;
-                ConsoleUtils.LogToConsole("Missing Parameters");
-                ConsoleUtils.LogToConsole("");
+                ConsoleUtils.LogToConsole("Missing Parameters", ConsoleUtils.ConsoleLogMode.Warning);
             }
 
             else
@@ -733,17 +586,13 @@ namespace OpenWorldServer
 
                 if (targetClient == null)
                 {
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    ConsoleUtils.LogToConsole("Player [" + clientID + "] Not Found");
-                    ConsoleUtils.LogToConsole("");
+                    ConsoleUtils.LogToConsole("Player [" + clientID + "] Not Found", ConsoleUtils.ConsoleLogMode.Info);
                 }
 
                 else
                 {
                     targetClient.disconnectFlag = true;
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    ConsoleUtils.LogToConsole("Player [" + targetClient.username + "] Has Been Kicked");
-                    ConsoleUtils.LogToConsole("");
+                    ConsoleUtils.LogToConsole("Player [" + targetClient.username + "] Has Been Kicked", ConsoleUtils.ConsoleLogMode.Info);
                 }
             }
         }

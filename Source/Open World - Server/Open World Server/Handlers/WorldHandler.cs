@@ -10,9 +10,7 @@ namespace OpenWorldServer
         public static void CheckWorldFile()
         {
             ConsoleUtils.LogToConsole("");;
-            Console.ForegroundColor = ConsoleColor.Green;
             ConsoleUtils.LogToConsole("World Check", ConsoleUtils.ConsoleLogMode.Heading);
-            Console.ForegroundColor = ConsoleColor.White;
 
             if (File.Exists(Server.worldSettingsPath))
             {

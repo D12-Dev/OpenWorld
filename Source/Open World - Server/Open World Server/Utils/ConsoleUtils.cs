@@ -102,10 +102,8 @@ namespace OpenWorldServer
 
         public static void DisplayNetworkStatus()
         {
-            Console.ForegroundColor = ConsoleColor.Green;
-            LogToConsole("Network Check", ConsoleUtils.ConsoleLogMode.Heading);
+            LogToConsole("Network Check", ConsoleLogMode.Heading);
 
-            Console.ForegroundColor = ConsoleColor.White;
             LogToConsole("Server Started");
             LogToConsole("Type 'Help' To See Available Commands");
             LogToConsole("Network Line Started");
