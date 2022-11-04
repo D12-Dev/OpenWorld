@@ -138,7 +138,7 @@
     <Compile Include="Main.cs" />
     <Compile Include="ModStuff.cs" />
     <Compile Include="ModConfigs.cs" />
-    <Compile Include="Networking\NetworkingHandler.cs" />
+    <Compile Include="Handler\NetworkingHandler.cs" />
     <Compile Include="Save System\SaveDataHolder.cs" />
     <Compile Include="Save System\SaveSystem.cs" />
     <Compile Include="Handler\SettlementHandler.cs" />

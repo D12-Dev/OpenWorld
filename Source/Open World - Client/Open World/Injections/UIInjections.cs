@@ -29,6 +29,7 @@ namespace OpenWorld
 				if (Widgets.ButtonText(new Rect(buttonLocation.x, buttonLocation.y, buttonSize.x, buttonSize.y), ""))
 				{
 					Find.WindowStack.Add(new Dialog_MPMultiplayerType());
+					Find.WindowStack.Add(new Dialog_MPFactionSiteBuilding());
 					Main._ParametersCache.hasLoadedCorrectly = false;
 				}
 

@@ -48,6 +48,9 @@ namespace OpenWorldServer
             else if (newStructureIntValue == 1) structureToBuild = new FactionMarketplace(faction, newStructureTile);
             else if (newStructureIntValue == 2) structureToBuild = new FactionProductionSite(faction, newStructureTile);
             else if (newStructureIntValue == 3) structureToBuild = new FactionWonder(faction, newStructureTile);
+            else if (newStructureIntValue == 4) structureToBuild = new FactionBank(faction, newStructureTile);
+            else if (newStructureIntValue == 5) structureToBuild = new FactionStable(faction, newStructureTile);
+            else if (newStructureIntValue == 6) structureToBuild = new FactionCourierStation(faction, newStructureTile);
 
             if (structureToBuild == null) return;
 
@@ -110,6 +113,9 @@ namespace OpenWorldServer
                 if (structureOfSameType is FactionSilo) return false;
                 else if (structureOfSameType is FactionProductionSite) return false;
                 else if (structureOfSameType is FactionMarketplace) return true;
+                else if (structureOfSameType is FactionBank) return true;
+                else if (structureOfSameType is FactionStable) return true;
+                else if (structureOfSameType is FactionCourierStation) return true;
                 else return false;
             }
             else return true;

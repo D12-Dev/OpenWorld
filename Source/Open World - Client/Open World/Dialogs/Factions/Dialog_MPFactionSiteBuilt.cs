@@ -158,6 +158,57 @@ namespace OpenWorld
                 }
             }
 
+            else if (siteType == 4)
+            {
+                windowTitle = "Bank Management Menu";
+                windowDescription = "Generate passive wealth over time";
+
+                Text.Font = GameFont.Small;
+                Widgets.Label(new Rect(centeredX - Text.CalcSize(windowDescription).x / 2, windowDescriptionDif, Text.CalcSize(windowDescription).x, Text.CalcSize(windowDescription).y), windowDescription);
+                Text.Font = GameFont.Medium;
+
+                Widgets.DrawLineHorizontal(rect.x, descriptionLineDif, rect.width);
+
+                if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX / 2) * 2, rect.yMax - buttonY * 2 - 10), new Vector2(buttonX * 2, buttonY)), "Utilize"))
+                {
+                    Find.WindowStack.Add(new OW_ErrorDialog("This action is not implemented yet"));
+                }
+            }
+
+            else if (siteType == 5)
+            {
+                windowTitle = "Stable Management Menu";
+                windowDescription = "Jump between stables from all the planet";
+
+                Text.Font = GameFont.Small;
+                Widgets.Label(new Rect(centeredX - Text.CalcSize(windowDescription).x / 2, windowDescriptionDif, Text.CalcSize(windowDescription).x, Text.CalcSize(windowDescription).y), windowDescription);
+                Text.Font = GameFont.Medium;
+
+                Widgets.DrawLineHorizontal(rect.x, descriptionLineDif, rect.width);
+
+                if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX / 2) * 2, rect.yMax - buttonY * 2 - 10), new Vector2(buttonX * 2, buttonY)), "Utilize"))
+                {
+                    Find.WindowStack.Add(new OW_ErrorDialog("This action is not implemented yet"));
+                }
+            }
+
+            else if (siteType == 6)
+            {
+                windowTitle = "Courier Station Management Menu";
+                windowDescription = "Trade over unlimited distances with everyone";
+
+                Text.Font = GameFont.Small;
+                Widgets.Label(new Rect(centeredX - Text.CalcSize(windowDescription).x / 2, windowDescriptionDif, Text.CalcSize(windowDescription).x, Text.CalcSize(windowDescription).y), windowDescription);
+                Text.Font = GameFont.Medium;
+
+                Widgets.DrawLineHorizontal(rect.x, descriptionLineDif, rect.width);
+
+                if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX / 2) * 2, rect.yMax - buttonY * 2 - 10), new Vector2(buttonX * 2, buttonY)), "Utilize"))
+                {
+                    Find.WindowStack.Add(new OW_ErrorDialog("This action is not implemented yet"));
+                }
+            }
+
             Text.Font = GameFont.Medium;
             if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX / 2) * 1.5f, rect.yMax - buttonY), new Vector2(buttonX * 1.5f, buttonY)), "Close"))
             {

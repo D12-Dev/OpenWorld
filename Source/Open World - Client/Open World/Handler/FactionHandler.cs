@@ -24,6 +24,9 @@ namespace OpenWorld
             else if (structureType == 1) siteName = "Marketplace";
             else if (structureType == 2) siteName = "Production Site";
             else if (structureType == 3) siteName = "Wonder Structure";
+            else if (structureType == 4) siteName = "Bank";
+            else if (structureType == 5) siteName = "Stable";
+            else if (structureType == 6) siteName = "Courier Station";
 
             Faction factionToGet = null;
             if (factionValue == 0) factionToGet = Main._ParametersCache.onlineNeutralFaction;

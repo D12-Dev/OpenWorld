@@ -7,7 +7,7 @@ namespace OpenWorldServer
     [System.Serializable]
     public abstract class FactionStructure
     {
-        public enum StructureType { Silo, Marketplace, ProductionSite, Wonder }
+        public enum StructureType { Silo, Marketplace, ProductionSite, Wonder, Bank, Stable, Courier }
 
         public virtual Faction holdingFaction { get; set; }
 
