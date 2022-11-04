@@ -13,7 +13,7 @@ namespace OpenWorldServer
             if (newLine) ConsoleUtils.LogToConsole("");;
 
             Console.ForegroundColor = ConsoleColor.Green;
-            ConsoleUtils.LogToConsole("Mods Check:");
+            ConsoleUtils.LogToConsole("Mods Check", ConsoleUtils.ConsoleLogMode.Heading);
             Console.ForegroundColor = ConsoleColor.White;
 
             CheckEnforcedMods();
