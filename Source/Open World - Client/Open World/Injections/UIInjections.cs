@@ -29,7 +29,6 @@ namespace OpenWorld
 				if (Widgets.ButtonText(new Rect(buttonLocation.x, buttonLocation.y, buttonSize.x, buttonSize.y), ""))
 				{
 					Find.WindowStack.Add(new Dialog_MPMultiplayerType());
-					Main._ParametersCache.hasLoadedCorrectly = false;
 				}
 
 				Vector2 buttonLocation2 = new Vector2(rect.x, rect.y + buttonSize.y + 7.495f);
@@ -37,6 +36,8 @@ namespace OpenWorld
 				{
 					Main._ParametersCache.isPlayingOnline = false;
 					Main._ParametersCache.isGeneratingNewOnlineGame = false;
+					Main._ParametersCache.isLoadingExistingGame = false;
+
 					Find.WindowStack.Add(new Page_SelectScenario());
 				}
 
@@ -78,7 +79,6 @@ namespace OpenWorld
 				Vector2 buttonLocation2 = new Vector2(rect.xMin, rect.yMax - buttonSize.y);
 				if (Widgets.ButtonText(new Rect(buttonLocation2.x, buttonLocation2.y, buttonSize.x, buttonSize.y), ""))
 				{
-					Main._ParametersCache.isGeneratingNewOnlineGame = false;
 					__instance.Close();
 				}
 
@@ -127,6 +127,8 @@ namespace OpenWorld
 
 						Main._ParametersCache.isPlayingOnline = false;
 						Main._ParametersCache.isGeneratingNewOnlineGame = false;
+						Main._ParametersCache.isLoadingExistingGame = false;
+						Main._ParametersCache.hasLoadedCorrectly = false;
 
 						Find.GameInfo.permadeathModeUniqueName = Main._ParametersCache.onlineFileSaveName + " - " + Main._ParametersCache.connectedServerIdentifier + " - " + Main._ParametersCache.usernameText;
 						GameDataSaveLoader.SaveGame(Find.GameInfo.permadeathModeUniqueName);
@@ -170,6 +172,8 @@ namespace OpenWorld
 
 					Main._ParametersCache.isPlayingOnline = false;
 					Main._ParametersCache.isGeneratingNewOnlineGame = false;
+					Main._ParametersCache.isLoadingExistingGame = false;
+					Main._ParametersCache.hasLoadedCorrectly = false;
 
 					if (__instance.prev != null)
 					{

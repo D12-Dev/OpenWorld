@@ -30,6 +30,9 @@ namespace OpenWorld
         public bool secretFlag;
         public bool spyWarnFlag;
         public bool hasLoadedCorrectly;
+        public bool isLoadingExistingGame;
+        public bool isGeneratingNewOnlineGame;
+        public bool isPlayingOnline;
 
         //Planet Factions
         public List<Faction> allFactions = new List<Faction>();
@@ -104,9 +107,6 @@ namespace OpenWorld
         public string onlineFileSaveName = "Open World Save";
         public string modIdentifier = "OpenWorld";
         public string connectedServerIdentifier = "";
-        public bool isLoadingExistingGame = false;
-        public bool isGeneratingNewOnlineGame = false;
-        public bool isPlayingOnline = false;
         public bool isAdmin = false;
 
         //Letters
