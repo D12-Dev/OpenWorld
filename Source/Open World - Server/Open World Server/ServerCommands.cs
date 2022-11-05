@@ -225,6 +225,17 @@ namespace OpenWorldServer
                 Category = Command.CommandCategory.Information,
                 AdvancedCommand = AdvancedCommands.PlayerDetailsCommand,
                 Parameters = new HashSet<Parameter>()
+                {
+                    new Parameter()
+                    {
+                        Name = "Player",
+                        Description = "The player of whom you would like to see information.",
+                        Rules = new HashSet<ParameterValidation.Rule>()
+                        {
+                            ParameterValidation.Rule.PlayerOnline
+                        }
+                    } 
+                }
             },
             new Command()
             {
@@ -233,6 +244,14 @@ namespace OpenWorldServer
                 Category = Command.CommandCategory.Information,
                 AdvancedCommand = AdvancedCommands.FactionDetailsCommand,
                 Parameters = new HashSet<Parameter>()
+                {
+                    new Parameter()
+                    {
+                        Name = "Faction",
+                        Description = "The faction of which you would like to see information.",
+                        Rules = new HashSet<ParameterValidation.Rule>()
+                    }
+                }
             },
             new Command()
             {
@@ -241,6 +260,17 @@ namespace OpenWorldServer
                 Category = Command.CommandCategory.Server_Administration,
                 AdvancedCommand = AdvancedCommands.KickCommand,
                 Parameters = new HashSet<Parameter>()
+                {
+                    new Parameter()
+                    {
+                        Name = "Player",
+                        Description = "The player who you would like to kick.",
+                        Rules = new HashSet<ParameterValidation.Rule>()
+                        {
+                            ParameterValidation.Rule.PlayerOnline
+                        }
+                    }
+                }
             },
             new Command()
             {
@@ -249,6 +279,17 @@ namespace OpenWorldServer
                 Category = Command.CommandCategory.Server_Administration,
                 AdvancedCommand = AdvancedCommands.BanCommand,
                 Parameters = new HashSet<Parameter>()
+                {
+                    new Parameter()
+                    {
+                        Name = "Player",
+                        Description = "The player who you would like to ban.",
+                        Rules = new HashSet<ParameterValidation.Rule>()
+                        {
+                            ParameterValidation.Rule.PlayerOnline
+                        }
+                    }
+                }
             },
             new Command()
             {
@@ -257,6 +298,14 @@ namespace OpenWorldServer
                 Category = Command.CommandCategory.Server_Administration,
                 AdvancedCommand = AdvancedCommands.PardonCommand,
                 Parameters = new HashSet<Parameter>()
+                {
+                    new Parameter()
+                    {
+                        Name = "Player",
+                        Description = "The player who you would like to pardon.",
+                        Rules = new HashSet<ParameterValidation.Rule>()
+                    }
+                }
             },
             new Command()
             {
@@ -265,6 +314,17 @@ namespace OpenWorldServer
                 Category = Command.CommandCategory.Server_Administration,
                 AdvancedCommand = AdvancedCommands.PromoteCommand,
                 Parameters = new HashSet<Parameter>()
+                {
+                    new Parameter()
+                    {
+                        Name = "Player",
+                        Description = "The player who you would like to promote.",
+                        Rules = new HashSet<ParameterValidation.Rule>()
+                        {
+                            ParameterValidation.Rule.PlayerOnline
+                        }
+                    }
+                }
             },
             new Command()
             {
@@ -273,6 +333,17 @@ namespace OpenWorldServer
                 Category = Command.CommandCategory.Server_Administration,
                 AdvancedCommand = AdvancedCommands.DemoteCommand,
                 Parameters = new HashSet<Parameter>()
+                {
+                    new Parameter()
+                    {
+                        Name = "Player",
+                        Description = "The player who you would like to demote.",
+                        Rules = new HashSet<ParameterValidation.Rule>()
+                        {
+                            ParameterValidation.Rule.PlayerOnline
+                        }
+                    }
+                }
             },
             new Command()
             {
@@ -281,6 +352,23 @@ namespace OpenWorldServer
                 Category = Command.CommandCategory.Player_Interaction,
                 AdvancedCommand = AdvancedCommands.GiveItemCommand,
                 Parameters = new HashSet<Parameter>()
+                {
+                    new Parameter()
+                    {
+                        Name = "Player",
+                        Description = "The player who you would like to ban.",
+                        Rules = new HashSet<ParameterValidation.Rule>()
+                        {
+                            ParameterValidation.Rule.PlayerOnline
+                        }
+                    },
+                    new Parameter()
+                    {
+                        Name = "Item",
+                        Description = "The item which you would like to give to the player.",
+                        Rules = new HashSet<ParameterValidation.Rule>()
+                    }
+                }
             },
             new Command()
             {
@@ -289,6 +377,14 @@ namespace OpenWorldServer
                 Category = Command.CommandCategory.Player_Interaction,
                 AdvancedCommand = AdvancedCommands.GiveItemAllCommand,
                 Parameters = new HashSet<Parameter>()
+                {
+                    new Parameter()
+                    {
+                        Name = "Item",
+                        Description = "The item which you would like to give all players.",
+                        Rules = new HashSet<ParameterValidation.Rule>()
+                    }
+                }
             },
             new Command()
             {
@@ -297,6 +393,17 @@ namespace OpenWorldServer
                 Category = Command.CommandCategory.Server_Administration,
                 AdvancedCommand = AdvancedCommands.ProtectCommand,
                 Parameters = new HashSet<Parameter>()
+                {
+                    new Parameter()
+                    {
+                        Name = "Player",
+                        Description = "The player who you would like to protect.",
+                        Rules = new HashSet<ParameterValidation.Rule>()
+                        {
+                            ParameterValidation.Rule.PlayerOnline
+                        }
+                    }
+                }
             },
             new Command()
             {
@@ -305,6 +412,17 @@ namespace OpenWorldServer
                 Category = Command.CommandCategory.Server_Administration,
                 AdvancedCommand = AdvancedCommands.DeprotectCommand,
                 Parameters = new HashSet<Parameter>()
+                {
+                    new Parameter()
+                    {
+                        Name = "Player",
+                        Description = "The player who you would like to deprotect.",
+                        Rules = new HashSet<ParameterValidation.Rule>()
+                        {
+                            ParameterValidation.Rule.PlayerOnline
+                        }
+                    }
+                }
             },
             new Command()
             {
@@ -313,6 +431,17 @@ namespace OpenWorldServer
                 Category = Command.CommandCategory.Server_Administration,
                 AdvancedCommand = AdvancedCommands.ImmunizeCommand,
                 Parameters = new HashSet<Parameter>()
+                {
+                    new Parameter()
+                    {
+                        Name = "Player",
+                        Description = "The player who you would like to immunize.",
+                        Rules = new HashSet<ParameterValidation.Rule>()
+                        {
+                            ParameterValidation.Rule.PlayerOnline
+                        }
+                    }
+                }
             },
             new Command()
             {
@@ -321,6 +450,17 @@ namespace OpenWorldServer
                 Category = Command.CommandCategory.Server_Administration,
                 AdvancedCommand = AdvancedCommands.DeimmunizeCommand,
                 Parameters = new HashSet<Parameter>()
+                {
+                    new Parameter()
+                    {
+                        Name = "Player",
+                        Description = "The player who you would like to deimmunize.",
+                        Rules = new HashSet<ParameterValidation.Rule>()
+                        {
+                            ParameterValidation.Rule.PlayerOnline
+                        }
+                    }
+                }
             }
         };
     }
