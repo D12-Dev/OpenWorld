@@ -11,7 +11,7 @@ namespace OpenWorldServer
         {
             ConsoleUtils.LogToConsole($"Chat - [Console] {arguments[0]}");
             Server.chatCache.Add("[" + DateTime.Now + "]" + " │ " + );
-            foreach (ServerClient sc in Networking.connectedClients) Networking.SendData(sc, "ChatMessage│SERVER│" + arguments[0]);
+            foreach (ServerClient sc in Networking.connectedClients) Networking.SendData(sc, $"ChatMessage│SERVER│{arguments[0]}");
         }
         public static void BroadcastCommand(string[] arguments)
         {
@@ -22,17 +22,17 @@ namespace OpenWorldServer
         {
             ServerClient targetClient = Networking.connectedClients.Find(fetch => fetch.username == arguments[0]);
             Networking.SendData(targetClient, $"Notification│{arguments[1]}");
-            ConsoleUtils.LogToConsole($"Sent Letter To [{targetClient.username}]", ConsoleUtils.ConsoleLogMode.Info);
+            ConsoleUtils.LogToConsole($"Sent Letter To {targetClient.username}", ConsoleUtils.ConsoleLogMode.Info);
         }
         public static void GiveItemCommand(string[] arguments)
         {
             ServerClient targetClient = Networking.connectedClients.Find(fetch => fetch.username == arguments[0]);
-            Networking.SendData(targetClient, "GiftedItems│" + arguments[1] + "┼" + arguments[2] + "┼" + arguments[3] + "┼");
-            ConsoleUtils.LogToConsole("Item Has Neen Gifted To Player [" + targetClient.username + "]", ConsoleUtils.ConsoleLogMode.Info);
+            Networking.SendData(targetClient, $"GiftedItems│{arguments[1]}┼{arguments[2]}┼{arguments[3]}┼");
+            ConsoleUtils.LogToConsole($"Item Has Neen Gifted To Player {targetClient.username}", ConsoleUtils.ConsoleLogMode.Info);
         }
         public static void GiveItemAllCommand(string[] arguments)
         {
-            foreach (ServerClient client in Networking.connectedClients) Networking.SendData(client, "GiftedItems│" + arguments[0] + "┼" + arguments[1] + "┼" + arguments[2] + "┼");
+            foreach (ServerClient client in Networking.connectedClients) Networking.SendData(client, $"GiftedItems│{arguments[0]}┼{arguments[1]}┼{arguments[2]}┼");
             ConsoleUtils.LogToConsole("Item Has Neen Gifted To All Players", ConsoleUtils.ConsoleLogMode.Info);
         }
         public static void ImmunizeCommand(string[] arguments)
@@ -41,7 +41,7 @@ namespace OpenWorldServer
             targetClient.isImmunized = true;
             Server.savedClients.Find(fetch => fetch.username == targetClient.username).isImmunized = true;
             PlayerUtils.SavePlayer(targetClient);
-            ConsoleUtils.LogToConsole("Player [" + targetClient.username + "] Has Been Immunized", ConsoleUtils.ConsoleLogMode.Info);
+            ConsoleUtils.LogToConsole($"Player {targetClient.username} Has Been Immunized", ConsoleUtils.ConsoleLogMode.Info);
         }
         public static void DeimmunizeCommand(string[] arguments)
         {
@@ -49,7 +49,7 @@ namespace OpenWorldServer
             targetClient.isImmunized = false;
             Server.savedClients.Find(fetch => fetch.username == targetClient.username).isImmunized = false;
             PlayerUtils.SavePlayer(targetClient);
-            ConsoleUtils.LogToConsole("Player [" + targetClient.username + "] Has Been Deimmunized", ConsoleUtils.ConsoleLogMode.Info);
+            ConsoleUtils.LogToConsole($"Player {targetClient.username} Has Been Deimmunized", ConsoleUtils.ConsoleLogMode.Info);
         }
         public static void ProtectCommand(string[] arguments)
         {
@@ -57,7 +57,7 @@ namespace OpenWorldServer
             targetClient.eventShielded = true;
             Server.savedClients.Find(fetch => fetch.username == targetClient.username).eventShielded = true;
             PlayerUtils.SavePlayer(targetClient);
-            ConsoleUtils.LogToConsole("Player [" + targetClient.username + "] Has Been Protected", ConsoleUtils.ConsoleLogMode.Info);
+            ConsoleUtils.LogToConsole($"Player {targetClient.username} Has Been Protected", ConsoleUtils.ConsoleLogMode.Info);
         }
         public static void DeprotectCommand(string[] arguments)
         {
@@ -65,43 +65,43 @@ namespace OpenWorldServer
             targetClient.eventShielded = false;
             Server.savedClients.Find(fetch => fetch.username == targetClient.username).eventShielded = false;
             PlayerUtils.SavePlayer(targetClient);
-            ConsoleUtils.LogToConsole("Player [" + targetClient.username + "] Has Been Protected", ConsoleUtils.ConsoleLogMode.Info);
+            ConsoleUtils.LogToConsole($"Player {targetClient.username} Has Been Protected", ConsoleUtils.ConsoleLogMode.Info);
         }
         public static void InvokeCommand(string[] arguments)
         {
             ServerClient targetClient = Networking.connectedClients.Find(fetch => fetch.username == arguments[0]);
             Networking.SendData(targetClient, "ForcedEvent│" + arguments[1]);
-            ConsoleUtils.LogToConsole("Sent Event [" + arguments[1] + "] to [" + targetClient.username + "]", ConsoleUtils.ConsoleLogMode.Info);
+            ConsoleUtils.LogToConsole($"Sent Event {arguments[1]} to {targetClient.username}", ConsoleUtils.ConsoleLogMode.Info);
         }
         public static void PlagueCommand(string[] arguments)
         {
             foreach (ServerClient client in Networking.connectedClients) Networking.SendData(client, "ForcedEvent│" + arguments[0]);
-            ConsoleUtils.LogToConsole("Sent Event [" + arguments[0] + "] To Every Player", ConsoleUtils.ConsoleLogMode.Info);
+            ConsoleUtils.LogToConsole($"Sent Event {arguments[0]} To Every Player", ConsoleUtils.ConsoleLogMode.Info);
         }
         public static void PromoteCommand(string[] arguments)
         {
             ServerClient targetClient = Networking.connectedClients.Find(fetch => fetch.username == arguments[0]);
-            if (targetClient.isAdmin == true) ConsoleUtils.LogToConsole("Player [" + targetClient.username + "] Was Already An Administrator", ConsoleUtils.ConsoleLogMode.Info);
+            if (targetClient.isAdmin == true) ConsoleUtils.LogToConsole($"Player {targetClient.username} Was Already An Administrator", ConsoleUtils.ConsoleLogMode.Info);
             else
             {
                 targetClient.isAdmin = true;
                 Server.savedClients.Find(fetch => fetch.username == arguments[0]).isAdmin = true;
                 PlayerUtils.SavePlayer(targetClient);
                 Networking.SendData(targetClient, "Admin│Promote");
-                ConsoleUtils.LogToConsole("Player [" + targetClient.username + "] Has Been Promoted", ConsoleUtils.ConsoleLogMode.Info);
+                ConsoleUtils.LogToConsole($"Player {targetClient.username} Has Been Promoted", ConsoleUtils.ConsoleLogMode.Info);
             }
         }
         public static void DemoteCommand(string[] arguments)
         {
             ServerClient targetClient = Networking.connectedClients.Find(fetch => fetch.username == arguments[0]);
-            if (!targetClient.isAdmin) ConsoleUtils.LogToConsole("Player [" + targetClient.username + "] Is Not An Administrator", ConsoleUtils.ConsoleLogMode.Info);
+            if (!targetClient.isAdmin) ConsoleUtils.LogToConsole($"Player {targetClient.username} Is Not An Administrator", ConsoleUtils.ConsoleLogMode.Info);
             else
             {
                 targetClient.isAdmin = false;
                 Server.savedClients.Find(fetch => fetch.username == targetClient.username).isAdmin = false;
                 PlayerUtils.SavePlayer(targetClient);
                 Networking.SendData(targetClient, "Admin│Demote");
-                ConsoleUtils.LogToConsole("Player [" + targetClient.username + "] Has Been Demoted", ConsoleUtils.ConsoleLogMode.Info);
+                ConsoleUtils.LogToConsole($"Player {targetClient.username} Has Been Demoted", ConsoleUtils.ConsoleLogMode.Info);
             }
         }
         public static void PlayerDetailsCommand(string[] arguments)
@@ -141,10 +141,9 @@ namespace OpenWorldServer
             Server.bannedIPs.Add(((IPEndPoint)targetClient.tcp.Client.RemoteEndPoint).Address.ToString(), targetClient.username);
             targetClient.disconnectFlag = true;
             SaveSystem.SaveBannedIPs(Server.bannedIPs);
-            ConsoleUtils.LogToConsole("Player [" + targetClient.username + "] Has Been Banned", ConsoleUtils.ConsoleLogMode.Info);
+            ConsoleUtils.LogToConsole("Player {targetClient.username} Has Been Banned", ConsoleUtils.ConsoleLogMode.Info);
             
         }
-
         public static void PardonCommand(string[] arguments)
         {
             try
@@ -158,7 +157,6 @@ namespace OpenWorldServer
                 ConsoleUtils.LogToConsole($"Player {arguments[0]} Not Found", ConsoleUtils.ConsoleLogMode.Info);
             }
         }
-
         public static void KickCommand(string[] arguments)
         {
             ServerClient targetClient = Networking.connectedClients.Find(fetch => fetch.username == arguments[0]);
