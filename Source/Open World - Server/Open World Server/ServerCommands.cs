@@ -119,7 +119,7 @@ namespace OpenWorldServer
                 Description = "Sends a chat message to the server.",
                 Category = Command.CommandCategory.Player_Interaction,
                 AdvancedCommand = AdvancedCommands.SayCommand,
-                Parameters = new Dictionary<string, string>()
+                Parameters = new HashSet<Parameter>()
             },
             new Command()
             {
@@ -127,7 +127,7 @@ namespace OpenWorldServer
                 Description = "Sends a notification to all connected players.",
                 Category = Command.CommandCategory.Player_Interaction,
                 AdvancedCommand = AdvancedCommands.BroadcastCommand,
-                Parameters = new Dictionary<string, string>()
+                Parameters = new HashSet<Parameter>()
             },
             new Command()
             {
@@ -135,7 +135,7 @@ namespace OpenWorldServer
                 Description = "Sends a notification to a specific player.",
                 Category = Command.CommandCategory.Player_Interaction,
                 AdvancedCommand = AdvancedCommands.NotifyCommand,
-                Parameters = new Dictionary<string, string>()
+                Parameters = new HashSet<Parameter>()
             },
             new Command()
             {
@@ -143,7 +143,7 @@ namespace OpenWorldServer
                 Description = "Sends an event to a specific player (see 'eventlist').",
                 Category = Command.CommandCategory.Player_Interaction,
                 AdvancedCommand = AdvancedCommands.InvokeCommand,
-                Parameters = new Dictionary<string, string>()
+                Parameters = new HashSet<Parameter>()
             },
             new Command()
             {
@@ -151,7 +151,7 @@ namespace OpenWorldServer
                 Description = "Sends an event to all connected players (see 'eventlist').",
                 Category = Command.CommandCategory.Player_Interaction,
                 AdvancedCommand = AdvancedCommands.PlagueCommand,
-                Parameters = new Dictionary<string, string>()
+                Parameters = new HashSet<Parameter>()
             },
             new Command()
             {
@@ -159,7 +159,7 @@ namespace OpenWorldServer
                 Description = "Displays all data about a specific player.",
                 Category = Command.CommandCategory.Information,
                 AdvancedCommand = AdvancedCommands.PlayerDetailsCommand,
-                Parameters = new Dictionary<string, string>()
+                Parameters = new HashSet<Parameter>()
             },
             new Command()
             {
@@ -167,7 +167,7 @@ namespace OpenWorldServer
                 Description = "Displays information about a specific faction.",
                 Category = Command.CommandCategory.Information,
                 AdvancedCommand = AdvancedCommands.FactionDetailsCommand,
-                Parameters = new Dictionary<string, string>()
+                Parameters = new HashSet<Parameter>()
             },
             new Command()
             {
@@ -175,7 +175,7 @@ namespace OpenWorldServer
                 Description = "Kicks a specific player from the server.",
                 Category = Command.CommandCategory.Server_Administration,
                 AdvancedCommand = AdvancedCommands.KickCommand,
-                Parameters = new Dictionary<string, string>()
+                Parameters = new HashSet<Parameter>()
             },
             new Command()
             {
@@ -183,7 +183,7 @@ namespace OpenWorldServer
                 Description = "Bans a specific player from the server (by IP address).",
                 Category = Command.CommandCategory.Server_Administration,
                 AdvancedCommand = AdvancedCommands.BanCommand,
-                Parameters = new Dictionary<string, string>()
+                Parameters = new HashSet<Parameter>()
             },
             new Command()
             {
@@ -191,7 +191,7 @@ namespace OpenWorldServer
                 Description = "Unbans a specific player from the server.",
                 Category = Command.CommandCategory.Server_Administration,
                 AdvancedCommand = AdvancedCommands.PardonCommand,
-                Parameters = new Dictionary<string, string>()
+                Parameters = new HashSet<Parameter>()
             },
             new Command()
             {
@@ -199,7 +199,7 @@ namespace OpenWorldServer
                 Description = "Promotes a specific player to an administrator.",
                 Category = Command.CommandCategory.Server_Administration,
                 AdvancedCommand = AdvancedCommands.PromoteCommand,
-                Parameters = new Dictionary<string, string>()
+                Parameters = new HashSet<Parameter>()
             },
             new Command()
             {
@@ -207,7 +207,7 @@ namespace OpenWorldServer
                 Description = "Revokes administrator permissions from a specific player.",
                 Category = Command.CommandCategory.Server_Administration,
                 AdvancedCommand = AdvancedCommands.DemoteCommand,
-                Parameters = new Dictionary<string, string>()
+                Parameters = new HashSet<Parameter>()
             },
             new Command()
             {
@@ -215,7 +215,7 @@ namespace OpenWorldServer
                 Description = "Gives a specific item to a specific player.",
                 Category = Command.CommandCategory.Player_Interaction,
                 AdvancedCommand = AdvancedCommands.GiveItemCommand,
-                Parameters = new Dictionary<string, string>()
+                Parameters = new HashSet<Parameter>()
             },
             new Command()
             {
@@ -223,7 +223,7 @@ namespace OpenWorldServer
                 Description = "Gives a specific item to all connected players.",
                 Category = Command.CommandCategory.Player_Interaction,
                 AdvancedCommand = AdvancedCommands.GiveItemAllCommand,
-                Parameters = new Dictionary<string, string>()
+                Parameters = new HashSet<Parameter>()
             },
             new Command()
             {
@@ -231,7 +231,7 @@ namespace OpenWorldServer
                 Description = "Protects a specific player from events until 'deprotect'ed.",
                 Category = Command.CommandCategory.Server_Administration,
                 AdvancedCommand = AdvancedCommands.ProtectCommand,
-                Parameters = new Dictionary<string, string>()
+                Parameters = new HashSet<Parameter>()
             },
             new Command()
             {
@@ -239,7 +239,7 @@ namespace OpenWorldServer
                 Description = "De'protect's a specific player from events.",
                 Category = Command.CommandCategory.Server_Administration,
                 AdvancedCommand = AdvancedCommands.DeprotectCommand,
-                Parameters = new Dictionary<string, string>()
+                Parameters = new HashSet<Parameter>()
             },
             new Command()
             {
@@ -247,7 +247,7 @@ namespace OpenWorldServer
                 Description = "Temporarily protects a specific player from events.",
                 Category = Command.CommandCategory.Server_Administration,
                 AdvancedCommand = AdvancedCommands.ImmunizeCommand,
-                Parameters = new Dictionary<string, string>()
+                Parameters = new HashSet<Parameter>()
             },
             new Command()
             {
@@ -255,7 +255,7 @@ namespace OpenWorldServer
                 Description = "Demoves the temporary immunity granted by 'immunize'.",
                 Category = Command.CommandCategory.Server_Administration,
                 AdvancedCommand = AdvancedCommands.DeimmunizeCommand,
-                Parameters = new Dictionary<string, string>()
+                Parameters = new HashSet<Parameter>()
             }
         };
     }

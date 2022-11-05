@@ -18,7 +18,7 @@ namespace OpenWorldServer
                 ConsoleUtils.LogToConsole(
                 string.Join('\n', Server.ServerCommands.Where(x => x.Category.ToString() == category).Select(x => $"{x.Word}: {x.Description}" +
                     (x.AdvancedCommand != null
-                        ? $"\n\tParameters:\n{string.Join('\n', x.Parameters.Select(y => $"\t-{y.Key}: {y.Value}"))}"
+                        ? $"\n\tParameters:\n{string.Join('\n', x.Parameters.Select(y => $"\t-{y.Name}: {y.Description}"))}"
                         : ""
                     )
                 )));

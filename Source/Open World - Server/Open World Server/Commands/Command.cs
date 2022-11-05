@@ -4,6 +4,26 @@ using System.Text;
 
 namespace OpenWorldServer
 {
+    public static class ParameterValidation
+    {
+        public enum Rule
+        {
+            PlayerOnline,
+            ValidEvent
+        }
+        public static readonly Dictionary<Rule, Func<string, bool>> Validation = new Dictionary<Rule, Func<string, bool>>()
+        {
+
+        };
+    }
+    public struct Parameter
+    {
+        
+
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public List<ParameterValidation.Rule> Rules { get; set; }
+    }
     public class Command
     {
         public enum CommandCategory
@@ -15,7 +35,8 @@ namespace OpenWorldServer
         public string Word { get; set; }
         public string Description { get; set; }
         public CommandCategory Category { get; set; }
-        public Dictionary<string, string> Parameters { get; set; }
+        public HashSet<Parameter> Parameters { get; set; }
+
         private Action _simpleCommand;
         public Action SimpleCommand
         {
@@ -37,7 +58,6 @@ namespace OpenWorldServer
                 _advancedCommand = value;
             }
         }
-
 
 
         public void Execute(string[] arguments = null)
