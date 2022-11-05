@@ -367,6 +367,18 @@ namespace OpenWorldServer
                         Name = "Item",
                         Description = "The item which you would like to give to the player.",
                         Rules = new HashSet<ParameterValidation.Rule>()
+                    },
+                    new Parameter()
+                    {
+                        Name = "Quantity",
+                        Description = "The quantity of the item which you would like to give to the player.",
+                        Rules = new HashSet<ParameterValidation.Rule>()
+                    },
+                    new Parameter()
+                    {
+                        Name = "Quality",
+                        Description = "The quality of the item which you would like to give to the player.",
+                        Rules = new HashSet<ParameterValidation.Rule>()
                     }
                 }
             },
@@ -381,7 +393,19 @@ namespace OpenWorldServer
                     new Parameter()
                     {
                         Name = "Item",
-                        Description = "The item which you would like to give all players.",
+                        Description = "The item which you would like to give to all players.",
+                        Rules = new HashSet<ParameterValidation.Rule>()
+                    },
+                    new Parameter()
+                    {
+                        Name = "Quantity",
+                        Description = "The quantity of the item which you would like to give to all players.",
+                        Rules = new HashSet<ParameterValidation.Rule>()
+                    },
+                    new Parameter()
+                    {
+                        Name = "Quality",
+                        Description = "The quality of the item which you would like to give to all players.",
                         Rules = new HashSet<ParameterValidation.Rule>()
                     }
                 }

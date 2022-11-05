@@ -16,6 +16,7 @@ namespace OpenWorldServer
         {
             {Rule.PlayerOnline, (arg) => Networking.connectedClients.Any(x => x.username == arg) },
             {Rule.ValidEvent, (arg) => SimpleCommands.EventList.Contains(arg) }
+            // TODO: ValidFaction, ValidItem, ValidItemQuantity, ValidItemQuality, PlayerBanned, PlayerAdmin
         };
     }
     public struct Parameter
@@ -62,9 +63,10 @@ namespace OpenWorldServer
 
         public void Execute(string[] arguments = null)
         {
+            // TODO: Itemized error messages.
             if (SimpleCommand != null) SimpleCommand();
-            else if (AdvancedCommand != null && arguments.Length == Parameters.Count) AdvancedCommand(arguments);
-            else throw new Exception($"The execution of {Word} failed due to an invalid command structure. Ensure a command method is mapped, and that the correct number of arguments are provided if required. Expected {Parameters.Count} parameters and recieved {arguments.Length}.");
+            else if (AdvancedCommand != null && arguments.Length == Parameters.Count && Parameters.SelectMany((x, i) => x.Rules.Select(y => ParameterValidation.Validation[y](arguments[i]))).All(x=>x)) AdvancedCommand(arguments);
+            else throw new Exception($"The execution of {Word} failed due to an invalid command structure. Ensure a command method is mapped, and that the correct number of arguments are provided if required. Expected {Parameters.Count} parameters and recieved {arguments.Length}. If the correct number of arguments were sent, ensure they are valid for the context.");
         }
 
     }
