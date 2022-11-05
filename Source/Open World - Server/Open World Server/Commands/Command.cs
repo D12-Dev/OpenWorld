@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace OpenWorldServer
@@ -13,16 +14,15 @@ namespace OpenWorldServer
         }
         public static readonly Dictionary<Rule, Func<string, bool>> Validation = new Dictionary<Rule, Func<string, bool>>()
         {
-
+            {Rule.PlayerOnline, (arg) => Networking.connectedClients.Any(x => x.username == arg) },
+            {Rule.ValidEvent, (arg) => SimpleCommands.EventList.Contains(arg) }
         };
     }
     public struct Parameter
     {
-        
-
         public string Name { get; set; }
         public string Description { get; set; }
-        public List<ParameterValidation.Rule> Rules { get; set; }
+        public HashSet<ParameterValidation.Rule> Rules { get; set; } 
     }
     public class Command
     {
@@ -63,8 +63,8 @@ namespace OpenWorldServer
         public void Execute(string[] arguments = null)
         {
             if (SimpleCommand != null) SimpleCommand();
-            else if (AdvancedCommand != null && arguments != null) AdvancedCommand(arguments);
-            else throw new Exception($"The execution of {Word} failed due to an invalid command structure. Ensure a command method is mapped, and that arguments are provided if required.");
+            else if (AdvancedCommand != null && arguments.Length == Parameters.Count) AdvancedCommand(arguments);
+            else throw new Exception($"The execution of {Word} failed due to an invalid command structure. Ensure a command method is mapped, and that the correct number of arguments are provided if required. Expected {Parameters.Count} parameters and recieved {arguments.Length}.");
         }
 
     }

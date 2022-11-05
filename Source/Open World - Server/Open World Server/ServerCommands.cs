@@ -120,6 +120,14 @@ namespace OpenWorldServer
                 Category = Command.CommandCategory.Player_Interaction,
                 AdvancedCommand = AdvancedCommands.SayCommand,
                 Parameters = new HashSet<Parameter>()
+                {
+                    new Parameter()
+                    {
+                        Name = "Message",
+                        Description = "The message you would like to send in chat.",
+                        Rules = new HashSet<ParameterValidation.Rule>()
+                    }
+                }
             },
             new Command()
             {
@@ -128,6 +136,14 @@ namespace OpenWorldServer
                 Category = Command.CommandCategory.Player_Interaction,
                 AdvancedCommand = AdvancedCommands.BroadcastCommand,
                 Parameters = new HashSet<Parameter>()
+                {
+                    new Parameter()
+                    {
+                        Name = "Message",
+                        Description = "The message you would like to broadcast to all players.",
+                        Rules = new HashSet<ParameterValidation.Rule>()
+                    }
+                }
             },
             new Command()
             {
@@ -136,6 +152,23 @@ namespace OpenWorldServer
                 Category = Command.CommandCategory.Player_Interaction,
                 AdvancedCommand = AdvancedCommands.NotifyCommand,
                 Parameters = new HashSet<Parameter>()
+                {
+                    new Parameter()
+                    {
+                        Name = "Player",
+                        Description = "The player to whom you would like to send the notification.",
+                        Rules = new HashSet<ParameterValidation.Rule>()
+                        { 
+                            ParameterValidation.Rule.PlayerOnline
+                        }
+                    },
+                    new Parameter()
+                    {
+                        Name = "Message",
+                        Description = "The message you would like to send in chat.",
+                        Rules = new HashSet<ParameterValidation.Rule>()
+                    }
+                }
             },
             new Command()
             {
@@ -144,6 +177,26 @@ namespace OpenWorldServer
                 Category = Command.CommandCategory.Player_Interaction,
                 AdvancedCommand = AdvancedCommands.InvokeCommand,
                 Parameters = new HashSet<Parameter>()
+                {
+                    new Parameter()
+                    {
+                        Name = "Player",
+                        Description = "The player to whom you would like to send the notification.",
+                        Rules = new HashSet<ParameterValidation.Rule>()
+                        {
+                            ParameterValidation.Rule.PlayerOnline
+                        }
+                    },
+                    new Parameter()
+                    {
+                        Name = "Event",
+                        Description = "The event you would like to send to the player.",
+                        Rules = new HashSet<ParameterValidation.Rule>()
+                        {
+                            ParameterValidation.Rule.ValidEvent
+                        }
+                    }
+                }
             },
             new Command()
             {
@@ -152,6 +205,18 @@ namespace OpenWorldServer
                 Category = Command.CommandCategory.Player_Interaction,
                 AdvancedCommand = AdvancedCommands.PlagueCommand,
                 Parameters = new HashSet<Parameter>()
+                {
+                    new Parameter()
+                    {
+                        Name = "Event",
+                        Description = "The event you would like to send to the player.",
+                        Rules = new HashSet<ParameterValidation.Rule>()
+                        {
+                            ParameterValidation.Rule.ValidEvent
+                        }
+                    }
+                }
+
             },
             new Command()
             {

@@ -18,7 +18,7 @@ namespace OpenWorldServer
                 ConsoleUtils.LogToConsole(
                 string.Join('\n', Server.ServerCommands.Where(x => x.Category.ToString() == category).Select(x => $"{x.Word}: {x.Description}" +
                     (x.AdvancedCommand != null
-                        ? $"\n\tParameters:\n{string.Join('\n', x.Parameters.Select(y => $"\t-{y.Name}: {y.Description}"))}"
+                        ? $"\n\tUsage: {x.Word} {string.Join(' ', x.Parameters.Select(y => $"[{y.Name.ToLower()}]"))}\n\tParameters:\n{string.Join('\n', x.Parameters.Select(y => $"\t\t-{y.Name}: {y.Description}"))}"
                         : ""
                     )
                 )));
@@ -237,10 +237,11 @@ namespace OpenWorldServer
             ConsoleUtils.LogToConsole("Server Chat", ConsoleUtils.ConsoleLogMode.Heading);
             ConsoleUtils.LogToConsole(Server.chatCache.Count == 0 ? "No Chat Messages in History" : string.Join('\n', Server.chatCache));
         }
+        public static readonly string[] EventList = new string[] { "Raid", "Infestation", "MechCluster", "ToxicFallout", "Manhunter", "Wanderer", "FarmAnimals", "ShipChunk", "GiveQuest", "TraderCaravan" };
         public static void EventListCommand()
         {
             ConsoleUtils.LogToConsole("List Of Available Events", ConsoleUtils.ConsoleLogMode.Heading);
-            ConsoleUtils.LogToConsole("Raid\nInfestation\nMechCluster\nToxicFallout\nManhunter\nWanderer\nFarmAnimals\nShipChunk\nGiveQuest\nTraderCaravan");
+            ConsoleUtils.LogToConsole(string.Join('\n', EventList));
         }
         public static void UnknownCommand(string command) => ConsoleUtils.LogToConsole("Command [" + command + "] Not Found", ConsoleUtils.ConsoleLogMode.Warning);
     }
