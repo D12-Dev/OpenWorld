@@ -74,21 +74,6 @@ namespace OpenWorldServer
 
             Networking.SendData(client, "LoadGame│");
         }
-        private static bool ValidatePassword(ServerClient client)
-        {
-            ServerClient clientToFetch = Server.savedClients.Find(fetch => fetch.username == client.username);
-
-            client.username = clientToFetch.username;
-
-            if (clientToFetch.password != client.password)
-            {
-
-                return false;
-            }
-
-            return true;
-        }
-
         public static string GetPlanetToSend()
         {
             string dataToSend = "Planet│";
