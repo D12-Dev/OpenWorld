@@ -3,6 +3,7 @@ using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using UnityEngine;
 using Verse;
 
 namespace OpenWorld
@@ -22,6 +23,7 @@ namespace OpenWorld
         public int modVerificationMode = 0;
         public int profanityMode = 0;
         public int enforcedDifficultyMode = 0;
+        public bool isAdmin = false;
 
         //Player Flags
         public bool pvpFlag;
@@ -52,7 +54,7 @@ namespace OpenWorld
         public Dictionary<string, int> factionMembers = new Dictionary<string, int>();
 
         //Online Settlements Lists
-        public Dictionary<int, List<string>> allSettlements = new Dictionary<int, List<string>>();
+        public Dictionary<int, List<string>> allOnlineSettlements = new Dictionary<int, List<string>>();
         public Dictionary<int, List<string>> onlineNeutralSettlements = new Dictionary<int, List<string>>();
         public Dictionary<int, List<string>> onlineAllySettlements = new Dictionary<int, List<string>>();
         public Dictionary<int, List<string>> onlineEnemySettlements = new Dictionary<int, List<string>>();
@@ -66,16 +68,19 @@ namespace OpenWorld
         public Dialog_MPTrade __MPTrade;
         public Dialog_MPBarter __MPBarter;
         public Dialog_MPFactionSiloDeposit __MPSiloDeposit;
+        public Dialog_MPFactionBankDeposit __MPBankDeposit;
 
         public string giftedItemsString = "";
         public string tradedItemString = "";
         public string barteredItemString = "";
         public string depositItemsString = "";
+        public int depositSilverInt = 0;
 
         public List<Tradeable> listToShowInGiftMenu = new List<Tradeable>();
         public List<Tradeable> listToShowInTradeMenu = new List<Tradeable>();
         public List<Tradeable> listToShowInBarterMenu = new List<Tradeable>();
         public List<Tradeable> listToShowInSiloMenu = new List<Tradeable>();
+        public List<Tradeable> listToShowInBankMenu = new List<Tradeable>();
 
         //Trade References
         public Dialog_MPWaiting __MPWaiting;
@@ -94,8 +99,12 @@ namespace OpenWorld
         //Production Site References
         public int productionSiteProduct = 0;
 
+        //Bank References
+        public int bankSilver = 0;
+
         //General Purpose
-        public string gameSavePath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData).Replace("Roaming", "LocalLow") + Path.DirectorySeparatorChar + "Ludeon Studios" + Path.DirectorySeparatorChar + "RimWorld by Ludeon Studios" + Path.DirectorySeparatorChar + "Saves";
+        public string gameSavePath = Application.persistentDataPath + Path.DirectorySeparatorChar + "Saves";
+        public int quantityChosenOnDialog;
 
         //Dialog_MPParameters
         public string ipText;
@@ -107,7 +116,6 @@ namespace OpenWorld
         public string onlineFileSaveName = "Open World Save";
         public string modIdentifier = "OpenWorld";
         public string connectedServerIdentifier = "";
-        public bool isAdmin = false;
 
         //Letters
         public string letterTitle;
@@ -123,6 +131,6 @@ namespace OpenWorld
         public string receiveGiftsData;
         public string serverStatusString;
         public int transferMode;
-        public string versionCode = "Faction Warfare";
+        public string versionCode = "Faction Warfare Expansion";
     }
 }

@@ -111,7 +111,7 @@ namespace OpenWorldServer
             if (structureOfSameType != null)
             {
                 if (structureOfSameType is FactionSilo) return false;
-                else if (structureOfSameType is FactionProductionSite) return false;
+                else if (structureOfSameType is FactionProductionSite) return true;
                 else if (structureOfSameType is FactionMarketplace) return true;
                 else if (structureOfSameType is FactionBank) return true;
                 else if (structureOfSameType is FactionStable) return true;

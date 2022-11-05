@@ -84,6 +84,9 @@
     <Compile Include="Categories\MPChat.cs" />
     <Compile Include="Categories\MPGame.cs" />
     <Compile Include="Categories\MPWorld.cs" />
+    <Compile Include="Dialogs\Factions\Dialog_MPConfirmBankDeposit.cs" />
+    <Compile Include="Dialogs\Factions\Dialog_MPFactionBankDeposit.cs" />
+    <Compile Include="Dialogs\OW_QuantityDialog.cs" />
     <Compile Include="Dialogs\OW_InfoDialog.cs" />
     <Compile Include="Dialogs\OW_ErrorDialog.cs" />
     <Compile Include="Dialogs\Factions\Dialog_MPFactionInvite.cs" />
@@ -123,6 +126,7 @@
     <Compile Include="Dialogs\Online\Dialog_MPWaiting.cs" />
     <Compile Include="Dialogs\Disconnects\Dialog_MPWrongMods.cs" />
     <Compile Include="Encryption.cs" />
+    <Compile Include="Handler\BankHandler.cs" />
     <Compile Include="Handler\FactionHandler.cs" />
     <Compile Include="Handler\BarterHandler.cs" />
     <Compile Include="Handler\GiftHandler.cs" />

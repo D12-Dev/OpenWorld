@@ -66,12 +66,6 @@ namespace OpenWorld
                         return;
                     }
 
-                    if (buildingType == 2 && pair.Value[0] == 2 && pair.Value[1] == 1)
-                    {
-                        Find.WindowStack.Add(new OW_ErrorDialog("You reached this structure limit"));
-                        return;
-                    }
-
                     if (buildingType == 0 && pair.Value[0] == 0 && pair.Value[1] == 1)
                     {
                         Find.WindowStack.Add(new OW_ErrorDialog("You reached this structure limit"));

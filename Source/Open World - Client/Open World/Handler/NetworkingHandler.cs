@@ -442,9 +442,31 @@ namespace OpenWorld
 
             else if (data.StartsWith("FactionManagement│ProductionSite"))
             {
-                if (data == "FactionManagement│ProductionSite│Tick")
+                if (data.StartsWith("FactionManagement│ProductionSite│Tick"))
                 {
-                    ProductionSiteHandler.GetProductsToReceive();
+                    ProductionSiteHandler.GetProductsToReceive(data);
+                }
+            }
+
+            else if (data.StartsWith("FactionManagement│Bank"))
+            {
+                if (data.StartsWith("FactionManagement│Bank│Refresh"))
+                {
+                    int quantity = int.Parse(data.Split('│')[3]);
+
+                    Main._ParametersCache.bankSilver = quantity;
+                }
+
+                else if (data.StartsWith("FactionManagement│Bank│Withdraw"))
+                {
+                    int quantity = int.Parse(data.Split('│')[3]);
+
+                    if (quantity == 0) return;
+                    else
+                    {
+                        Find.WindowStack.Add(new OW_InfoDialog("You have received the funds"));
+                        MPCaravan.GiveFundsToCaravan(quantity);
+                    }
                 }
             }
         }

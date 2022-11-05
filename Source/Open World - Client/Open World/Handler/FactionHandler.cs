@@ -25,7 +25,7 @@ namespace OpenWorld
             else if (structureType == 2) siteName = "Production Site";
             else if (structureType == 3) siteName = "Wonder Structure";
             else if (structureType == 4) siteName = "Bank";
-            else if (structureType == 5) siteName = "Stable";
+            else if (structureType == 5) siteName = "Stable - " + structureTile;
             else if (structureType == 6) siteName = "Courier Station";
 
             Faction factionToGet = null;
@@ -128,6 +128,9 @@ namespace OpenWorld
                 else if (pair.Value[0] == 1) siteName = "Marketplace";
                 else if (pair.Value[0] == 2) siteName = "Production Site";
                 else if (pair.Value[0] == 3) siteName = "Wonder Structure";
+                else if (pair.Value[0] == 4) siteName = "Bank";
+                else if (pair.Value[0] == 5) siteName = "Stable - " + pair.Key;
+                else if (pair.Value[0] == 6) siteName = "Courier Station";
 
                 Faction factionToGet = null;
                 if (pair.Value[1] == 0) factionToGet = Main._ParametersCache.onlineNeutralFaction;
