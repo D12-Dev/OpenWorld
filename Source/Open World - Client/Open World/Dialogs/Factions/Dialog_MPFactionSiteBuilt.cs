@@ -433,8 +433,9 @@ namespace OpenWorld
                         Close();
                         return;
                     }
-                    
+
                     Main._ParametersCache.focusedCaravan.Tile = pair.Key;
+                    Main._ParametersCache.focusedCaravan.pather.nextTile = pair.Key;
 
                     Close();
                 }
