@@ -209,141 +209,83 @@ namespace OpenWorldServer
 
         public static void WipeCommand()
         {
-            Console.Clear();
-
             ConsoleUtils.LogToConsole("WARNING! THIS ACTION WILL DELETE ALL PLAYER DATA. DO YOU WANT TO PROCEED? (Y/N)", ConsoleUtils.ConsoleLogMode.Warning);
-            string response = Console.ReadLine();
-
-            if (response == "Y")
+            if (Console.ReadLine().Trim().ToUpper() == "Y")
             {
-                ServerClient[] clients = Networking.connectedClients.ToArray();
-                foreach (ServerClient client in clients) client.disconnectFlag = true;
-                
-
-                ServerClient[] savedClients = Server.savedClients.ToArray();
-                foreach (ServerClient client in savedClients)
+                foreach (ServerClient client in Networking.connectedClients) client.disconnectFlag = true;
+                foreach (ServerClient client in Server.savedClients)
                 {
                     client.wealth = 0;
                     client.pawnCount = 0;
                     PlayerUtils.SavePlayer(client);
                 }
-
-                Console.Clear();
-
                 ConsoleUtils.LogToConsole("All Player Files Have Been Set To Wipe", ConsoleUtils.ConsoleLogMode.Info);
-
             }
-            else Console.Clear();
+            else ConsoleUtils.LogToConsole("Aborted Wipe Attempt", ConsoleUtils.ConsoleLogMode.Info);
         }
 
         //Player Interaction
-
         public static void ListCommand()
         {
             Console.Clear();
 
-            ConsoleUtils.LogToConsole("Connected Players: " + Networking.connectedClients.Count, ConsoleUtils.ConsoleLogMode.Heading);
+            ConsoleUtils.LogToConsole($"Connected Players: {Networking.connectedClients.Count}", ConsoleUtils.ConsoleLogMode.Heading);
 
             if (Networking.connectedClients.Count == 0) ConsoleUtils.LogToConsole("No Players Connected");
             else
             {
-                ServerClient[] clients = Networking.connectedClients.ToArray();
-                foreach (ServerClient client in clients)
+                foreach (ServerClient client in Networking.connectedClients)
                 {
-                    try { ConsoleUtils.LogToConsole("" + client.username); }
+                    try 
+                    { 
+                        ConsoleUtils.LogToConsole(client.username); 
+                    }
                     catch
                     {
-                        ConsoleUtils.LogToConsole("Error Processing Player With IP " + ((IPEndPoint)client.tcp.Client.RemoteEndPoint).Address.ToString(), ConsoleUtils.ConsoleLogMode.Error);
+                        ConsoleUtils.LogToConsole($"Error Processing Player With IP {((IPEndPoint)client.tcp.Client.RemoteEndPoint).Address}", ConsoleUtils.ConsoleLogMode.Error);
                     }
                 }
             }
 
-
-
-            ConsoleUtils.LogToConsole("Saved Players: " + Server.savedClients.Count, ConsoleUtils.ConsoleLogMode.Heading);
-
+            ConsoleUtils.LogToConsole($"Saved Players: {Server.savedClients.Count}", ConsoleUtils.ConsoleLogMode.Heading);
             if (Server.savedClients.Count == 0) ConsoleUtils.LogToConsole("No Players Saved");
             else
             {
-                ServerClient[] savedClients = Server.savedClients.ToArray();
-                foreach (ServerClient savedClient in savedClients)
+                foreach (ServerClient savedClient in Server.savedClients)
                 {
-                    try { ConsoleUtils.LogToConsole("" + savedClient.username); }
+                    try 
+                    { 
+                        ConsoleUtils.LogToConsole(savedClient.username); 
+                    }
                     catch
                     {
-                        ConsoleUtils.LogToConsole("Error Processing Player With IP " + ((IPEndPoint)savedClient.tcp.Client.RemoteEndPoint).Address.ToString(), ConsoleUtils.ConsoleLogMode.Error);
+                        ConsoleUtils.LogToConsole($"Error Processing Player With IP {((IPEndPoint)savedClient.tcp.Client.RemoteEndPoint).Address}", ConsoleUtils.ConsoleLogMode.Error);
                     }
                 }
             }
             ConsoleUtils.LogToConsole("Saved Factions: " + Server.savedFactions.Count, ConsoleUtils.ConsoleLogMode.Heading);
-
-            if (Server.savedFactions.Count == 0) ConsoleUtils.LogToConsole("No Factions Saved");
-            else
-            {
-                Faction[] factions = Server.savedFactions.ToArray();
-                foreach (Faction savedFaction in factions) ConsoleUtils.LogToConsole(savedFaction.name);
-                
-            }
-
+            ConsoleUtils.LogToConsole(Server.chatCache.Count == 0 ? "No Factions Saved" : string.Join('\n', Server.savedFactions.Select(x => x.name)));
         }
 
         public static void SettlementsCommand()
         {
-            Console.Clear();
-
             ConsoleUtils.LogToConsole("Server Settlements: " + Server.savedSettlements.Count, ConsoleUtils.ConsoleLogMode.Heading);
-
-            if (Server.savedSettlements.Count == 0) ConsoleUtils.LogToConsole("No Active Settlements");
-            else
-            {
-                Dictionary<string, List<string>> settlements = Server.savedSettlements;
-                foreach (KeyValuePair<string, List<string>> pair in settlements) ConsoleUtils.LogToConsole("[" + pair.Key + "] - [" + pair.Value[0] + "]");
-                
-            }
-
+            ConsoleUtils.LogToConsole(Server.chatCache.Count == 0 ? "No Settlements Saved" : string.Join('\n', Server.savedSettlements.Select(x => $"[{x.Key}] - [{x.Value[0]}]")));
         }
 
         public static void ChatCommand()
         {
-            Console.Clear();
-
             ConsoleUtils.LogToConsole("Server Chat", ConsoleUtils.ConsoleLogMode.Heading);
-
-            if (Server.chatCache.Count == 0) ConsoleUtils.LogToConsole("No Chat Messages");
-            else
-            {
-                string[] chat = Server.chatCache.ToArray();
-                foreach (string message in chat) ConsoleUtils.LogToConsole(message);
-            }
-
+            ConsoleUtils.LogToConsole(Server.chatCache.Count == 0 ? "No Chat Messages in History" : string.Join('\n', Server.chatCache));
         }
 
         public static void EventListCommand()
         {
-            Console.Clear();
             ConsoleUtils.LogToConsole("List Of Available Events", ConsoleUtils.ConsoleLogMode.Heading);
-
-            ConsoleUtils.LogToConsole("Raid");
-            ConsoleUtils.LogToConsole("Infestation");
-            ConsoleUtils.LogToConsole("MechCluster");
-            ConsoleUtils.LogToConsole("ToxicFallout");
-            ConsoleUtils.LogToConsole("Manhunter");
-            ConsoleUtils.LogToConsole("Wanderer");
-            ConsoleUtils.LogToConsole("FarmAnimals");
-            ConsoleUtils.LogToConsole("ShipChunk");
-            ConsoleUtils.LogToConsole("GiveQuest");
-            ConsoleUtils.LogToConsole("TraderCaravan");
-
+            ConsoleUtils.LogToConsole("Raid\nInfestation\nMechCluster\nToxicFallout\nManhunter\nWanderer\nFarmAnimals\nShipChunk\nGiveQuest\nTraderCaravan");
         }
 
-        //Unknown
-
-        public static void UnknownCommand(string command)
-        {
-            Console.Clear();
-
-            ConsoleUtils.LogToConsole("Command [" + command + "] Not Found", ConsoleUtils.ConsoleLogMode.Warning);
-
-        }
+        // Error Messages
+        public static void UnknownCommand(string command) => ConsoleUtils.LogToConsole("Command [" + command + "] Not Found", ConsoleUtils.ConsoleLogMode.Warning);
     }
 }
