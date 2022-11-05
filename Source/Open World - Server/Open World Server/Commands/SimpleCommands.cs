@@ -12,13 +12,13 @@ namespace OpenWorldServer
         {
             Console.Clear();
             ConsoleUtils.LogToConsole("List of Available Commands", ConsoleUtils.ConsoleLogMode.Heading);
-            ConsoleUtils.LogToConsole("Help - Displays Help Menu\nSettings - Displays Settings Menu\nModlist - Displays Mods Menu\nList - Displays Player List Menu\nWhitelist - Shows All Whitelisted Players\nSettlements - Displays Settlements Menu\nFaction - Displays All Data About X Faction\nReload - Reloads All Available Settings Into The Server\nStatus - Shows A General Overview Menu\nClear - Clears The Console\nExit - Closes The Server");
-            ConsoleUtils.LogToConsole("Communication", ConsoleUtils.ConsoleLogMode.Heading);
-            ConsoleUtils.LogToConsole("Say - Send A Chat Message\nBroadcast - Send A Letter To Every Player Connected\nNotify - Send A Letter To X Player\nChat - Displays Chat Menu");
-            ConsoleUtils.LogToConsole("Interaction", ConsoleUtils.ConsoleLogMode.Heading);
-            ConsoleUtils.LogToConsole("Invoke - Invokes An Event To X Player\nPlague - Invokes An Event To All Connected Players\nEventlist - Shows All Available Events\nGiveItem - Gives An Item To X Player\nGiveItemAll - Gives An Item To All Players\nProtect - Protects A Player From Any Event Temporarily\nDeprotect - Disables All Protections Given To X Player\nImmunize - Protects A Player From Any Event Permanently\nDeimmunize - Disables The Immunity Given To X Player");
-            ConsoleUtils.LogToConsole("Admin Control", ConsoleUtils.ConsoleLogMode.Heading);
-            ConsoleUtils.LogToConsole("Player - Displays All Data About X Player\nPromote - Promotes X Player To Admin\nDemote - Demotes X Player\nAdminlist - Shows All Server Admins\nKick - Kicks X Player\nBan - Bans X Player\nPardon - Pardons X Player\nBanlist - Shows All Banned Players\nWipe - Deletes Every Player Data In The Server");
+            ConsoleUtils.LogToConsole(
+                string.Join('\n', Server.ServerCommands.Select(x => $"{x.Word}: {x.Description}" + 
+                    (x.AdvancedCommand != null 
+                        ? $"\n\tParameters:\n{string.Join('\n',x.Parameters.Select(y => $"\t-{y.Key}: {y.Value}"))}"
+                        :""
+                    )
+                ))); 
         }
         private static readonly Dictionary<string, Dictionary<string, string>> SETTINGS = new Dictionary<string, Dictionary<string, string>>()
         {

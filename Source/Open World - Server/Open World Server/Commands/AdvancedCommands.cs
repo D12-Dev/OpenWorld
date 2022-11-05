@@ -10,11 +10,12 @@ namespace OpenWorldServer
 {
     public static class AdvancedCommands
     {
+        // TODO: These should be parameterized into the methods. Having a static field like this (especially with threaded/async apps) can cause bad bugs if two commands are run at the same time from different instances / clients.
         public static string commandData;
 
         //Communication
 
-        public static void SayCommand()
+        public static void SayCommand(string[] arguments)
         {
             if (string.IsNullOrWhiteSpace(commandData)) ConsoleUtils.LogToConsole("Missing Parameters", ConsoleUtils.ConsoleLogMode.Warning);
             else
@@ -27,7 +28,7 @@ namespace OpenWorldServer
             }
         }
 
-        public static void BroadcastCommand()
+        public static void BroadcastCommand(string[] arguments)
         {
             if (string.IsNullOrWhiteSpace(commandData)) ConsoleUtils.LogToConsole("Missing Parameters", ConsoleUtils.ConsoleLogMode.Warning);
             else
@@ -38,7 +39,7 @@ namespace OpenWorldServer
             }
         }
 
-        public static void NotifyCommand()
+        public static void NotifyCommand(string[] arguments)
         {
             bool isMissingParameters = false;
 
@@ -67,7 +68,7 @@ namespace OpenWorldServer
 
         //Items
 
-        public static void GiveItemCommand()
+        public static void GiveItemCommand(string[] arguments)
         {
             Console.Clear();
 
@@ -102,7 +103,7 @@ namespace OpenWorldServer
             }
         }
 
-        public static void GiveItemAllCommand()
+        public static void GiveItemAllCommand(string[] arguments)
         {
             Console.Clear();
 
@@ -132,7 +133,7 @@ namespace OpenWorldServer
 
         //Anti-PvP
 
-        public static void ImmunizeCommand()
+        public static void ImmunizeCommand(string[] arguments)
         {
             Console.Clear();
             string clientID = commandData.Split(' ')[0];
@@ -152,7 +153,7 @@ namespace OpenWorldServer
             }
         }
 
-        public static void DeimmunizeCommand()
+        public static void DeimmunizeCommand(string[] arguments)
         {
             Console.Clear();
 
@@ -173,7 +174,7 @@ namespace OpenWorldServer
             }
         }
 
-        public static void ProtectCommand()
+        public static void ProtectCommand(string[] arguments)
         {
             Console.Clear();
 
@@ -201,7 +202,7 @@ namespace OpenWorldServer
             }
         }
 
-        public static void DeprotectCommand()
+        public static void DeprotectCommand(string[] arguments)
         {
             Console.Clear();
             string clientID = commandData.Split(' ')[0];
@@ -222,7 +223,7 @@ namespace OpenWorldServer
 
         //Events
 
-        public static void InvokeCommand()
+        public static void InvokeCommand(string[] arguments)
         {
             Console.Clear();
             bool isMissingParameters = false;
@@ -243,7 +244,7 @@ namespace OpenWorldServer
             }
         }
 
-        public static void PlagueCommand()
+        public static void PlagueCommand(string[] arguments)
         {
             Console.Clear();
             string eventID = commandData.Split(' ')[0];
@@ -255,7 +256,7 @@ namespace OpenWorldServer
 
         //Administration
 
-        public static void PromoteCommand()
+        public static void PromoteCommand(string[] arguments)
         {
             Console.Clear();
             string clientID = commandData.Split(' ')[0];
@@ -281,7 +282,7 @@ namespace OpenWorldServer
             }
         }
 
-        public static void DemoteCommand()
+        public static void DemoteCommand(string[] arguments)
         {
             Console.Clear();
             string clientID = commandData.Split(' ')[0];
@@ -306,7 +307,7 @@ namespace OpenWorldServer
             }
         }
 
-        public static void PlayerDetailsCommand()
+        public static void PlayerDetailsCommand(string[] arguments)
         {
             Console.Clear();
             string clientID = commandData.Split(' ')[0];
@@ -342,7 +343,7 @@ namespace OpenWorldServer
             }
         }
 
-        public static void FactionDetailsCommand()
+        public static void FactionDetailsCommand(string[] arguments)
         {
             Console.Clear();
             string factionID = commandData.Split(' ')[0];
@@ -369,7 +370,7 @@ namespace OpenWorldServer
 
         //Security
 
-        public static void BanCommand()
+        public static void BanCommand(string[] arguments)
         {
             Console.Clear();
             string clientID = commandData.Split(' ')[0];
@@ -388,7 +389,7 @@ namespace OpenWorldServer
             }
         }
 
-        public static void PardonCommand()
+        public static void PardonCommand(string[] arguments)
         {
             Console.Clear();
             string clientID = commandData.Split(' ')[0];
@@ -410,7 +411,7 @@ namespace OpenWorldServer
             }
         }
 
-        public static void KickCommand()
+        public static void KickCommand(string[] arguments)
         {
             Console.Clear();
             string clientID = commandData.Split(' ')[0];
