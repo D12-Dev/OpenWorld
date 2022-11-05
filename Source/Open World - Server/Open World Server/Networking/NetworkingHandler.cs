@@ -10,7 +10,7 @@ namespace OpenWorldServer
     {
         public static void ConnectHandle(ServerClient client, string data)
         {
-            JoinUtils.LoginProcedures(client, data);
+            JoinUtils.ProcessLoginAttempt(client, data);
         }
 
         public static void ChatMessageHandle(ServerClient client, string data)
