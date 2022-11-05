@@ -58,7 +58,6 @@ namespace OpenWorldServer
                 Console.Write("Command> ");
             }
         }
-
         public enum FileLogMode
         {
             Chat,
@@ -76,7 +75,6 @@ namespace OpenWorldServer
             // Year-Month-Day is always superior because chronological=alphabetical.
             string pathToday = Server.logFolderPath + Path.DirectorySeparatorChar + DateTime.Today.Year + "-" + DateTime.Today.Month + "-" + DateTime.Today.Day;
             if (!Directory.Exists(pathToday)) Directory.CreateDirectory(pathToday);
-
             Dictionary<FileLogMode, string> files = new Dictionary<FileLogMode, string>()
             {
                 { FileLogMode.Chat, "chat.log" },
@@ -89,7 +87,6 @@ namespace OpenWorldServer
                 { FileLogMode.General, "log.log" },
                 { FileLogMode.WarningError, "warning_error.log" }
             };
-
             try { File.AppendAllText(pathToday + Path.DirectorySeparatorChar + files[mode], $"{data}\n"); }
             catch 
             { 
