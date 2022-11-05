@@ -26,7 +26,15 @@ namespace OpenWorldServer
             {
                 Thread CheckThread = new Thread(() => FactionProductionSiteHandler.TickProduction());
                 CheckThread.IsBackground = true;
-                CheckThread.Name = "Factions Production Site Thread";
+                CheckThread.Name = "Factions Production Site Tick Thread";
+                CheckThread.Start();
+            }
+
+            else if (threadID == 3)
+            {
+                Thread CheckThread = new Thread(() => FactionBankHandler.TickBank());
+                CheckThread.IsBackground = true;
+                CheckThread.Name = "Factions Bank Tick Thread";
                 CheckThread.Start();
             }
 

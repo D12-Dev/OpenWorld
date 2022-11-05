@@ -180,7 +180,7 @@ namespace OpenWorld
 				else if (pair.Value[0] == 2) siteName = "Production Site";
 				else if (pair.Value[0] == 3) siteName = "Wonder Structure";
 				else if (pair.Value[0] == 4) siteName = "Bank";
-				else if (pair.Value[0] == 5) siteName = "Stable";
+				else if (pair.Value[0] == 5) siteName = "Stable - " + pair.Key;
 				else if (pair.Value[0] == 6) siteName = "Courier Station";
 
 				Faction factionToGet = null;
@@ -235,6 +235,7 @@ namespace OpenWorld
 				else if (Main._ParametersCache.transferMode == 1) Main._ParametersCache.tradedItemString += itemDefName + "┼" + ___countToTransfer + "┼" + ((int)qc) + "┼" + stuffDefName + "»";
 				else if (Main._ParametersCache.transferMode == 2) Main._ParametersCache.barteredItemString += itemDefName + "┼" + ___countToTransfer + "┼" + ((int)qc) + "┼" + stuffDefName + "»";
 				else if (Main._ParametersCache.transferMode == 3) Main._ParametersCache.depositItemsString += itemDefName + "┼" + ___countToTransfer + "┼" + ((int)qc) + "┼" + stuffDefName + "»";
+				else if (Main._ParametersCache.transferMode == 4) Main._ParametersCache.depositSilverInt += ___countToTransfer;
 
 				return true;
 			}
@@ -257,6 +258,7 @@ namespace OpenWorld
 				___tradeables.AddRange(Main._ParametersCache.listToShowInTradeMenu);
 				___tradeables.AddRange(Main._ParametersCache.listToShowInBarterMenu);
 				___tradeables.AddRange(Main._ParametersCache.listToShowInSiloMenu);
+				___tradeables.AddRange(Main._ParametersCache.listToShowInBankMenu);
 
 				return false;
 			}

@@ -156,7 +156,7 @@ namespace OpenWorld
 
                 string siteDescription = "Unique server structure";
 
-                string materialList = "Cost: 100000x silver";
+                string materialList = "Cost: 1M silver";
 
                 Text.Font = GameFont.Small;
                 Widgets.Label(new Rect(centeredX - Text.CalcSize(windowDescription).x / 2, windowDescriptionDif, Text.CalcSize(windowDescription).x, Text.CalcSize(windowDescription).y), windowDescription);
@@ -170,7 +170,7 @@ namespace OpenWorld
 
                 if (Widgets.ButtonText(new Rect(new Vector2(centeredX - (buttonX / 2) * 2, rect.yMax - buttonY * 2 - 10), new Vector2(buttonX * 2, buttonY)), "Build"))
                 {
-                    Find.WindowStack.Add(new Dialog_MPFactionSiteBuild(3, 100000));
+                    Find.WindowStack.Add(new Dialog_MPFactionSiteBuild(3, 1000000));
                     Close();
                 }
 

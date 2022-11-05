@@ -25,6 +25,7 @@ namespace OpenWorldServer
 
             Threading.GenerateThreads(1);
             Threading.GenerateThreads(2);
+            Threading.GenerateThreads(3);
 
             while (true) ListenForIncomingUsers();
         }

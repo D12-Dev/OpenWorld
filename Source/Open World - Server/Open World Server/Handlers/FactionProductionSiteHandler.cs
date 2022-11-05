@@ -18,27 +18,27 @@ namespace OpenWorldServer
                 Faction[] allFactions = Server.savedFactions.ToArray();
                 foreach (Faction faction in allFactions)
                 {
-                    foreach (FactionStructure structure in faction.factionStructures)
-                    {
-                        if (structure is FactionProductionSite)
-                        {
-                            SendProductionToMembers(faction);
-                            break;
-                        }
-                    }
+                    FactionStructure productionSiteToFind = faction.factionStructures.Find(fetch => fetch is FactionProductionSite);
+
+                    if (productionSiteToFind == null) continue;
+                    else SendProductionToMembers(faction);
                 }
+
+                ConsoleUtils.LogToConsole("[Factions Production Site Tick]");
             }
         }
 
         public static void SendProductionToMembers(Faction faction)
         {
             ServerClient[] dummyfactionMembers = faction.members.Keys.ToArray();
+            int productionSitesInFaction = faction.factionStructures.FindAll(fetch => fetch is FactionProductionSite).Count();
+
             foreach (ServerClient dummy in dummyfactionMembers)
             {
                 ServerClient connected = Networking.connectedClients.Find(fetch => fetch.username == dummy.username);
                 if (connected != null)
                 {
-                    Networking.SendData(connected, "FactionManagement│ProductionSite│Tick");
+                    Networking.SendData(connected, "FactionManagement│ProductionSite│Tick" + "│" + productionSitesInFaction);
                 }
             }
         }
