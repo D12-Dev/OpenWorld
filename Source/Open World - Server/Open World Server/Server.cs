@@ -57,7 +57,6 @@ namespace OpenWorldServer
 
         //Server Lists
         public static List<string> whitelistedUsernames = new List<string>();
-        public static List<string> adminList = new List<string>();
         public static List<string> chatCache = new List<string>();
         public static Dictionary<string, string> bannedIPs = new Dictionary<string, string>();
         public static List<Faction> savedFactions = new List<Faction>();
