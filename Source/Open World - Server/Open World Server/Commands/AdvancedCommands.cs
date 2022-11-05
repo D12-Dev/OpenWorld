@@ -9,7 +9,7 @@ namespace OpenWorldServer
         public static void SayCommand(string[] arguments)
         {
             ConsoleUtils.LogToConsole($"Chat - [Console] {arguments[0]}");
-            Server.chatCache.Add("[" + DateTime.Now + "]" + " │ " + );
+            Server.chatCache.Add($"[{DateTime.Now}] │ {arguments[0]}");
             foreach (ServerClient sc in Networking.connectedClients) Networking.SendData(sc, $"ChatMessage│SERVER│{arguments[0]}");
         }
         public static void BroadcastCommand(string[] arguments)
