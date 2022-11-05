@@ -12,13 +12,18 @@ namespace OpenWorldServer
         {
             Console.Clear();
             ConsoleUtils.LogToConsole("List of Available Commands", ConsoleUtils.ConsoleLogMode.Heading);
-            ConsoleUtils.LogToConsole(
-                string.Join('\n', Server.ServerCommands.Select(x => $"{x.Word}: {x.Description}" + 
-                    (x.AdvancedCommand != null 
-                        ? $"\n\tParameters:\n{string.Join('\n',x.Parameters.Select(y => $"\t-{y.Key}: {y.Value}"))}"
-                        :""
+            foreach (string category in Enum.GetNames(typeof(Command.CommandCategory)))
+            {
+                ConsoleUtils.LogToConsole(category.Replace('_',' '), ConsoleUtils.ConsoleLogMode.Heading);
+                ConsoleUtils.LogToConsole(
+                string.Join('\n', Server.ServerCommands.Where(x => x.Category.ToString() == category).Select(x => $"{x.Word}: {x.Description}" +
+                    (x.AdvancedCommand != null
+                        ? $"\n\tParameters:\n{string.Join('\n', x.Parameters.Select(y => $"\t-{y.Key}: {y.Value}"))}"
+                        : ""
                     )
-                ))); 
+                )));
+            }
+            
         }
         private static readonly Dictionary<string, Dictionary<string, string>> SETTINGS = new Dictionary<string, Dictionary<string, string>>()
         {

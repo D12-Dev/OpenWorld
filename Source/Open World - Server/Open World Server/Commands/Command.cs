@@ -6,9 +6,15 @@ namespace OpenWorldServer
 {
     public class Command
     {
-
+        public enum CommandCategory
+        {
+            Player_Interaction,
+            Server_Administration,
+            Information
+        }
         public string Word { get; set; }
         public string Description { get; set; }
+        public CommandCategory Category { get; set; }
         public Dictionary<string, string> Parameters { get; set; }
         private Action _simpleCommand;
         public Action SimpleCommand
