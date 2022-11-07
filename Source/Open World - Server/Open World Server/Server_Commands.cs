@@ -356,7 +356,7 @@ namespace OpenWorldServer
                     new Parameter()
                     {
                         Name = "Player",
-                        Description = "The player who you would like to ban.",
+                        Description = "The player who you would like to give the item to.",
                         Rules = new HashSet<ParameterValidation.Rule>()
                         {
                             ParameterValidation.Rule.PlayerOnline
