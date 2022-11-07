@@ -129,18 +129,16 @@ namespace OpenWorldServer
             SavePlayer(savedClient);
         }
 
-        public static void CheckAllAvailablePlayers(bool newLine)
+        public static void CheckAllAvailablePlayers()
         {
-            if (newLine) Console.WriteLine("");
 
             Console.ForegroundColor = ConsoleColor.Green;
-            ConsoleUtils.LogToConsole("Players Check:");
+            ConsoleUtils.LogToConsole("Players Check", ConsoleUtils.ConsoleLogMode.Heading);
             Console.ForegroundColor = ConsoleColor.White;
 
             CheckSavedPlayers();
             CheckForBannedPlayers();
             CheckForWhitelistedPlayers();
-            Console.WriteLine("");
         }
 
         private static void CheckSavedPlayers()
@@ -152,6 +150,7 @@ namespace OpenWorldServer
             {
                 Directory.CreateDirectory(Server.playersFolderPath);
                 ConsoleUtils.LogToConsole("No Players Folder Found, Generating");
+                // TODO: This is unstructured.
                 return;
             }
 

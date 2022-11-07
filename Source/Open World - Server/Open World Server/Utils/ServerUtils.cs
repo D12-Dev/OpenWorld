@@ -11,7 +11,6 @@ namespace OpenWorldServer
     {
         public static void SetCulture()
         {
-            Console.ForegroundColor = ConsoleColor.White;
             ConsoleUtils.LogToConsole("Using Culture Info: [" + CultureInfo.CurrentCulture + "]");
 
             CultureInfo.CurrentCulture = new CultureInfo("en-US", false);
@@ -34,19 +33,14 @@ namespace OpenWorldServer
             Server.blacklistedModsFolderPath = Server.mainFolderPath + Path.DirectorySeparatorChar + "Blacklisted Mods";
             Server.whitelistedUsersPath = Server.mainFolderPath + Path.DirectorySeparatorChar + "Whitelisted Players.txt";
 
-            Console.ForegroundColor = ConsoleColor.Green;
-            ConsoleUtils.LogToConsole("Server Startup:");
-            Console.ForegroundColor = ConsoleColor.White;
+            ConsoleUtils.LogToConsole("Server Startup", ConsoleUtils.ConsoleLogMode.Heading);
 
             ConsoleUtils.LogToConsole("Base Directory At: [" + Server.mainFolderPath + "]");
         }
 
         public static void CheckServerVersion()
         {
-            Console.WriteLine("");
-            Console.ForegroundColor = ConsoleColor.Green;
-            ConsoleUtils.LogToConsole("Server Version Check:");
-            Console.ForegroundColor = ConsoleColor.White;
+            ConsoleUtils.LogToConsole("Server Version Check", ConsoleUtils.ConsoleLogMode.Heading);
 
             string latestVersion = "";
 
@@ -61,22 +55,16 @@ namespace OpenWorldServer
 
             catch
             {
-                Console.ForegroundColor = ConsoleColor.White;
-                ConsoleUtils.LogToConsole("Version Check Failed. This Is Not Dangerous");
-                Console.ForegroundColor = ConsoleColor.White;
+                ConsoleUtils.LogToConsole("Version Check Failed. This Is Not Dangerous", ConsoleUtils.ConsoleLogMode.Warning);
             }
 
             if (Server.serverVersion == latestVersion) ConsoleUtils.LogToConsole("Running Latest Version");
             else ConsoleUtils.LogToConsole("Running Outdated Or Unstable version. Please Update From Github At Earliest Convenience To Prevent Errors");
-            Console.ForegroundColor = ConsoleColor.White;
         }
 
         public static void CheckClientVersionRequirement()
         {
-            Console.WriteLine("");
-            Console.ForegroundColor = ConsoleColor.Green;
-            ConsoleUtils.LogToConsole("Client Version Check:");
-            Console.ForegroundColor = ConsoleColor.White;
+            ConsoleUtils.LogToConsole("Client Version Check", ConsoleUtils.ConsoleLogMode.Heading);
 
             try
             {
@@ -95,18 +83,13 @@ namespace OpenWorldServer
 
             catch
             {
-                Console.ForegroundColor = ConsoleColor.White;
-                ConsoleUtils.LogToConsole("Version Check Failed. This Is Not Dangerous");
-                Console.ForegroundColor = ConsoleColor.White;
-            }
+                ConsoleUtils.LogToConsole("Version Check Failed. This Is Not Dangerous", ConsoleUtils.ConsoleLogMode.Warning);
+           }
         }
 
         public static void CheckSettingsFile()
         {
-            Console.WriteLine("");
-            Console.ForegroundColor = ConsoleColor.Green;
-            ConsoleUtils.LogToConsole("Settings Check:");
-            Console.ForegroundColor = ConsoleColor.White;
+            ConsoleUtils.LogToConsole("Settings Check", ConsoleUtils.ConsoleLogMode.Heading);
 
             if (File.Exists(Server.serverSettingsPath))
             {
