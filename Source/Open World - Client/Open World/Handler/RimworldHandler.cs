@@ -77,7 +77,7 @@ namespace OpenWorld
             {
 				try
 				{
-					Zone z = map.zoneManager.AllZones.Find(zone => zone.label == "Production Site" && zone.GetType() == typeof(Zone_Stockpile));
+					Zone z = map.zoneManager.AllZones.Find(zone => zone.label == zoneName && zone.GetType() == typeof(Zone_Stockpile));
 					positionToDrop = z.Position;
 				}
 				catch { }

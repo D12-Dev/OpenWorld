@@ -48,7 +48,7 @@ namespace OpenWorld
 
                 if (!Networking.isConnectedToServer)
                 {
-                    Find.WindowStack.Add(new Dialog_MPDisconnected());
+                    Find.WindowStack.Add(new OW_ErrorDialog("Connection timeout, please check and try again"));
                     return;
                 }
 

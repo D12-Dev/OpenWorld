@@ -1,4 +1,5 @@
 ﻿using RimWorld;
+using RimWorld.Planet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,28 +7,27 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using Verse;
-using Verse.Profile;
+using Verse.Sound;
 
 namespace OpenWorld
 {
-    public class Dialog_MPWhitelisted : Window
+    public class Dialog_MPConfirmBankDeposit : Window
     {
         public override Vector2 InitialSize => new Vector2(350f, 150f);
 
-        private string windowTitle = "Error!";
-        private string windowDescription = "You are not whitelisted in the server";
+        private string windowTitle = "Warning!";
+        private string windowDescription = "Are you sure you want to deposit the silver?";
 
-        private float buttonX = 150f;
+        private float buttonX = 137f;
         private float buttonY = 38f;
 
-        public Dialog_MPWhitelisted()
+        public Dialog_MPConfirmBankDeposit()
         {
             soundAppear = SoundDefOf.CommsWindow_Open;
             soundClose = SoundDefOf.CommsWindow_Close;
             absorbInputAroundWindow = true;
-            forcePause = true;
             closeOnAccept = false;
-            closeOnCancel = false;
+            closeOnCancel = true;
         }
 
         public override void DoWindowContents(Rect rect)
@@ -42,7 +42,16 @@ namespace OpenWorld
             Text.Font = GameFont.Small;
             Widgets.Label(new Rect(centeredX - Text.CalcSize(windowDescription).x / 2, windowDescriptionDif, Text.CalcSize(windowDescription).x, Text.CalcSize(windowDescription).y), windowDescription);
 
-            if (Widgets.ButtonText(new Rect(new Vector2(centeredX - buttonX / 2, rect.yMax - buttonY), new Vector2(buttonX, buttonY)), "OK"))
+            if (Widgets.ButtonText(new Rect(new Vector2(rect.x, rect.yMax - buttonY), new Vector2(buttonX, buttonY)), "OK"))
+            {
+                MPCaravan.TakeItemsFromCaravan(4);
+
+                BankHandler.SendSilverToBank();
+
+                Close();
+            }
+
+            if (Widgets.ButtonText(new Rect(new Vector2(rect.xMax - buttonX, rect.yMax - buttonY), new Vector2(buttonX, buttonY)), "Cancel"))
             {
                 Close();
             }

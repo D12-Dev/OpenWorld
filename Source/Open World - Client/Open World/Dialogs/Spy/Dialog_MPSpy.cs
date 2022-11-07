@@ -68,8 +68,8 @@ namespace OpenWorld
 
                 else
                 {
+                    Find.WindowStack.Add(new OW_ErrorDialog("You don't have enough funds for this action"));
                     Close();
-                    Find.WindowStack.Add(new Dialog_MPNoFunds());
                 }
             }
 

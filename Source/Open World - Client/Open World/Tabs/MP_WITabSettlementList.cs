@@ -24,7 +24,7 @@ namespace OpenWorld
 
         protected override void FillTab()
         {
-            titleText = "Online Settlements [" + Main._ParametersCache.allSettlements.Count + "]";
+            titleText = "Online Settlements [" + Main._ParametersCache.allOnlineSettlements.Count + "]";
 
             Rect outRect = new Rect(0f, 0f, WinSize.x, WinSize.y).ContractedBy(10f);
             Rect rect = new Rect(10f, 10f, outRect.width - 16f, Mathf.Max(0f, outRect.height));
@@ -40,7 +40,7 @@ namespace OpenWorld
 
         private void GenerateList(Rect mainRect)
         {
-            var orderedDictionary = Main._ParametersCache.allSettlements.OrderBy(x => x.Value[0]);
+            var orderedDictionary = Main._ParametersCache.allOnlineSettlements.OrderBy(x => x.Value[0]);
             if (!Main._ParametersCache.isPlayingOnline)
             {
                 Dictionary<int, List<string>> localOnlineSettlements = new Dictionary<int, List<string>>();

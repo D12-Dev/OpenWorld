@@ -50,7 +50,7 @@ namespace OpenWorld
             catch
             {
                 isTryingToConnect = false;
-                Find.WindowStack.Add(new Dialog_MPTimeout());
+                Find.WindowStack.Add(new OW_ErrorDialog("Connection timeout, please check and try again"));
             }
         }
 
@@ -225,8 +225,6 @@ namespace OpenWorld
         public static void DisconnectFromServer()
         {
             connection.Dispose();
-
-            Find.WindowStack.Add(new Dialog_MPDisconnected());
 
             isConnectedToServer = false;
         }

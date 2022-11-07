@@ -10,14 +10,14 @@ namespace OpenWorld
 {
     public static class ProductionSiteHandler
     {
-		public static void GetProductsToReceive()
+		public static void GetProductsToReceive(string data)
         {
 			if (!Main._ParametersCache.hasLoadedCorrectly) return;
 
 			string itemID = "";
 			int itemQuantity = 0;
 			int itemQuality = 0;
-			string itemMaterial = "None";
+			int itemMultiplier = int.Parse(data.Split('│')[3]);
 
 			if (Main._ParametersCache.productionSiteProduct == 0)
             {
@@ -48,6 +48,7 @@ namespace OpenWorld
 					itemQuantity = 10;
 				}
 			}
+
 			else if (Main._ParametersCache.productionSiteProduct == 1)
 			{
 				itemID = "RawRice";
@@ -72,7 +73,9 @@ namespace OpenWorld
 				itemQuantity = 20;
 			}
 
-			Thing thingToAdd = RimworldHandler.GetItemFromData(itemID, itemQuantity, itemQuality, itemMaterial, false);
+			itemQuantity *= itemMultiplier;
+
+			Thing thingToAdd = RimworldHandler.GetItemFromData(itemID, itemQuantity, itemQuality, null, false);
 
 			ReceiveProductionItems(thingToAdd);
 		}

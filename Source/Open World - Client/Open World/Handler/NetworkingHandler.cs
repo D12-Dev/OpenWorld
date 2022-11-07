@@ -60,7 +60,7 @@ namespace OpenWorld
                 if (modsReady.Count > 0)
                 {
                     Networking.DisconnectFromServer();
-                    Find.WindowStack.Add(new Dialog_MPModifiedMods());
+                    Find.WindowStack.Add(new OW_ErrorDialog("Local mods are not allowed"));
                     return;
                 }
             }
@@ -99,14 +99,14 @@ namespace OpenWorld
             if (data == "Admin│Promote")
             {
                 Main._ParametersCache.isAdmin = true;
-                Find.WindowStack.Add(new Dialog_MPPromote());
+                Find.WindowStack.Add(new OW_InfoDialog("You have been granted administrator privileges"));
             }
 
             else if (data == "Admin│Demote")
             {
                 Prefs.DevMode = false;
                 Main._ParametersCache.isAdmin = false;
-                Find.WindowStack.Add(new Dialog_MPDemote());
+                Find.WindowStack.Add(new OW_InfoDialog("You have lost administrator privileges"));
             }
         }
 
@@ -148,7 +148,7 @@ namespace OpenWorld
             else if (data == "│SentEvent│Deny│")
             {
                 Main._ParametersCache.__MPBlackMarket.Close();
-                Find.WindowStack.Add(new Dialog_MPPlayerNotConnected());
+                Find.WindowStack.Add(new OW_ErrorDialog("Player unavailable for this action"));
             }
         }
 
@@ -163,7 +163,7 @@ namespace OpenWorld
             {
                 TradeHandler.ReturnTradesToCaravan();
                 Main._ParametersCache.__MPTrade.Close();
-                Find.WindowStack.Add(new Dialog_MPPlayerNotConnected());
+                Find.WindowStack.Add(new OW_ErrorDialog("Player unavailable for this action"));
             }
 
             else if (data == "│SentTrade│Deal│")
@@ -182,7 +182,7 @@ namespace OpenWorld
                 TradeHandler.ReturnTradesToCaravan();
                 Main._ParametersCache.__MPWaiting.Close();
                 Main._ParametersCache.__MPTrade.Close();
-                Find.WindowStack.Add(new Dialog_MPRejectedTrade());
+                Find.WindowStack.Add(new OW_ErrorDialog("The requested player rejected the trade"));
             }
         }
 
@@ -197,7 +197,7 @@ namespace OpenWorld
             {
                 BarterHandler.ReturnBarterToCaravan();
                 Main._ParametersCache.__MPBarter.Close();
-                Find.WindowStack.Add(new Dialog_MPPlayerNotConnected());
+                Find.WindowStack.Add(new OW_ErrorDialog("Player unavailable for this action"));
             }
 
             else if (data == "│SentBarter│Deal│")
@@ -217,7 +217,7 @@ namespace OpenWorld
 
                 Main._ParametersCache.__MPWaiting.Close();
 
-                Find.WindowStack.Add(new Dialog_MPRejectedTrade());
+                Find.WindowStack.Add(new OW_ErrorDialog("The requested player rejected the trade"));
             }
 
             else if (data.StartsWith("│SentBarter│Rebarter│"))
@@ -312,7 +312,7 @@ namespace OpenWorld
 
             else if (data == "│SentSpy│Deny│")
             {
-                Find.WindowStack.Add(new Dialog_MPPlayerNotConnected());
+                Find.WindowStack.Add(new OW_ErrorDialog("Player unavailable for this action"));
             }
         }
 
@@ -358,12 +358,12 @@ namespace OpenWorld
 
             else if (data == "FactionManagement│Created")
             {
-                Find.WindowStack.Add(new Dialog_MPFactionCreated());
+                Find.WindowStack.Add(new OW_InfoDialog("Your faction has been created"));
             }
 
             else if (data == "FactionManagement│NameInUse")
             {
-                Find.WindowStack.Add(new Dialog_MPFactionNameInUse());
+                Find.WindowStack.Add(new OW_ErrorDialog("Faction name already in use"));
             }
 
             else if (data == "FactionManagement│AlreadyInFaction")
@@ -373,12 +373,12 @@ namespace OpenWorld
 
             else if (data == "FactionManagement│NotInFaction")
             {
-                Find.WindowStack.Add(new Dialog_MPFactionNotInFaction());
+                Find.WindowStack.Add(new OW_ErrorDialog("That player is not in your faction"));
             }
 
             else if (data == "FactionManagement│NoPowers")
             {
-                Find.WindowStack.Add(new Dialog_MPFactionNoPower());
+                Find.WindowStack.Add(new OW_ErrorDialog("You do not have enough faction power"));
             }
 
             else if (data.StartsWith("FactionManagement│Invite"))
@@ -442,28 +442,50 @@ namespace OpenWorld
 
             else if (data.StartsWith("FactionManagement│ProductionSite"))
             {
-                if (data == "FactionManagement│ProductionSite│Tick")
+                if (data.StartsWith("FactionManagement│ProductionSite│Tick"))
                 {
-                    ProductionSiteHandler.GetProductsToReceive();
+                    ProductionSiteHandler.GetProductsToReceive(data);
+                }
+            }
+
+            else if (data.StartsWith("FactionManagement│Bank"))
+            {
+                if (data.StartsWith("FactionManagement│Bank│Refresh"))
+                {
+                    int quantity = int.Parse(data.Split('│')[3]);
+
+                    Main._ParametersCache.bankSilver = quantity;
+                }
+
+                else if (data.StartsWith("FactionManagement│Bank│Withdraw"))
+                {
+                    int quantity = int.Parse(data.Split('│')[3]);
+
+                    if (quantity == 0) return;
+                    else
+                    {
+                        Find.WindowStack.Add(new OW_InfoDialog("You have received the funds"));
+                        MPCaravan.GiveFundsToCaravan(quantity);
+                    }
                 }
             }
         }
 
         public static void PlayerNotConnectedHandle(string data)
         {
-            Find.WindowStack.Add(new Dialog_MPPlayerNotConnected());
+            Find.WindowStack.Add(new OW_ErrorDialog("Player unavailable for this action"));
         }
 
         public static void DisconnectHandle(string data)
         {
             if (data == "Disconnect│UserTaken")
             {
-                Find.WindowStack.Add(new Dialog_MPWrongUserPassword());
+                Find.WindowStack.Add(new OW_ErrorDialog("Username already in use or incorrect password"));
             }
 
             else if (data == "Disconnect│WrongPassword")
             {
-                Find.WindowStack.Add(new Dialog_MPWrongUserPassword());
+                Find.WindowStack.Add(new OW_ErrorDialog("Username already in use or incorrect password"));
             }
 
             else if (data.StartsWith("Disconnect│WrongMods│"))
@@ -475,38 +497,35 @@ namespace OpenWorld
 
             else if (data == "Disconnect│Version")
             {
-                Find.WindowStack.Add(new Dialog_MPWrongVersion());
+                Find.WindowStack.Add(new OW_ErrorDialog("Running an outdated or invalid version"));
             }
 
             else if (data == "Disconnect│Whitelist")
             {
-                Find.WindowStack.Add(new Dialog_MPWhitelisted());
-            }
-
-            else if (data == "Disconnect│Corrupted")
-            {
-                Environment.Exit(0);
+                Find.WindowStack.Add(new OW_ErrorDialog("You are not whitelisted to the server"));
             }
 
             else if (data == "Disconnect│AnotherLogin")
             {
-                Find.WindowStack.Add(new Dialog_MPDisconnected());
+                Find.WindowStack.Add(new OW_ErrorDialog("You have connected elsewhere"));
             }
 
             else if (data == "Disconnect│ServerFull")
             {
-                Find.WindowStack.Add(new Dialog_MPServerFull());
+                Find.WindowStack.Add(new OW_ErrorDialog("Server is full"));
             }
 
             else if (data == "Disconnect│Banned")
             {
-                Find.WindowStack.Add(new Dialog_MPBanned());
+                Find.WindowStack.Add(new OW_ErrorDialog("You are banned from the server"));
             }
 
             else if (data == "Disconnect│Closing")
             {
-                Find.WindowStack.Add(new Dialog_MPDisconnected());
+                Find.WindowStack.Add(new OW_ErrorDialog("Server is closing"));
             }
+
+            else if (data == "Disconnect│Corrupted") Environment.Exit(0);
 
             Networking.DisconnectFromServer();
             return;

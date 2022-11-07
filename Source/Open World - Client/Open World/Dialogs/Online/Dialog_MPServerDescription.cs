@@ -93,21 +93,21 @@ namespace OpenWorld
             Widgets.Label(new Rect(centeredX - Text.CalcSize(discord).x / 2, discordDif, Text.CalcSize(discord).x, Text.CalcSize(discord).y), discord);
             if (Widgets.ButtonText(new Rect(rect.x, discordDif + buttonY, rect.width, Text.CalcSize(discord).y), "Check"))
             {
-                if (discordURL.StartsWith("Null") || string.IsNullOrWhiteSpace(discordURL)) Find.WindowStack.Add(new Dialog_MPUnavailableURL());
+                if (discordURL.StartsWith("Null") || string.IsNullOrWhiteSpace(discordURL)) Find.WindowStack.Add(new OW_ErrorDialog("The requested URL is unavailable"));
                 else try { System.Diagnostics.Process.Start(discordURL); } catch { }
             }
 
             Widgets.Label(new Rect(centeredX - Text.CalcSize(modList).x / 2, modsDif, Text.CalcSize(modList).x, Text.CalcSize(modList).y), modList);
             if (Widgets.ButtonText(new Rect(rect.x, modsDif + buttonY, rect.width, Text.CalcSize(modList).y), "Check"))
             {
-                if (modListURL.StartsWith("Null") || string.IsNullOrWhiteSpace(modListURL)) Find.WindowStack.Add(new Dialog_MPUnavailableURL());
+                if (modListURL.StartsWith("Null") || string.IsNullOrWhiteSpace(modListURL)) Find.WindowStack.Add(new OW_ErrorDialog("The requested URL is unavailable"));
                 else try { System.Diagnostics.Process.Start(modListURL); } catch { }
             }
 
             Widgets.Label(new Rect(centeredX - Text.CalcSize(whitelistedModList).x / 2, whitelistedModsDif, Text.CalcSize(whitelistedModList).x, Text.CalcSize(whitelistedModList).y), whitelistedModList);
             if (Widgets.ButtonText(new Rect(rect.x, whitelistedModsDif + buttonY, rect.width, Text.CalcSize(whitelistedModList).y), "Check"))
             {
-                if (whitelistedModListURL.StartsWith("Null") || string.IsNullOrWhiteSpace(whitelistedModListURL)) Find.WindowStack.Add(new Dialog_MPUnavailableURL());
+                if (whitelistedModListURL.StartsWith("Null") || string.IsNullOrWhiteSpace(whitelistedModListURL)) Find.WindowStack.Add(new OW_ErrorDialog("The requested URL is unavailable"));
                 else try { System.Diagnostics.Process.Start(whitelistedModListURL); } catch { }
             }
 

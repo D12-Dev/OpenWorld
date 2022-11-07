@@ -35,7 +35,7 @@ namespace OpenWorld
 			else if (factionValue == 1) Main._ParametersCache.onlineAllySettlements.Add(tileID, settlementDetails);
 			else if (factionValue == 2) Main._ParametersCache.onlineEnemySettlements.Add(tileID, settlementDetails);
 
-			Main._ParametersCache.allSettlements.Add(tileID, new List<string>() { name });
+			Main._ParametersCache.allOnlineSettlements.Add(tileID, new List<string>() { name });
 
 			Find.WorldObjects.Add(settlement);
 		}
@@ -62,7 +62,7 @@ namespace OpenWorld
 				else if (settlementToDestroy.Faction == Main._ParametersCache.onlineEnemyFaction) 
 					Main._ParametersCache.onlineEnemySettlements.Remove(settlementTile);
 
-				Main._ParametersCache.allSettlements.Remove(settlementTile);
+				Main._ParametersCache.allOnlineSettlements.Remove(settlementTile);
 
 				Find.WorldObjects.Remove(settlementToDestroy);
 			}
@@ -72,7 +72,7 @@ namespace OpenWorld
 		{
 			data = data.Remove(0, 12);
 
-			Main._ParametersCache.allSettlements.Clear();
+			Main._ParametersCache.allOnlineSettlements.Clear();
 			Main._ParametersCache.onlineNeutralSettlements.Clear();
 			Main._ParametersCache.onlineAllySettlements.Clear();
 			Main._ParametersCache.onlineEnemySettlements.Clear();
@@ -98,9 +98,9 @@ namespace OpenWorld
 				else if (settlementFactionValue == 2) Main._ParametersCache.onlineEnemySettlements.Add(settlementTile, settlementDetails);
 			}
 
-			Main._ParametersCache.allSettlements.AddRange(Main._ParametersCache.onlineNeutralSettlements);
-			Main._ParametersCache.allSettlements.AddRange(Main._ParametersCache.onlineAllySettlements);
-			Main._ParametersCache.allSettlements.AddRange(Main._ParametersCache.onlineEnemySettlements);
+			Main._ParametersCache.allOnlineSettlements.AddRange(Main._ParametersCache.onlineNeutralSettlements);
+			Main._ParametersCache.allOnlineSettlements.AddRange(Main._ParametersCache.onlineAllySettlements);
+			Main._ParametersCache.allOnlineSettlements.AddRange(Main._ParametersCache.onlineEnemySettlements);
 		}
 
 		public static void ManageSettlementsInWorld()

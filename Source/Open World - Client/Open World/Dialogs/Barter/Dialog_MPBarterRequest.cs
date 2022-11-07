@@ -86,7 +86,7 @@ namespace OpenWorld
                         Networking.SendData("BarterStatus│Reject│" + invokerID);
 
                         BarterHandler.ResetBarterVariables();
-                        Find.WindowStack.Add(new Dialog_MPNoSocialSkill());
+                        Find.WindowStack.Add(new OW_ErrorDialog("Pawn does not have enough social to trade"));
                         Close();
                     }
                 }

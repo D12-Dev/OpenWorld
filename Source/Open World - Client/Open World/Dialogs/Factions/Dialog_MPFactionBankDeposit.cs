@@ -11,13 +11,13 @@ using Verse.Sound;
 
 namespace OpenWorld
 {
-    public class Dialog_MPFactionSiloDeposit : Window
+    public class Dialog_MPFactionBankDeposit : Window
     {
         public override Vector2 InitialSize => new Vector2(835f, 512f);
 
-        public string windowTitle = "Silo Deposit Menu";
+        public string windowTitle = "Bank Deposit Menu";
 
-        public string windowDescription = "Select the items you wish to deposit in this silo";
+        public string windowDescription = "Select the silver you wish to deposit in this bank";
 
         private List<Tradeable> cachedTradeables;
 
@@ -31,10 +31,8 @@ namespace OpenWorld
 
         public override QuickSearchWidget CommonSearchWidget => quickSearchWidget;
 
-        public Dialog_MPFactionSiloDeposit()
+        public Dialog_MPFactionBankDeposit()
         {
-            Main._ParametersCache.__MPSiloDeposit = this;
-
             Pawn playerNegotiator = caravan.PawnsListForReading.Find(fetch => fetch.IsColonist && !fetch.skills.skills[10].PermanentlyDisabled);
 
             GenerateTradeList();
@@ -50,6 +48,8 @@ namespace OpenWorld
             absorbInputAroundWindow = true;
             closeOnAccept = false;
             closeOnCancel = true;
+
+            Main._ParametersCache.__MPBankDeposit = this;
         }
 
         private void SetupParameters()
@@ -60,7 +60,7 @@ namespace OpenWorld
 
         public void CacheTradeables()
         {
-            cachedTradeables = (from tr in Main._ParametersCache.listToShowInSiloMenu
+            cachedTradeables = (from tr in Main._ParametersCache.listToShowInBankMenu
                                 where quickSearchWidget.filter.Matches(tr.Label)
                                 orderby 0 descending
                                 select tr)
@@ -73,17 +73,17 @@ namespace OpenWorld
 
         public void GenerateTradeList()
         {
-            Main._ParametersCache.listToShowInSiloMenu = new List<Tradeable>();
+            Main._ParametersCache.listToShowInBankMenu = new List<Tradeable>();
 
             List<Thing> caravanItems = CaravanInventoryUtility.AllInventoryItems(caravan);
 
             foreach (Thing item in caravanItems)
             {
-                if (item.def == ThingDefOf.Silver) continue;
+                if (item.def != ThingDefOf.Silver) continue;
 
                 Tradeable tradeable = new Tradeable();
                 tradeable.AddThing(item, Transactor.Colony);
-                Main._ParametersCache.listToShowInSiloMenu.Add(tradeable);
+                Main._ParametersCache.listToShowInBankMenu.Add(tradeable);
             }
         }
 
@@ -134,7 +134,7 @@ namespace OpenWorld
 
             if (Widgets.ButtonText(new Rect(new Vector2(inRect.x, inRect.yMax - buttonY), new Vector2(137f, buttonY)), "Accept"))
             {
-                Find.WindowStack.Add(new Dialog_MPConfirmDeposit());
+                Find.WindowStack.Add(new Dialog_MPConfirmBankDeposit());
             }
 
             if (Widgets.ButtonText(new Rect(new Vector2((inRect.width / 2) - (buttonX / 2), inRect.yMax - buttonY), new Vector2(137f, buttonY)), "Reset"))

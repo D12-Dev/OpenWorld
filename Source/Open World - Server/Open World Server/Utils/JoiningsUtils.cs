@@ -44,7 +44,8 @@ namespace OpenWorldServer
                 SendLoadGameData(client);
             }
 
-            ConsoleUtils.LogToConsole("Player [" + client.username + "] Has Connected");
+            ConsoleUtils.LogToConsole("Player [" + client.username + "] " + "[" + 
+                ((IPEndPoint)client.tcp.Client.RemoteEndPoint).Address.ToString() + "] Has Connected");
         }
 
         private static void SendNewGameData(ServerClient client)

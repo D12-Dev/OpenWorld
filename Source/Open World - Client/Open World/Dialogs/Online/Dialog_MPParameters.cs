@@ -149,7 +149,7 @@ namespace OpenWorld
 
                 if (isMissingInfo)
                 {
-                    Find.WindowStack.Add(new Dialog_MPMissingLogin());
+                    Find.WindowStack.Add(new OW_ErrorDialog("Login details are missing or incorrect"));
                     return;
                 }
 

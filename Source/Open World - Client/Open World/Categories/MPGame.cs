@@ -21,7 +21,6 @@ namespace OpenWorld
 			Find.GameInitData.permadeath = true;
 
 			Main._ParametersCache.isPlayingOnline = true;
-			Main._ParametersCache.isGeneratingNewOnlineGame = false;
 
 			Main._MPGame.DisableDevOptions();
 
@@ -58,7 +57,7 @@ namespace OpenWorld
 
 			if (!File.Exists(Main._ParametersCache.gameSavePath + Path.DirectorySeparatorChar + saveName + ".rws"))
             {
-				Find.WindowStack.Add(new Dialog_MPMissingSave());
+				Find.WindowStack.Add(new OW_ErrorDialog("You need an existing server save to join"));
 				Networking.DisconnectFromServer();
 				return;
             }
