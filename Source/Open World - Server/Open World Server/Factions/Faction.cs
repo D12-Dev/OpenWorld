@@ -11,5 +11,6 @@ namespace OpenWorldServer
         public int wealth = 0;
         public Dictionary<ServerClient, FactionHandler.MemberRank> members = new Dictionary<ServerClient, FactionHandler.MemberRank>();
         public List<FactionStructure> factionStructures = new List<FactionStructure>();
+        public FactionResearch factionResearch = new FactionResearch();
     }
 }

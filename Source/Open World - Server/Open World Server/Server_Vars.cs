@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace OpenWorldServer
 {
@@ -35,6 +33,7 @@ namespace OpenWorldServer
         public static int warningWealthThreshold = 10000;
         public static int banWealthThreshold = 100000;
         public static int idleTimer = 7;
+        public static float forcedResearchMultiplier = 1.0f;
 
         //Server Booleans
         public static bool usingIdleTimer = false;
@@ -49,6 +48,7 @@ namespace OpenWorldServer
         public static bool usingChat = false;
         public static bool usingProfanityFilter = false;
         public static bool usingEnforcedDifficulty = false;
+        public static bool usingSharedFactionResearch = false;
 
         //Server Mods
         public static List<string> enforcedMods = new List<string>();

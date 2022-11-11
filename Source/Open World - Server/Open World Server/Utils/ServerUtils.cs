@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -305,6 +304,27 @@ namespace OpenWorldServer
                         }
                         continue;
                     }
+
+                    else if (setting.StartsWith("Use Faction Research: "))
+                    {
+                        string splitString = setting.Replace("Use Faction Research: ", "");
+                        if (splitString == "True")
+                        {
+                            Server.usingSharedFactionResearch = true;
+                        }
+                        else if (splitString == "False")
+                        {
+                            Server.usingSharedFactionResearch = false;
+                        }
+                        continue;
+                    }
+
+                    else if (setting.StartsWith("Forced Research Multiplier: "))
+                    {
+                        string splitString = setting.Replace("Forced Research Multiplier: ", "");
+                        Server.forcedResearchMultiplier = float.Parse(splitString);
+                        continue;
+                    }
                 }
 
                 ConsoleUtils.LogToConsole("Loaded Settings File");
@@ -345,6 +365,10 @@ namespace OpenWorldServer
                     "- Road System Details -",
                     "Use Road System: True",
                     "Aggressive Road Mode (WIP): False",
+                    "",
+                    "- Faction Research Details -",
+                    "Use Faction Research: False",
+                    "Forced Research Multiplier: 1.0",
                 };
 
                 File.WriteAllLines(Server.serverSettingsPath, settingsPreset);

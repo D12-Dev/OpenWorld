@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace OpenWorldServer
 {
@@ -24,6 +22,12 @@ namespace OpenWorldServer
 
             Networking.SendData(client, FactionBuildingHandler.GetAllFactionStructures(client));
 
+            // TODO: Is this okay?  The other calls in this method are all calling Networking.SendData, but the FactionResearchHandler
+            //       has a pattern to always internally make Network calls as needed.
+            //       FactionHandler and other handlers have a similar pattern, but chooses to violate it with the methods called here
+            //       Personally, I like the idea of calling into the Handler and letting the Handler handle everything
+            FactionResearchHandler.handleFactionResearchSettings(client);
+
             Networking.SendData(client, "NewGame│");
         }
         private static void SendLoadGameData(ServerClient client)
@@ -37,6 +41,12 @@ namespace OpenWorldServer
             Networking.SendData(client, FactionHandler.GetFactionDetails(client));
 
             Networking.SendData(client, FactionBuildingHandler.GetAllFactionStructures(client));
+
+            // TODO: Is this okay?  The other calls in this method are all calling Networking.SendData, but the FactionResearchHandler
+            //       has a pattern to always internally make Network calls as needed.
+            //       FactionHandler and other handlers have a similar pattern, but chooses to violate it with the methods called here
+            //       Personally, I like the idea of calling into the Handler and letting the Handler handle everything
+            FactionResearchHandler.handleFactionResearchSettings(client);
 
             Networking.SendData(client, GetGiftsToSend(client));
 

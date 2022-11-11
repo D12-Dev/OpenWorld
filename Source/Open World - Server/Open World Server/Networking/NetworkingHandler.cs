@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
 
 namespace OpenWorldServer
 {
@@ -466,6 +463,44 @@ namespace OpenWorldServer
 
                     FactionBankHandler.WithdrawMoney(client.faction, quantity, client);
                 }
+            }
+        }
+
+        public static void FactionResearchHandle(ServerClient client, string data)
+        {
+            if (data.StartsWith("FactionResearch│SetCurrentProgress│"))
+            {
+                if (client.faction == null) return;
+
+                string[] dataChunks = data.Split('│');
+
+                string techName = dataChunks[2];
+                float progress = float.Parse(dataChunks[3]);
+                float cost = float.Parse(dataChunks[4]);
+
+                FactionResearchHandler.SetCurrentProgress(client, techName, progress, cost);
+            }
+
+            else if (data.StartsWith("FactionResearch│FullResearchReport│"))
+            {
+                if (client.faction == null) return;
+
+                string[] dataChunks = data.Split('│');
+
+                string completedTechsData = dataChunks[2];
+                ISet<string> completedTechs = new HashSet<String>(completedTechsData.Split(","));
+
+                Dictionary<string, float> techProgresses = new Dictionary<string, float>();
+                Dictionary<string, float> techCosts = new Dictionary<string, float>();
+                string techProgressesData = dataChunks[3];
+                foreach (string techProgressData in techProgressesData.Split(","))
+                {
+                    string[] techProgress = techProgressData.Split(";");
+                    techProgresses.Add(techProgress[0], float.Parse(techProgress[1]));
+                    techCosts.Add(techProgress[0], float.Parse(techProgress[2]));
+                }
+
+                FactionResearchHandler.handleFullResearchReport(client, completedTechs, techProgresses, techCosts);
             }
         }
     }

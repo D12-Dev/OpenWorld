@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -114,6 +112,19 @@ namespace OpenWorldServer
                     else if (data.StartsWith("FactionManagement│"))
                     {
                         NetworkingHandler.FactionManagementHandle(client, data);
+                    }
+
+                    else if (data.StartsWith("FactionResearch│"))
+                    {
+                        if (Server.usingSharedFactionResearch)
+                        {
+                            NetworkingHandler.FactionResearchHandle(client, data);
+                        } 
+                        
+                        else
+                        {
+                            ConsoleUtils.LogToConsole("ERROR, received FactionResearch Message despite Faction Research being disabled - Data: " + data, ConsoleUtils.ConsoleLogMode.Error);
+                        }
                     }
                 }
 

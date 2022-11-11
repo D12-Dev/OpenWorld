@@ -108,7 +108,13 @@ namespace OpenWorld
 				Main._ParametersCache.hasLoadedCorrectly = true;
 
 				Main._MPGame.CheckForGifts();
-			}
+
+				// TODO: Do you want this wrapped within Main._MPGame?
+				if (FactionResearchGameComponent.factionResearchEnabled)
+                {
+					FactionResearchHandler.SendFullResearchReport();
+                }
+            }
 		}
 	}
 

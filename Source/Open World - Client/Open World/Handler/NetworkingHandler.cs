@@ -471,6 +471,23 @@ namespace OpenWorld
             }
         }
 
+        public static void FactionResearchHandle(string data)
+        {
+            if (data.StartsWith("FactionResearch│CompleteResearches│"))
+            {
+                List<string> completedResearches = new List<string>(data.Split('│')[2].Split(','));
+                FactionResearchHandler.CompleteResearches(completedResearches);
+            }
+
+            else if (data.StartsWith("FactionResearch│ResearchSettings│"))
+            {
+                bool factionResearchEnabled = bool.Parse(data.Split('│')[2]);
+                float researchCostMultiplier = float.Parse(data.Split('│')[3]);
+                FactionResearchGameComponent.factionResearchEnabled = factionResearchEnabled;
+                FactionResearchGameComponent.researchCostMultiplier = researchCostMultiplier;
+            }
+        }
+
         public static void PlayerNotConnectedHandle(string data)
         {
             Find.WindowStack.Add(new OW_ErrorDialog("Player unavailable for this action"));

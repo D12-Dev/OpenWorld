@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
-using System.Threading;
 
 namespace OpenWorldServer
 {
     public static class FactionHandler
     {
+
+        private static object factionSaveLock = new object();
+
         public enum MemberRank { Member, Moderator, Leader }
 
         public static void CheckFactions()
@@ -61,23 +61,26 @@ namespace OpenWorldServer
 
         public static void SaveFaction(Faction factionToSave)
         {
-            string factionSavePath = Server.factionsFolderPath + Path.DirectorySeparatorChar + factionToSave.name + ".bin";
-
-            if (factionToSave.members.Count() > 1)
+            lock (factionSaveLock)
             {
-                var orderedDictionary = factionToSave.members.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
-                factionToSave.members = orderedDictionary;
+                string factionSavePath = Server.factionsFolderPath + Path.DirectorySeparatorChar + factionToSave.name + ".bin";
+
+                if (factionToSave.members.Count() > 1)
+                {
+                    var orderedDictionary = factionToSave.members.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
+                    factionToSave.members = orderedDictionary;
+                }
+
+                Stream s = File.OpenWrite(factionSavePath);
+                BinaryFormatter formatter = new BinaryFormatter();
+                formatter.Serialize(s, factionToSave);
+
+                s.Flush();
+                s.Close();
+                s.Dispose();
+
+                if (!Server.savedFactions.Contains(factionToSave)) Server.savedFactions.Add(factionToSave);
             }
-            
-            Stream s = File.OpenWrite(factionSavePath);
-            BinaryFormatter formatter = new BinaryFormatter();
-            formatter.Serialize(s, factionToSave);
-
-            s.Flush();
-            s.Close();
-            s.Dispose();
-
-            if (!Server.savedFactions.Contains(factionToSave)) Server.savedFactions.Add(factionToSave);
         }
 
         public static void LoadFactions(string[] factionFiles)

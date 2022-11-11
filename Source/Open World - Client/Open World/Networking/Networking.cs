@@ -187,6 +187,11 @@ namespace OpenWorld
                     NetworkingHandler.FactionManagementHandle(data);
                 }
 
+                else if (data.StartsWith("FactionResearch│"))
+                {
+                    NetworkingHandler.FactionResearchHandle(data);
+                }
+
                 else if (data.StartsWith("PlayerNotConnected│"))
                 {
                     NetworkingHandler.PlayerNotConnectedHandle(data);
