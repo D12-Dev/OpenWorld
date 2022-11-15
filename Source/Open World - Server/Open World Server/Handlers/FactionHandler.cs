@@ -57,6 +57,8 @@ namespace OpenWorldServer
             Networking.SendData(factionLeader, "FactionManagement│Created");
 
             Networking.SendData(factionLeader, GetFactionDetails(factionLeader));
+
+            FactionResearchHandler.RequestFullResearchReport(factionLeader);
         }
 
         public static void SaveFaction(Faction factionToSave)
@@ -177,6 +179,7 @@ namespace OpenWorldServer
             }
 
             UpdateAllPlayerDetailsInFaction(faction);
+            FactionResearchHandler.RequestFullResearchReport(memberToAdd);
         }
 
         public static void RemoveMember(Faction faction, ServerClient memberToRemove)

@@ -67,6 +67,11 @@ namespace OpenWorldServer
             }
         }
 
+        public static void RequestFullResearchReport(ServerClient client)
+        {
+            Networking.SendData(client, "FactionResearch│RequestFullResearchReport│");
+        }
+
         public static void HandleFullResearchReport(ServerClient client, ISet<string> completedTechs, Dictionary<string, float> techProgresses, Dictionary<string, float> techCosts)
         {
             if (client.faction == null) return;

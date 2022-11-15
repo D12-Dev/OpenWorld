@@ -24,9 +24,9 @@ namespace OpenWorld
             Networking.SendData("FactionResearch│SetCurrentProgress│" + name + "│" + progress + "│" + cost);
         }
 
-        public static void SendFullResearchReport()
+        public static void SendFullResearchReport(bool force = false)
         {
-            if (activelyCompletingResearches)
+            if (!force && activelyCompletingResearches)
             {
                 // Don't send research reports if we're actively completing researches dictated by the server
                 return;

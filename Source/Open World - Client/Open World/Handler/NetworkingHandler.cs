@@ -484,6 +484,11 @@ namespace OpenWorld
                 FactionResearchGameComponent.factionResearchEnabled = factionResearchEnabled;
                 FactionResearchGameComponent.researchCostMultiplier = researchCostMultiplier;
             }
+
+            else if (data.StartsWith("FactionResearch│RequestFullResearchReport│"))
+            {
+                FactionResearchHandler.SendFullResearchReport(true);
+            }
         }
 
         public static void PlayerNotConnectedHandle(string data)
