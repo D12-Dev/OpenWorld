@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
 using RimWorld.Planet;
-using UnityEngine;
 using Verse;
 using HugsLib;
 using HarmonyLib;
-using Verse.Profile;
 
 namespace OpenWorld
 {
@@ -109,7 +107,7 @@ namespace OpenWorld
 
 				Main._MPGame.CheckForGifts();
 
-				// TODO: Do you want this wrapped within Main._MPGame?
+				// TODO: Do you want this wrapped within Main._MPGame?  Wonder how much of the logic here should be part of a GameComponent instead of an injection...
 				if (FactionResearchGameComponent.factionResearchEnabled)
                 {
 					FactionResearchHandler.SendFullResearchReport();
