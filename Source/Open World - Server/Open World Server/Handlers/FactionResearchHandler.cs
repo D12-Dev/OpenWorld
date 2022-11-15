@@ -5,6 +5,11 @@ namespace OpenWorldServer
 {
     public static class FactionResearchHandler
     {
+        public static void HandleFactionResearchSettings(ServerClient client)
+        {
+            Networking.SendData(client, "FactionResearch│ResearchSettings│" + Server.usingSharedFactionResearch + "│" + Server.forcedResearchMultiplier);
+        }
+
         public static void SetCurrentProgress(ServerClient client, string techName, float techProgress, float techCost)
         {
             if (client.faction == null) return;
@@ -62,7 +67,7 @@ namespace OpenWorldServer
             }
         }
 
-        public static void handleFullResearchReport(ServerClient client, ISet<string> completedTechs, Dictionary<string, float> techProgresses, Dictionary<string, float> techCosts)
+        public static void HandleFullResearchReport(ServerClient client, ISet<string> completedTechs, Dictionary<string, float> techProgresses, Dictionary<string, float> techCosts)
         {
             if (client.faction == null) return;
             FactionResearch factionResearch = getFactionResearch(client.faction);
@@ -179,11 +184,5 @@ namespace OpenWorldServer
         {
             Networking.SendData(client, "FactionResearch│CompleteResearches│" + completedResearches);
         }
-
-        public static void handleFactionResearchSettings(ServerClient client)
-        {
-            Networking.SendData(client, "FactionResearch│ResearchSettings│" + Server.usingSharedFactionResearch + "│" + Server.forcedResearchMultiplier);
-        }
-
     }
 }

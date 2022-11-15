@@ -27,6 +27,12 @@ namespace OpenWorld
             // Scribe is magic, it internally knows if it's loading or saving these values
             Scribe_Values.Look(ref researchCostMultiplier, "researchCostMultiplier", 1.0f);
             Scribe_Values.Look(ref factionResearchEnabled, "factionResearchEnabled", false);
+
+            if (Scribe.mode == LoadSaveMode.LoadingVars)
+            {
+                // Values loaded, request a refresh from the server
+                FactionResearchHandler.RequestResearchSettingsRefresh();
+            }
         }
     }
 }

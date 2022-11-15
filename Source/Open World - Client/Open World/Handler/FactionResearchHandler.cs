@@ -68,7 +68,6 @@ namespace OpenWorld
             }
             activelyCompletingResearches = false;
 
-            // "ResearchFinished".Translate(this.currentProj.LabelCap) + "\n\n" + this.currentProj.description);
             if (techsCompleted.Count > 0)
             {
                 StringBuilder completedTechsString = new StringBuilder();
@@ -86,6 +85,11 @@ namespace OpenWorld
                 diaNode.options.Add(diaOption);
                 Find.WindowStack.Add(new Dialog_NodeTree(diaNode, true, false, null));
             }
+        }
+
+        public static void RequestResearchSettingsRefresh()
+        {
+            Networking.SendData("FactionResearch│SettingsRequest│");
         }
     }
 }

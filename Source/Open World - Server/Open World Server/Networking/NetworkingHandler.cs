@@ -500,7 +500,12 @@ namespace OpenWorldServer
                     techCosts.Add(techProgress[0], float.Parse(techProgress[2]));
                 }
 
-                FactionResearchHandler.handleFullResearchReport(client, completedTechs, techProgresses, techCosts);
+                FactionResearchHandler.HandleFullResearchReport(client, completedTechs, techProgresses, techCosts);
+            }
+
+            else if (data.StartsWith("FactionResearch│SettingsRequest│"))
+            {
+                FactionResearchHandler.HandleFactionResearchSettings(client);
             }
         }
     }
