@@ -8,6 +8,7 @@ using Verse;
 using HugsLib;
 using HarmonyLib;
 using Verse.Profile;
+using System.Runtime.InteropServices;
 
 namespace OpenWorld
 {
@@ -46,23 +47,90 @@ namespace OpenWorld
 		}
 	}
 
-	//Get Correct Name For Online Save
-	[HarmonyPatch(typeof(GameDataSaveLoader), "SaveGame", typeof(string))]
-	public static class SaveOnlineGame
-	{
-		[HarmonyPrefix]
-		public static bool SaveGameName(ref string fileName)
-		{
-			if (!Main._ParametersCache.isPlayingOnline) return true;
+    //Get Correct Name For Online Save
+    [HarmonyPatch(typeof(GameDataSaveLoader), "SaveGame", typeof(string))]
+    public static class SaveOnlineGame
+    {
+        static readonly List<char> illegalWindowsChars = new List<char>()
+        {
+            '<',
+            '>',
+            ':',
+            '"',
+            '/',
+            '\\',
+            '|',
+            '?',
+            '*',
+        };
 
-			Find.GameInfo.permadeathModeUniqueName = Main._ParametersCache.onlineFileSaveName + " - " + Main._ParametersCache.connectedServerIdentifier + " - " + Main._ParametersCache.usernameText;
-			fileName = Find.GameInfo.permadeathModeUniqueName;
-			return true;
-		}
-	}
+        static readonly List<char> illegalLinuxChars = new List<char>()
+        {
+            '/',
+        };
 
-	//Get Tile ID When Starting New Game
-	[HarmonyPatch(typeof(Game), "InitNewGame")]
+        static readonly List<string> illegalWindowsFileNames = new List<string>()
+        {
+            "CON",
+            "PRN",
+            "AUX",
+            "NUL",
+            "COM1",
+            "COM2",
+            "COM3",
+            "COM4",
+            "COM5",
+            "COM6",
+            "COM7",
+            "COM8",
+            "COM9",
+            "LPT1",
+            "LPT2",
+            "LPT3",
+            "LPT4",
+            "LPT5",
+            "LPT6",
+            "LPT7",
+            "LPT8",
+            "LPT9"
+        };
+
+        private static string RemoveIllegalChars(string fileName, List<char> illegalChars) =>
+            string.Concat(fileName.Where(x => !illegalChars.Contains(x)));
+
+        private static string ReplaceIllegalFileNames(string fileName, List<string> illegalFileNames) =>
+            illegalFileNames.Any(x => x == fileName) ? "ILLEGAL" : fileName;
+
+        [HarmonyPrefix]
+        public static bool SaveGameName(ref string fileName)
+        {
+            if (!Main._ParametersCache.isPlayingOnline) return true;
+
+            var tmpFileName = Main._ParametersCache.onlineFileSaveName + " - " + Main._ParametersCache.connectedServerIdentifier + " - " + Main._ParametersCache.usernameText;
+
+			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+			{
+				tmpFileName = ReplaceIllegalFileNames(RemoveIllegalChars(tmpFileName.Trim(), illegalWindowsChars), illegalWindowsFileNames);
+				if (tmpFileName.EndsWith("."))
+					tmpFileName = tmpFileName.Substring(0, tmpFileName.Length - 1);
+			}
+			else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+			{
+				tmpFileName = RemoveIllegalChars(tmpFileName, illegalLinuxChars);
+			}
+			else
+			{
+				// ¯\_(ツ)_/¯
+			}
+
+            Find.GameInfo.permadeathModeUniqueName = tmpFileName;
+            fileName = tmpFileName;
+            return true;
+        }
+    }
+
+    //Get Tile ID When Starting New Game
+    [HarmonyPatch(typeof(Game), "InitNewGame")]
 	public static class GetTileIDWhenStartingGame
 	{
 		[HarmonyPostfix]
