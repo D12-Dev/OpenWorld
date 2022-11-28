@@ -470,6 +470,12 @@ namespace OpenWorldServer
         {
             if (data.StartsWith("FactionResearch│SetCurrentProgress│"))
             {
+                if (!Server.usingSharedFactionResearch)
+                {
+                    ConsoleUtils.LogToConsole("ERROR, received FactionResearch Message despite Faction Research being disabled - Data: " + data, ConsoleUtils.ConsoleLogMode.Error);
+                    return;
+                }
+
                 if (client.faction == null) return;
 
                 string[] dataChunks = data.Split('│');
@@ -483,6 +489,12 @@ namespace OpenWorldServer
 
             else if (data.StartsWith("FactionResearch│FullResearchReport│"))
             {
+                if (!Server.usingSharedFactionResearch)
+                {
+                    ConsoleUtils.LogToConsole("ERROR, received FactionResearch Message despite Faction Research being disabled - Data: " + data, ConsoleUtils.ConsoleLogMode.Error);
+                    return;
+                }
+
                 if (client.faction == null) return;
 
                 string[] dataChunks = data.Split('│');

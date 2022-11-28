@@ -116,15 +116,7 @@ namespace OpenWorldServer
 
                     else if (data.StartsWith("FactionResearch│"))
                     {
-                        if (Server.usingSharedFactionResearch)
-                        {
-                            NetworkingHandler.FactionResearchHandle(client, data);
-                        } 
-                        
-                        else
-                        {
-                            ConsoleUtils.LogToConsole("ERROR, received FactionResearch Message despite Faction Research being disabled - Data: " + data, ConsoleUtils.ConsoleLogMode.Error);
-                        }
+                        NetworkingHandler.FactionResearchHandle(client, data);
                     }
                 }
 
