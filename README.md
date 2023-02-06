@@ -1,6 +1,5 @@
 # Open World - Project Files
 ## A Free Multiplayer Mod For Rimworld.
-## New server files will be publicly distributed soon!
 
 Attention! Requires .Net Core 3.1 to work! https://dotnet.microsoft.com/en-us/download/dotnet/3.1
 
