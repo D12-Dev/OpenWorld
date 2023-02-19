@@ -6,6 +6,8 @@ Attention! This is a work in progress mod! Things are prone to breaking! If you 
 **Thanks a bunch for downloading the mod! - Lollipop.**
 
 ## Quick Installation Guide
+This quick guide asumes you have a general understanding of setting up any game multiplayer servers. If having any issues, please refer to our discord to get custom assistance.
+
 1 - Download & Install .Net Core 3.1: https://dotnet.microsoft.com/en-us/download/dotnet/3.1
 
 2 - Download latest server files: https://github.com/TastyLollipop/OpenWorld/releases/latest
@@ -26,5 +28,5 @@ Attention! This is a work in progress mod! Things are prone to breaking! If you 
 
 ## Things to take into account
 - The server supports Hamachi, Radmin, and probably every similar app that achieves the same results.
-- For port forwarding or VPN apps like the above, support won't be granted to help set them up
+- For port forwarding or VPN apps like the above, support won't be granted to help set them up.
 - For extra help setting up the server, please refer to our Discord: https://discord.gg/SNtVjR6bqU
