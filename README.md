@@ -3,7 +3,7 @@
 
 Attention! This is a work in progress mod! Things are prone to breaking! If you find something broken, please report it!
 
-**Thanks a bunch for downloading the mod! - Lollipop.**
+Thanks a bunch for downloading the mod! - Lollipop.
 
 ## Quick Installation Guide
 This quick guide asumes you have a general understanding of setting up any game multiplayer servers. If having any issues, please refer to our discord to get custom assistance.
