@@ -28,5 +28,4 @@ This quick guide asumes you have a general understanding of setting up any game 
 
 ## Things to take into account
 - The server supports Hamachi, Radmin, and probably every similar app that achieves the same results.
-- For port forwarding or VPN apps like the above, support won't be granted to help set them up.
 - For extra help setting up the server, please refer to our [Discord](https://discord.gg/SNtVjR6bqU)
