@@ -10,7 +10,7 @@ This quick guide asumes you have a general understanding of setting up any game 
 
 1 - Download & Install .Net Core 3.1: https://dotnet.microsoft.com/en-us/download/dotnet/3.1
 
-2 - Download latest server files: https://github.com/TastyLollipop/OpenWorld/releases/latest
+2 - Download latest server files: [Here](https://github.com/mypassowordisntweak/OpenWorld/releases/latest)
 
 3 - Execute server once to generate all necesary files.
 
