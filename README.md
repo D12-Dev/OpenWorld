@@ -28,4 +28,5 @@ This quick guide asumes you have a general understanding of setting up any game 
 
 ## Things to take into account
 - The server supports Hamachi, Radmin, and probably every similar app that achieves the same results.
-- For extra help setting up the server, please refer to our [Discord](https://discord.gg/SNtVjR6bqU)
+- For extra help setting up the server, please refer to our [Discord](https://discord.gg/SNtVjR6bqU) or our [Wiki](https://openworldhelp.fandom.com/wiki/Creating_a_server)
+
